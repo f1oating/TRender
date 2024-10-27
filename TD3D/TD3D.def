@@ -1,0 +1,4 @@
+LIBRARY   "TD3D.dll"
+EXPORTS
+   CreateRenderDevice
+   ReleaseRenderDevice
