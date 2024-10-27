@@ -4,8 +4,18 @@
 #include "T3DMath.h"
 
 struct TVertex {
-    TVector position;
-    TVector color;
+	struct
+	{
+		float x;
+		float y;
+	} pos;
+	struct
+	{
+		unsigned char r;
+		unsigned char g;
+		unsigned char b;
+		unsigned char a;
+	} color;
 };
 
 struct TCOLOR {

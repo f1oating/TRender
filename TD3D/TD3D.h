@@ -26,7 +26,7 @@ public:
     virtual void BeginRendering() override;
     virtual void EndRendering() override;
     virtual void OnResize(int width, int height) override;
-    virtual void LoadMesh(TVertex* verticies, UINT numVerticies, UINT* indicies, UINT numIndicies) override;
+    virtual void LoadMesh(TVertex verticies[], UINT indicies[]) override;
     virtual bool IsRunning() const override;
 
     static TD3D* GetTD3D();

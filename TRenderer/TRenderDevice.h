@@ -17,7 +17,7 @@ public:
 
     virtual void OnResize(int width, int height) = 0;
 
-    virtual void LoadMesh(TVertex* verticies, UINT numVerticies, UINT* indicies, UINT numIndicies) = 0;
+    virtual void LoadMesh(TVertex verticies[], UINT indicies[]) = 0;
 
     virtual bool IsRunning() const = 0;
 

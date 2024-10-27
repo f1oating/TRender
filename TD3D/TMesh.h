@@ -8,10 +8,10 @@
 class TMesh
 {
 public:
-	TMesh(ID3D11Device* device, TVertex* verticies, UINT numVerticies, UINT* indicies, UINT numIndicies);
+	TMesh(ID3D11Device* device, TVertex verticies[], UINT indicies[]);
 	~TMesh();
 
-	void Render(ID3D11DeviceContext* context);
+	void Render(ID3D11DeviceContext* context, ID3D11Device* device);
 
 private:
 	ID3D11Buffer* vertexBuffer;

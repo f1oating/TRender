@@ -12,11 +12,11 @@ void TD3D::BeginRendering()
     float color[4] = { 0.5f, 0.2f, 0.4f, 1.0f };
     m_pContext->ClearRenderTargetView(m_pRenderTargetView, color);
 
-	DrawTestTriangle();
+	//DrawTestTriangle();
 
     for (TMesh* mesh : m_pMeshes)
     {
-        mesh->Render(m_pContext);
+        mesh->Render(m_pContext, m_pDevice);
     }
 }
 
@@ -25,9 +25,9 @@ void TD3D::EndRendering()
     m_pSwapChain->Present(1, 0);
 }
 
-void TD3D::LoadMesh(TVertex* verticies, UINT numVerticies, UINT* indicies, UINT numIndicies)
+void TD3D::LoadMesh(TVertex verticies[], UINT indicies[])
 {
-    TMesh* mesh = new TMesh(m_pDevice, verticies, numVerticies, indicies, numIndicies);
+    TMesh* mesh = new TMesh(m_pDevice, verticies, indicies);
     m_pMeshes.push_back(mesh);
 }
 

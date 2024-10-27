@@ -57,28 +57,25 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int nCmdShow) {
 
     renderDevice->Init(hwnd, 800, 600, true);
 
-    TVertex* vertexes = new TVertex[8] {
-        {TVector(-1.0f, -1.0f,  1.0f), TVector(1.0f, 0.0f, 0.0f)},
-        {TVector(1.0f, -1.0f,  1.0f), TVector(0.0f, 1.0f, 0.0f)},
-        {TVector(1.0f,  1.0f,  1.0f), TVector(0.0f, 0.0f, 1.0f)},
-        {TVector(-1.0f,  1.0f,  1.0f), TVector(1.0f, 1.0f, 0.0f)},
-
-        {TVector(-1.0f, -1.0f, -1.0f), TVector(1.0f, 0.0f, 1.0f)},
-        {TVector(1.0f, -1.0f, -1.0f), TVector(0.0f, 1.0f, 1.0f)},
-        {TVector(1.0f,  1.0f, -1.0f), TVector(1.0f, 1.0f, 1.0f)},
-        {TVector(-1.0f,  1.0f, -1.0f), TVector(0.5f, 0.5f, 0.5f)}
+    TVertex vertices[] =
+    {
+        { 0.0f,0.5f,255,0,0,0 },
+        { 0.5f,-0.5f,0,255,0,0 },
+        { -0.5f,-0.5f,0,0,255,0 },
+        { -0.3f,0.3f,0,255,0,0 },
+        { 0.3f,0.3f,0,0,255,0 },
+        { 0.0f,-0.8f,255,0,0,0 },
     };
 
-    UINT* indices = new UINT[36]{
-        0, 1, 2, 0, 2, 3,
-        4, 5, 6, 4, 6, 7,
-        0, 3, 7, 0, 7, 4,
-        1, 5, 6, 1, 6, 2,
-        3, 2, 6, 3, 6, 7,
-        0, 4, 5, 0, 5, 1
+    UINT indices[] =
+    {
+        0,1,2,
+        0,2,3,
+        0,4,1,
+        2,1,5,
     };
 
-    renderDevice->LoadMesh(vertexes, 8, indices, 36);
+    renderDevice->LoadMesh(vertices, indices);
 
     // Main message loop
     MSG msg = {};
