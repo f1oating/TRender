@@ -12,15 +12,6 @@ TRenderer::TRenderer(HINSTANCE hInst)
 /*----------------------------------------------------------------*/
 
 /**
- * Destructor: Just call the Release method
- */
-TRenderer::~TRenderer(void) 
-{
-    Release();
-}
-/*----------------------------------------------------------------*/
-
-/**
  * Create the dll objects. This functions loads the appropriate dll.
  */
 HRESULT TRenderer::CreateDevice(const char* chAPI) 
@@ -42,20 +33,20 @@ HRESULT TRenderer::CreateDevice(const char* chAPI)
         return E_FAIL;
     }
 
-    CREATERENDERDEVICE _CreateRenderDevice = 0;
+    GETRENDERDEVICE _GetRenderDevice = 0;
     HRESULT hr;
 
     // function pointer to dll's 'CreateRenderDevice' function
-    _CreateRenderDevice = (CREATERENDERDEVICE)
+    _GetRenderDevice = (GETRENDERDEVICE)
         GetProcAddress(m_hDLL,
-            "CreateRenderDevice");
+            "GetRenderDevice");
 
     // call dll's create function
-    hr = _CreateRenderDevice(m_hDLL, &m_pDevice);
+    hr = _GetRenderDevice(&m_pDevice);
     if (FAILED(hr)) 
     {
         MessageBox(NULL,
-            L"CreateRenderDevice() from lib failed.",
+            L"GetRenderDevice() from lib failed.",
             L"TEngine - error", MB_OK | MB_ICONERROR);
         m_pDevice = NULL;
         return E_FAIL;
@@ -63,30 +54,4 @@ HRESULT TRenderer::CreateDevice(const char* chAPI)
 
     return S_OK;
 } // CreateDevice
-/*----------------------------------------------------------------*/
-
-/**
- * Cleanup the dll objects.
- */
-void TRenderer::Release(void) 
-{
-    RELEASERENDERDEVICE _ReleaseRenderDevice = 0;
-    HRESULT hr;
-
-    if (m_hDLL) 
-    {
-        // function pointer to dll 'ReleaseRenderDevice' function
-        _ReleaseRenderDevice = (RELEASERENDERDEVICE)
-            GetProcAddress(m_hDLL, "ReleaseRenderDevice");
-    }
-    // call dll's release function
-    if (m_pDevice) 
-    {
-        hr = _ReleaseRenderDevice(&m_pDevice);
-        if (FAILED(hr)) 
-        {
-            m_pDevice = NULL;
-        }
-    }
-} // Release
 /*----------------------------------------------------------------*/

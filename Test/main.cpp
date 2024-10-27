@@ -1,5 +1,6 @@
 #include <windows.h>
 #include "TRenderer.h"
+#include "T3DMath.h"
 
 LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
     switch (uMsg) {
@@ -56,6 +57,29 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int nCmdShow) {
 
     renderDevice->Init(hwnd, 800, 600, true);
 
+    TVertex* vertexes = new TVertex[8] {
+        {TVector(-1.0f, -1.0f,  1.0f), TVector(1.0f, 0.0f, 0.0f)},
+        {TVector(1.0f, -1.0f,  1.0f), TVector(0.0f, 1.0f, 0.0f)},
+        {TVector(1.0f,  1.0f,  1.0f), TVector(0.0f, 0.0f, 1.0f)},
+        {TVector(-1.0f,  1.0f,  1.0f), TVector(1.0f, 1.0f, 0.0f)},
+
+        {TVector(-1.0f, -1.0f, -1.0f), TVector(1.0f, 0.0f, 1.0f)},
+        {TVector(1.0f, -1.0f, -1.0f), TVector(0.0f, 1.0f, 1.0f)},
+        {TVector(1.0f,  1.0f, -1.0f), TVector(1.0f, 1.0f, 1.0f)},
+        {TVector(-1.0f,  1.0f, -1.0f), TVector(0.5f, 0.5f, 0.5f)}
+    };
+
+    UINT* indices = new UINT[36]{
+        0, 1, 2, 0, 2, 3,
+        4, 5, 6, 4, 6, 7,
+        0, 3, 7, 0, 7, 4,
+        1, 5, 6, 1, 6, 2,
+        3, 2, 6, 3, 6, 7,
+        0, 4, 5, 0, 5, 1
+    };
+
+    renderDevice->LoadMesh(vertexes, 8, indices, 36);
+
     // Main message loop
     MSG msg = {};
     while (msg.message != WM_QUIT) {
@@ -70,9 +94,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int nCmdShow) {
             renderDevice->EndRendering();
         }
     }
-
-    // Release the renderer
-    renderer.Release();
 
     return 0;
 }
