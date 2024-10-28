@@ -67,7 +67,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int nCmdShow) {
         { 0.0f,-0.8f,255,0,0,0 },
     };
 
-    UINT indices[] =
+    unsigned short indices[] =
     {
         0,1,2,
         0,2,3,
@@ -75,7 +75,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int nCmdShow) {
         2,1,5,
     };
 
-    renderDevice->LoadMesh(vertices, indices);
+    renderDevice->LoadMesh(vertices, sizeof(vertices) / sizeof(TVertex), indices, sizeof(indices) / sizeof(unsigned short));
 
     // Main message loop
     MSG msg = {};

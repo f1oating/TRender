@@ -8,15 +8,17 @@
 class TMesh
 {
 public:
-	TMesh(ID3D11Device* device, TVertex verticies[], UINT indicies[]);
+	TMesh(TVertex* vertices, size_t vertexCount, unsigned short* indices, size_t indexCount);
 	~TMesh();
 
-	void Render(ID3D11DeviceContext* context, ID3D11Device* device);
+	void Render();
 
 private:
 	ID3D11Buffer* vertexBuffer;
 	ID3D11Buffer* indexBuffer;
-	unsigned int indexCount;
+	ID3D11Device* device;
+	ID3D11DeviceContext* context;
+	unsigned int indicesToRender;
 
 };
 

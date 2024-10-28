@@ -8,14 +8,15 @@ TD3D TD3D::m_TD3D;
 
 TD3D::TD3D()
     :
-    m_pBoxVB(nullptr),
-    m_pBoxIB(nullptr),
     m_pDevice(nullptr),
     m_pContext(nullptr),
     m_pSwapChain(nullptr),
     m_pDepthStencilBuffer(nullptr),
     m_pRenderTargetView(nullptr),
     m_pDepthStencilView(nullptr),
+    m_pVertexShader(nullptr),
+    m_pPixelShader(nullptr),
+    m_pBlob(nullptr),
     m_pInputLayout(nullptr),
     m_isRunning(false)
 {
@@ -37,7 +38,7 @@ HRESULT TD3D::Init(HWND hwnd, int width, int height, bool windowed)
 #endif
 
     D3D_FEATURE_LEVEL featureLevel;
-    hr = D3D11CreateDevice(
+    RETURN_HR(D3D11CreateDevice(
         nullptr,
         D3D_DRIVER_TYPE_HARDWARE,
         nullptr,
@@ -48,12 +49,7 @@ HRESULT TD3D::Init(HWND hwnd, int width, int height, bool windowed)
         &m_pDevice,
         &featureLevel,
         &m_pContext
-    );
-
-    if (FAILED(hr))
-    {
-        return hr;
-    }
+    ))
 
     DXGI_SWAP_CHAIN_DESC sd;
     sd.BufferDesc.Width = width;
@@ -73,37 +69,70 @@ HRESULT TD3D::Init(HWND hwnd, int width, int height, bool windowed)
     sd.Flags = 0;
 
     IDXGIDevice* dxgiDevice = 0;
-    m_pDevice->QueryInterface(__uuidof(IDXGIDevice), (void**)&dxgiDevice);
+    RETURN_HR(m_pDevice->QueryInterface(__uuidof(IDXGIDevice), (void**)&dxgiDevice))
 
     IDXGIAdapter* dxgiAdapter = 0;
-    dxgiDevice->GetParent(__uuidof(IDXGIAdapter), (void**)&dxgiAdapter);
+    RETURN_HR(dxgiDevice->GetParent(__uuidof(IDXGIAdapter), (void**)&dxgiAdapter))
 
     IDXGIFactory* dxgiFactory = 0;
-    dxgiAdapter->GetParent(__uuidof(IDXGIFactory), (void**)&dxgiFactory);
+    RETURN_HR(dxgiAdapter->GetParent(__uuidof(IDXGIFactory), (void**)&dxgiFactory))
 
-    dxgiFactory->CreateSwapChain(m_pDevice, &sd, &m_pSwapChain);
+    RETURN_HR(dxgiFactory->CreateSwapChain(m_pDevice, &sd, &m_pSwapChain));
 
-    if (dxgiDevice) { dxgiDevice->Release(); dxgiDevice = nullptr; }
-    if (dxgiAdapter) { dxgiAdapter->Release(); dxgiAdapter = nullptr; }
-    if (dxgiFactory) { dxgiFactory->Release(); dxgiFactory = nullptr; }
+    RELEASE_COM(dxgiDevice)
+    RELEASE_COM(dxgiAdapter)
+    RELEASE_COM(dxgiFactory)
 
     OnResize(width, height);
+    BuildShaders();
 
     m_isRunning = true;
     return T_OK;
 }
 
+void TD3D::BuildShaders()
+{
+    LOG_SHADER_ERROR(D3DReadFileToBlob(L"C:\\Users\\Alan\\Desktop\\game-dev\\TEngine\\TRender\\TD3D\\PixelShader.cso", &m_pBlob))
+    LOG_HR(m_pDevice->CreatePixelShader(m_pBlob->GetBufferPointer(), m_pBlob->GetBufferSize(), nullptr, &m_pPixelShader))
+
+    // bind pixel shader
+    m_pContext->PSSetShader(m_pPixelShader, nullptr, 0u);
+
+
+    // create vertex shader
+    LOG_SHADER_ERROR(D3DReadFileToBlob(L"C:\\Users\\Alan\\Desktop\\game-dev\\TEngine\\TRender\\TD3D\\VertexShader.cso", &m_pBlob))
+    LOG_HR(m_pDevice->CreateVertexShader(m_pBlob->GetBufferPointer(), m_pBlob->GetBufferSize(), nullptr, &m_pVertexShader))
+
+    // bind vertex shader
+    m_pContext->VSSetShader(m_pVertexShader, nullptr, 0u);
+
+    // input (vertex) layout (2d position only)
+    const D3D11_INPUT_ELEMENT_DESC ied[] =
+    {
+        { "Position",0,DXGI_FORMAT_R32G32_FLOAT,0,0,D3D11_INPUT_PER_VERTEX_DATA,0 },
+        { "Color",0,DXGI_FORMAT_R8G8B8A8_UNORM,0,8u,D3D11_INPUT_PER_VERTEX_DATA,0 },
+    };
+    LOG_HR(m_pDevice->CreateInputLayout(
+        ied, (UINT)std::size(ied),
+        m_pBlob->GetBufferPointer(),
+        m_pBlob->GetBufferSize(),
+        &m_pInputLayout
+    ))
+
+    m_pContext->IASetInputLayout(m_pInputLayout);
+}
+
 void TD3D::OnResize(int width, int height)
 {
-    if (m_pRenderTargetView) m_pRenderTargetView->Release(); m_pRenderTargetView = nullptr;
-    if (m_pDepthStencilView) m_pDepthStencilView->Release(); m_pDepthStencilView = nullptr;
-    if (m_pDepthStencilBuffer) m_pDepthStencilBuffer->Release(); m_pDepthStencilBuffer = nullptr;
+    RELEASE_COM(m_pRenderTargetView)
+    RELEASE_COM(m_pDepthStencilView)
+    RELEASE_COM(m_pDepthStencilBuffer)
 
-    m_pSwapChain->ResizeBuffers(1, width, height, DXGI_FORMAT_R8G8B8A8_UNORM, 0);
+    LOG_HR(m_pSwapChain->ResizeBuffers(1, width, height, DXGI_FORMAT_R8G8B8A8_UNORM, 0))
     ID3D11Texture2D* backBuffer;
-    m_pSwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), reinterpret_cast<void**>(&backBuffer));
-    m_pDevice->CreateRenderTargetView(backBuffer, 0, &m_pRenderTargetView);
-    if (backBuffer) backBuffer->Release(); backBuffer = nullptr;
+    LOG_HR(m_pSwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), reinterpret_cast<void**>(&backBuffer)))
+    LOG_HR(m_pDevice->CreateRenderTargetView(backBuffer, 0, &m_pRenderTargetView))
+    RELEASE_COM(backBuffer)
 
     D3D11_TEXTURE2D_DESC depthStencilDesc;
 
@@ -119,8 +148,8 @@ void TD3D::OnResize(int width, int height)
     depthStencilDesc.CPUAccessFlags = 0;
     depthStencilDesc.MiscFlags = 0;
 
-    m_pDevice->CreateTexture2D(&depthStencilDesc, 0, &m_pDepthStencilBuffer);
-    m_pDevice->CreateDepthStencilView(m_pDepthStencilBuffer, 0, &m_pDepthStencilView);
+    LOG_HR(m_pDevice->CreateTexture2D(&depthStencilDesc, 0, &m_pDepthStencilBuffer))
+    LOG_HR(m_pDevice->CreateDepthStencilView(m_pDepthStencilBuffer, 0, &m_pDepthStencilView))
 
     m_pContext->OMSetRenderTargets(1, &m_pRenderTargetView, m_pDepthStencilView);
 
@@ -137,13 +166,16 @@ void TD3D::OnResize(int width, int height)
 
 void TD3D::Release()
 {
-    if (m_pRenderTargetView) { m_pRenderTargetView->Release(); m_pRenderTargetView = nullptr; }
-    if (m_pDepthStencilView) { m_pDepthStencilView->Release(); m_pDepthStencilView = nullptr; }
-    if (m_pDepthStencilBuffer) { m_pDepthStencilBuffer->Release(); m_pDepthStencilBuffer = nullptr; }
-    if (m_pSwapChain) { m_pSwapChain->Release(); m_pSwapChain = nullptr; }
-    if (m_pContext) { m_pContext->Release(); m_pContext = nullptr; }
-    if (m_pDevice) { m_pDevice->Release(); m_pDevice = nullptr; }
-    if (m_pInputLayout) { m_pInputLayout->Release(); m_pInputLayout = nullptr; }
+    RELEASE_COM(m_pDevice)
+    RELEASE_COM(m_pContext)
+    RELEASE_COM(m_pSwapChain)
+    RELEASE_COM(m_pDepthStencilBuffer)
+    RELEASE_COM(m_pRenderTargetView)
+    RELEASE_COM(m_pDepthStencilView)
+    RELEASE_COM(m_pVertexShader)
+    RELEASE_COM(m_pPixelShader)
+    RELEASE_COM(m_pBlob)
+    RELEASE_COM(m_pInputLayout)
 
     for (TMesh* mesh : m_pMeshes)
     {

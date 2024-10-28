@@ -155,12 +155,14 @@
   <ItemGroup>
     <ClInclude Include="T.h" />
     <ClInclude Include="TD3D.h" />
+    <ClInclude Include="TD3D_MACROS.h" />
     <ClInclude Include="TMesh.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="t_init.cpp" />
     <ClCompile Include="t_main.cpp" />
+    <ClCompile Include="t_util.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="TD3D.def" />
