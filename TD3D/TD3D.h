@@ -4,6 +4,7 @@
 #include "TRenderDevice.h"
 #include "TMesh.h"
 #include "TD3D_MACROS.h"
+#include "TLogManager.h"
 
 #include <d3d11.h>
 #include <d3dcompiler.h>
@@ -57,9 +58,9 @@ private:
     void Release();
     void BuildShaders();
 
-    void LogHRMessage(HRESULT hr);
-    void LogShaderErrorMessage();
-
 };
+
+void LogHRMessage(HRESULT hr);
+void LogShaderErrorMessage(const char* header, ID3DBlob* blob);
 
 #endif

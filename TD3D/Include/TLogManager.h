@@ -3,12 +3,9 @@
 
 //------------------------------------------------------------------------
 
-#include <string>
-#include <sstream>
-#include <iostream>
-#include <chrono>
-#include <iomanip>
 #include <cstdio>
+#include <cstring>
+#include <chrono>
 #include <exception>
 
 #ifndef THROW_EXCEPTION
@@ -25,15 +22,15 @@ private:
 protected:
 public:
     int m_ErrorNumber;
-    std::string m_ErrorDesc;
-    std::string m_SrcFileName;
+    char m_ErrorDesc[256];
+    char m_SrcFileName[256];
     int m_LineNumber;
-    std::string m_ErrText;
+    char m_ErrText[1024];
 
     // Override std::exception::what
     const char* what();
 
-    TException(int ErrorNumber, std::string ErrorDesc, std::string SrcFileName, int LineNumber);
+    TException(int ErrorNumber, const char* ErrorDesc, const char* SrcFileName, int LineNumber);
     ~TException() throw() {}
 };
 
@@ -48,19 +45,24 @@ public:
 
 protected:
     TLogManager();
-    virtual ~TLogManager() {}
+    ~TLogManager();
     static TLogManager m_LogManager;
 
 public:
-    std::stringstream m_LogBuffer;
-    void create(const std::string& Filename);
-    void flush();
-    void close();
     void logException(TException e);
-    std::string getTimeString();
+    void logMessage(const char* head, const char* message);  // New function for logging a regular message
+    
 
 private:
+    void create(const char* Filename);
+    void flush();
+    void close();
+
+    const char* getTimeString();
+
+    char m_LogBuffer[1024];
     FILE* m_LogFile;
+
 };
 
 //------------------------------------------------------------------------

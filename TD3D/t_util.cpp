@@ -2,7 +2,7 @@
 
 #include <string>
 
-void TD3D::LogHRMessage(HRESULT hr)
+void LogHRMessage(HRESULT hr)
 {
     char* errorMsg = nullptr;
     FormatMessageA(
@@ -13,13 +13,18 @@ void TD3D::LogHRMessage(HRESULT hr)
     std::string message = errorMsg ? errorMsg : "Unknown error";
     LocalFree(errorMsg);
 
-    // TODO: implement
+    TLogManager::GetLogManager()->logMessage("HRESULT LOG", message.c_str());
 }
 
-void TD3D::LogShaderErrorMessage()
+void LogShaderErrorMessage(const char* header, ID3DBlob* blob)
 {
-    if (m_pBlob)
+    if (blob)
     {
-        // TODO: implement
+        /*****************************************************************************************************
+        TLogManager::GetLogManager()->logMessage(header, static_cast<const char *>(blob->GetBufferPointer()));
+
+        TODO: implement
+
+        *****************************************************************************************************/
     }
 }

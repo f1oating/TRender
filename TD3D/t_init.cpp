@@ -92,15 +92,14 @@ HRESULT TD3D::Init(HWND hwnd, int width, int height, bool windowed)
 
 void TD3D::BuildShaders()
 {
-    LOG_SHADER_ERROR(D3DReadFileToBlob(L"C:\\Users\\Alan\\Desktop\\game-dev\\TEngine\\TRender\\TD3D\\PixelShader.cso", &m_pBlob))
+    LOG_HR(D3DReadFileToBlob(L"..\\TD3D\\PixelShader.cso", &m_pBlob), m_pBlob)
     LOG_HR(m_pDevice->CreatePixelShader(m_pBlob->GetBufferPointer(), m_pBlob->GetBufferSize(), nullptr, &m_pPixelShader))
 
     // bind pixel shader
     m_pContext->PSSetShader(m_pPixelShader, nullptr, 0u);
 
-
     // create vertex shader
-    LOG_SHADER_ERROR(D3DReadFileToBlob(L"C:\\Users\\Alan\\Desktop\\game-dev\\TEngine\\TRender\\TD3D\\VertexShader.cso", &m_pBlob))
+    LOG_HR(D3DReadFileToBlob(L"..\\TD3D\\VertexShader.cso", &m_pBlob), m_pBlob)
     LOG_HR(m_pDevice->CreateVertexShader(m_pBlob->GetBufferPointer(), m_pBlob->GetBufferSize(), nullptr, &m_pVertexShader))
 
     // bind vertex shader

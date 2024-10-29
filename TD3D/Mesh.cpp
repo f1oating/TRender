@@ -19,7 +19,7 @@ TMesh::TMesh(TVertex* vertices, size_t vertexCount, unsigned short* indices, siz
 
     D3D11_SUBRESOURCE_DATA sd = {};
     sd.pSysMem = vertices;
-    device->CreateBuffer(&bd, &sd, &vertexBuffer);
+    LOG_HR(device->CreateBuffer(&bd, &sd, &vertexBuffer))
 
     D3D11_BUFFER_DESC ibd = {};
     ibd.BindFlags = D3D11_BIND_INDEX_BUFFER;
@@ -30,7 +30,7 @@ TMesh::TMesh(TVertex* vertices, size_t vertexCount, unsigned short* indices, siz
     ibd.StructureByteStride = sizeof(unsigned short);
     D3D11_SUBRESOURCE_DATA isd = {};
     isd.pSysMem = indices;
-    device->CreateBuffer(&ibd, &isd, &indexBuffer);
+    LOG_HR(device->CreateBuffer(&ibd, &isd, &indexBuffer))
 
     indicesToRender = indexCount;
 }

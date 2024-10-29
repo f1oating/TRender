@@ -6,7 +6,7 @@
 #define RELEASE_COM(p) if (p) { (p)->Release(); (p) = nullptr; }
 #define RETURN_HR(hr) if (FAILED(hr)) { LogHRMessage(hr); return (hr); }
 #define LOG_HR(hr) if (FAILED(hr)) { LogHRMessage(hr); }
-#define LOG_SHADER_ERROR(hr) if (FAILED(hr)) { LogShaderErrorMessage(); }
+// TODO: implement #define LOG_SHADER_ERROR(hr, blob, header) if (hr != S_OK) { LogShaderErrorMessage(header, blob); }
 
 
 #endif
