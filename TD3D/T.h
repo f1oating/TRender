@@ -8,21 +8,15 @@ struct TVertex {
 	{
 		float x;
 		float y;
+		float z;
 	} pos;
 	struct
 	{
-		unsigned char r;
-		unsigned char g;
-		unsigned char b;
-		unsigned char a;
+		float r;
+		float g;
+		float b;
+		float a;
 	} color;
-};
-
-struct TCOLOR {
-    float r;
-    float g;
-    float b;
-    float a;
 };
 
 #define T_OK    0

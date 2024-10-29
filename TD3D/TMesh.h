@@ -8,7 +8,7 @@
 class TMesh
 {
 public:
-	TMesh(TVertex* vertices, size_t vertexCount, unsigned short* indices, size_t indexCount);
+	TMesh(TVertex* vertices, size_t vertexCount, UINT* indices, size_t indexCount);
 	~TMesh();
 
 	void Render();

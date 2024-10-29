@@ -28,7 +28,7 @@ public:
     virtual void BeginRendering() override;
     virtual void EndRendering() override;
     virtual void OnResize(int width, int height) override;
-    virtual void LoadMesh(TVertex* vertices, size_t vertexCount, unsigned short* indices, size_t indexCount) override;
+    virtual void LoadMesh(TVertex* vertices, size_t vertexCount, UINT* indices, size_t indexCount) override;
     virtual bool IsRunning() const override;
 
     ID3D11Device* GetDevice() { return m_pDevice;  };

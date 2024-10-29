@@ -22,7 +22,7 @@ void TD3D::EndRendering()
     m_pSwapChain->Present(1, 0);
 }
 
-void TD3D::LoadMesh(TVertex* vertices, size_t vertexCount, unsigned short* indices, size_t indexCount)
+void TD3D::LoadMesh(TVertex* vertices, size_t vertexCount, UINT* indices, size_t indexCount)
 {
     TMesh* mesh = new TMesh(vertices, vertexCount, indices, indexCount);
     m_pMeshes.push_back(mesh);

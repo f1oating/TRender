@@ -105,11 +105,10 @@ void TD3D::BuildShaders()
     // bind vertex shader
     m_pContext->VSSetShader(m_pVertexShader, nullptr, 0u);
 
-    // input (vertex) layout (2d position only)
     const D3D11_INPUT_ELEMENT_DESC ied[] =
     {
-        { "Position",0,DXGI_FORMAT_R32G32_FLOAT,0,0,D3D11_INPUT_PER_VERTEX_DATA,0 },
-        { "Color",0,DXGI_FORMAT_R8G8B8A8_UNORM,0,8u,D3D11_INPUT_PER_VERTEX_DATA,0 },
+            { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+            { "COLOR", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 12u, D3D11_INPUT_PER_VERTEX_DATA, 0 }
     };
     LOG_HR(m_pDevice->CreateInputLayout(
         ied, (UINT)std::size(ied),

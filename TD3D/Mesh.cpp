@@ -5,7 +5,7 @@
 #include <DirectXMath.h>
 #include <list>
 
-TMesh::TMesh(TVertex* vertices, size_t vertexCount, unsigned short* indices, size_t indexCount) {
+TMesh::TMesh(TVertex* vertices, size_t vertexCount, UINT* indices, size_t indexCount) {
     device = TD3D::GetTD3D()->GetDevice();
     context = TD3D::GetTD3D()->GetDeviceContext();
 
@@ -26,8 +26,8 @@ TMesh::TMesh(TVertex* vertices, size_t vertexCount, unsigned short* indices, siz
     ibd.Usage = D3D11_USAGE_DEFAULT;
     ibd.CPUAccessFlags = 0u;
     ibd.MiscFlags = 0u;
-    ibd.ByteWidth = indexCount * sizeof(unsigned short);
-    ibd.StructureByteStride = sizeof(unsigned short);
+    ibd.ByteWidth = indexCount * sizeof(UINT);
+    ibd.StructureByteStride = sizeof(UINT);
     D3D11_SUBRESOURCE_DATA isd = {};
     isd.pSysMem = indices;
     LOG_HR(device->CreateBuffer(&ibd, &isd, &indexBuffer))
@@ -41,13 +41,11 @@ TMesh::~TMesh() {
 }
 
 void TMesh::Render() {
-    HRESULT hr;
-
     const UINT stride = sizeof(TVertex);
     const UINT offset = 0u;
 
     context->IASetVertexBuffers(0, 1u, &vertexBuffer, &stride, &offset);
-    context->IASetIndexBuffer(indexBuffer, DXGI_FORMAT_R16_UINT, 0u);
+    context->IASetIndexBuffer(indexBuffer, DXGI_FORMAT_R32_UINT, 0u);
 
     context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 

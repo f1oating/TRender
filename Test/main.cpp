@@ -57,25 +57,23 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int nCmdShow) {
 
     renderDevice->Init(hwnd, 800, 600, true);
 
-    TVertex vertices[] =
-    {
-        { 0.0f,0.5f,255,0,0,0 },
-        { 0.5f,-0.5f,0,255,0,0 },
-        { -0.5f,-0.5f,0,0,255,0 },
-        { -0.3f,0.3f,0,255,0,0 },
-        { 0.3f,0.3f,0,0,255,0 },
-        { 0.0f,-0.8f,255,0,0,0 },
-    };
+    TVertex vertices[] = {
+    {{0.0f, 0.5f, 0.0f}, {1.0f, 0.0f, 0.0f, 1.0f}},
+    {{ 0.5f, -0.5f, 0.0f}, {0.0f, 1.0f, 0.0f, 1.0f}},
+    {{-0.5f,  -0.5f, 0.0f}, {0.0f, 0.0f, 1.0f, 1.0f}},
+    {{ -0.3f,  0.3f, 0.0f}, {1.0f, 1.0f, 0.0f, 1.0f}},
+    {{0.3f, 0.3f,  0.0f}, {1.0f, 0.0f, 1.0f, 1.0f}},
+    {{ 0.0f, -0.8f,  0.0f}, {0.0f, 1.0f, 1.0f, 1.0f}},
+};
 
-    unsigned short indices[] =
-    {
+    UINT indices[] = {
         0,1,2,
         0,2,3,
         0,4,1,
-        2,1,5,
-    };
+        2,1,5
+};
 
-    renderDevice->LoadMesh(vertices, sizeof(vertices) / sizeof(TVertex), indices, sizeof(indices) / sizeof(unsigned short));
+    renderDevice->LoadMesh(vertices, sizeof(vertices) / sizeof(TVertex), indices, sizeof(indices) / sizeof(UINT));
 
     // Main message loop
     MSG msg = {};
