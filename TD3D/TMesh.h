@@ -5,6 +5,14 @@
 
 #include "T.h"
 
+struct ConstantBuffer
+{
+	struct
+	{
+		float element[4][4];
+	} transformation;
+};
+
 class TMesh
 {
 public:
@@ -16,8 +24,13 @@ public:
 private:
 	ID3D11Buffer* vertexBuffer;
 	ID3D11Buffer* indexBuffer;
+	ID3D11Buffer* constantBuffer;
+
 	ID3D11Device* device;
 	ID3D11DeviceContext* context;
+
+	ConstantBuffer cb;
+
 	unsigned int indicesToRender;
 
 };

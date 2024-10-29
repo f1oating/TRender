@@ -1,6 +1,7 @@
 #include "TMesh.h"
 
 #include "TD3D.h"
+#include <cmath>
 #include <d3dcompiler.h>
 #include <DirectXMath.h>
 #include <list>
@@ -31,6 +32,31 @@ TMesh::TMesh(TVertex* vertices, size_t vertexCount, UINT* indices, size_t indexC
     D3D11_SUBRESOURCE_DATA isd = {};
     isd.pSysMem = indices;
     LOG_HR(device->CreateBuffer(&ibd, &isd, &indexBuffer))
+
+    float angle = 0.3f;
+
+    cb =
+    {
+        {
+            std::cos(angle),	std::sin(angle),	0.0f,	0.0f,
+            -std::sin(angle),	std::cos(angle),	0.0f,	0.0f,
+            0.0f,				0.0f,				1.0f,	0.0f,
+            0.0f,				0.0f,				0.0f,	1.0f,
+        }
+    };
+
+    D3D11_BUFFER_DESC cbd;
+    cbd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+    cbd.Usage = D3D11_USAGE_DYNAMIC;
+    cbd.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+    cbd.MiscFlags = 0u;
+    cbd.ByteWidth = sizeof(cb);
+    cbd.StructureByteStride = 0u;
+    D3D11_SUBRESOURCE_DATA csd = {};
+    csd.pSysMem = &cb;
+    device->CreateBuffer(&cbd, &csd, &constantBuffer);
+
+    context->VSSetConstantBuffers(0u, 1u, &constantBuffer);
 
     indicesToRender = indexCount;
 }
