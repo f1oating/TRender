@@ -2,15 +2,13 @@
 #define TMESH_H
 
 #include <d3d11.h>
+#include <DirectXMath.h>
 
 #include "T.h"
 
 struct ConstantBuffer
 {
-	struct
-	{
-		float element[4][4];
-	} transformation;
+	DirectX::XMMATRIX transform;
 };
 
 class TMesh

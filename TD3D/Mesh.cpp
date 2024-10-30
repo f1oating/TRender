@@ -3,7 +3,6 @@
 #include "TD3D.h"
 #include <cmath>
 #include <d3dcompiler.h>
-#include <DirectXMath.h>
 #include <list>
 
 TMesh::TMesh(TVertex* vertices, size_t vertexCount, UINT* indices, size_t indexCount) {
@@ -33,15 +32,17 @@ TMesh::TMesh(TVertex* vertices, size_t vertexCount, UINT* indices, size_t indexC
     isd.pSysMem = indices;
     LOG_HR(device->CreateBuffer(&ibd, &isd, &indexBuffer))
 
-    float angle = 0.3f;
+    float angle = 0.9f;
 
     cb =
     {
         {
-            std::cos(angle),	std::sin(angle),	0.0f,	0.0f,
-            -std::sin(angle),	std::cos(angle),	0.0f,	0.0f,
-            0.0f,				0.0f,				1.0f,	0.0f,
-            0.0f,				0.0f,				0.0f,	1.0f,
+            DirectX::XMMatrixTranspose(
+                DirectX::XMMatrixRotationZ(angle) *
+                DirectX::XMMatrixRotationX(angle) *
+                DirectX::XMMatrixTranslation(0.0f,0.0f,4.0f) *
+                DirectX::XMMatrixPerspectiveLH(1.0f,3.0f / 4.0f,0.5f,10.0f)
+            )
         }
     };
 
