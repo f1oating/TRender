@@ -1,57 +1,48 @@
 #include "TRenderer.h"
 
-/**
- * Constructor: Nothing spectacular.
- */
 TRenderer::TRenderer(HINSTANCE hInst) 
 {
     m_hInst = hInst;
-    m_pDevice = nullptr;
-    m_hDLL = NULL;
+
+    m_hDLL = LoadLibrary(L"TD3D.dll");
 }
-/*----------------------------------------------------------------*/
 
-/**
- * Create the dll objects. This functions loads the appropriate dll.
- */
-HRESULT TRenderer::CreateDevice(const char* chAPI) 
+TRenderDevice* TRenderer::GetRenderDevice()
 {
-    char buffer[300];
+    GetTRenderDeviceFunc _GetTRenderDevice = 0;
 
-    // decide which API should be used
-    if (strcmp(chAPI, "Direct3D") == 0) 
-    {
-        m_hDLL = LoadLibrary(L"TD3D.dll");
-        if (!m_hDLL) {
-            // TODO: Error log
-            return E_FAIL;
-        }
-    }
-    else 
-    {
-        // TODO: Error log
-        return E_FAIL;
-    }
+    _GetTRenderDevice = (GetTRenderDeviceFunc) GetProcAddress(m_hDLL, "GetTRenderDevice");
 
-    GETRENDERDEVICE _GetRenderDevice = 0;
-    HRESULT hr;
+    return _GetTRenderDevice();
 
-    // function pointer to dll's 'CreateRenderDevice' function
-    _GetRenderDevice = (GETRENDERDEVICE)
-        GetProcAddress(m_hDLL,
-            "GetRenderDevice");
+}
 
-    // call dll's create function
-    hr = _GetRenderDevice(&m_pDevice);
-    if (FAILED(hr)) 
-    {
-        MessageBox(NULL,
-            L"GetRenderDevice() from lib failed.",
-            L"TEngine - error", MB_OK | MB_ICONERROR);
-        m_pDevice = NULL;
-        return E_FAIL;
-    }
+SceneManager* TRenderer::GetSceneManager()
+{
+    GetSceneManagerFunc _GetSceneManager = 0;
 
-    return S_OK;
-} // CreateDevice
-/*----------------------------------------------------------------*/
+    _GetSceneManager = (GetSceneManagerFunc) GetProcAddress(m_hDLL, "GetSceneManager");
+
+    return _GetSceneManager();
+
+}
+
+ShaderManager* TRenderer::GetShaderManager()
+{
+    GetShaderManagerFunc _GetShaderManager = 0;
+
+    _GetShaderManager = (GetShaderManagerFunc)GetProcAddress(m_hDLL, "GetShaderManager");
+
+    return _GetShaderManager();
+
+}
+
+RenderPipeline* TRenderer::GetRenderPipeline()
+{
+    GetRenderPipelineFunc _GetRenderPipeline = 0;
+
+    _GetRenderPipeline = (GetRenderPipelineFunc)GetProcAddress(m_hDLL, "GetRenderPipeline");
+
+    return _GetRenderPipeline();
+
+}

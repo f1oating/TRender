@@ -1,6 +1,5 @@
 #include <windows.h>
 #include "TRenderer.h"
-#include "T3DMath.h"
 
 LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
     switch (uMsg) {
@@ -46,38 +45,13 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int nCmdShow) {
     // Create a renderer
     TRenderer renderer(hInstance);
 
-    // Create the rendering device
-    HRESULT hr = renderer.CreateDevice("Direct3D");
-    if (FAILED(hr)) {
-        MessageBox(NULL, L"Failed to create renderer device.", L"Error", MB_OK | MB_ICONERROR);
-        return -1;
-    }
+    TRenderDevice* renderDevice = renderer.GetRenderDevice();
 
-    TRenderDevice* renderDevice = renderer.GetDevice();
+    renderDevice->Initialize(hwnd, 800, 600);
 
-    renderDevice->Init(hwnd, 800, 600, true);
-
-    TVertex vertices[] = {
-        {{-1.0f,-1.0f,-1.0f}, {1.0f, 0.0f, 0.0f, 1.0f}},
-        {{1.0f,-1.0f,-1.0f}, {0.0f, 1.0f, 0.0f, 1.0f}},
-        {{-1.0f,1.0f,-1.0f}, {0.0f, 0.0f, 1.0f, 1.0f}},
-        {{1.0f,1.0f,-1.0f}, {1.0f, 1.0f, 0.0f, 1.0f}},
-        {{-1.0f,-1.0f,1.0f}, {1.0f, 0.0f, 1.0f, 1.0f}},
-        {{1.0f,-1.0f,1.0f}, {0.0f, 1.0f, 1.0f, 1.0f}},
-        {{-1.0f,1.0f,1.0f}, {0.0f, 1.0f, 1.0f, 1.0f}},
-        {{1.0f,1.0f,1.0f}, {0.0f, 1.0f, 1.0f, 1.0f}},
-    };
-
-    UINT indices[] = {
-        0,2,1, 2,3,1,
-        1,3,5, 3,7,5,
-        2,6,3, 3,6,7,
-        4,5,7, 4,7,6,
-        0,4,2, 2,4,6,
-        0,1,4, 1,5,4
-    };
-
-    renderDevice->LoadMesh(vertices, sizeof(vertices) / sizeof(TVertex), indices, sizeof(indices) / sizeof(UINT));
+    ShaderManager* shaderManager = renderer.GetShaderManager();
+    RenderPipeline* renderPipeline = renderer.GetRenderPipeline();
+    SceneManager* sceneManager = renderer.GetSceneManager();
 
     // Main message loop
     MSG msg = {};
@@ -88,9 +62,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int nCmdShow) {
             DispatchMessage(&msg);
         }
         else {
-            renderDevice->BeginRendering();
+            renderDevice->BeginFrame(0.1f, 0.1f, 0.1f, 0.1f);
 
-            renderDevice->EndRendering();
+            renderDevice->EndFrame();
         }
     }
 

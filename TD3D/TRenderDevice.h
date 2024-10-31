@@ -10,8 +10,6 @@ protected:
     static TRenderDevice m_TRenderDevice;
 
 public:
-    TRenderDevice();
-    ~TRenderDevice();
 
     bool Initialize(HWND hwnd, int width, int height);
     void BeginFrame(float red, float green, float blue, float alpha);
@@ -35,5 +33,11 @@ private:
     Microsoft::WRL::ComPtr<ID3D11Texture2D> m_pDepthStencilBuffer;
 
 };
+
+extern "C"
+{
+    TRenderDevice* GetTRenderDevice();
+    typedef TRenderDevice* (*GetTRenderDeviceFunc)();
+}
 
 #endif // TRENDERDEVICE_H

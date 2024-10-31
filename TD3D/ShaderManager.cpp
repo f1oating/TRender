@@ -3,6 +3,8 @@
 #include "Shader.h"
 #include <stdexcept>
 
+ShaderManager ShaderManager::m_ShaderManager;
+
 ShaderManager::ShaderManager() {}
 
 std::shared_ptr<Shader> ShaderManager::LoadShader(const std::string& shaderName, const std::string& filePath,
@@ -31,4 +33,14 @@ std::shared_ptr<Shader> ShaderManager::GetShader(const std::string& shaderName) 
         return it->second;
     }
     throw std::runtime_error("Shader not found: " + shaderName);
+}
+
+ShaderManager* ShaderManager::GetShaderManager()
+{
+    return &m_ShaderManager;
+}
+
+ShaderManager* GetShaderManager()
+{
+    return ShaderManager::GetShaderManager();
 }

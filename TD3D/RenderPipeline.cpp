@@ -2,11 +2,11 @@
 #include "RenderCommand.h"
 #include <stdexcept>
 
-RenderPipeline::RenderPipeline(TRenderDevice* renderDevice)
-    : renderDevice(renderDevice) {
-    if (!renderDevice) {
-        throw std::invalid_argument("RenderDevice cannot be null");
-    }
+RenderPipeline RenderPipeline::m_RenderPipeline;
+
+RenderPipeline::RenderPipeline()
+{
+
 }
 
 void RenderPipeline::AddRenderCommand(std::shared_ptr<RenderCommand> command) {
@@ -28,4 +28,14 @@ void RenderPipeline::Execute(ID3D11DeviceContext* context) {
 
 void RenderPipeline::ClearPipeline() {
     renderCommands.clear();
+}
+
+RenderPipeline* RenderPipeline::GetRenderPipeline()
+{
+    return &m_RenderPipeline;
+}
+
+RenderPipeline* GetRenderPipeline()
+{
+    return RenderPipeline::GetRenderPipeline();
 }

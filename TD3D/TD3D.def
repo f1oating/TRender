@@ -1,3 +1,6 @@
 LIBRARY   "TD3D.dll"
 EXPORTS
-   GetRenderDevice
+   GetTRenderDevice
+   GetSceneManager
+   GetShaderManager
+   GetRenderPipeline

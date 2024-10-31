@@ -132,3 +132,8 @@ bool TRenderDevice::InitializeDirect3D(HWND hwnd, int width, int height) {
 
     return true;
 }
+
+TRenderDevice* GetTRenderDevice()
+{
+    return TRenderDevice::GetRenderDevice();
+}

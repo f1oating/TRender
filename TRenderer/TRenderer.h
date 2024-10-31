@@ -3,24 +3,26 @@
 
 #include <windows.h>
 #include "TRenderDevice.h"
+#include "SceneManager.h"
+#include "ShaderManager.h"
+#include "RenderPipeline.h"
 
 class TRenderer 
 {
 public:
     TRenderer(HINSTANCE hInst);
 
-    HRESULT CreateDevice(const char* api);
+    TRenderDevice* GetRenderDevice();
+    SceneManager* GetSceneManager();
+    ShaderManager* GetShaderManager();
+    RenderPipeline* GetRenderPipeline();
 
-    LPTRENDERDEVICE GetDevice() const { return m_pDevice; }
 
     HINSTANCE GetModule() const { return m_hDLL; }
 
 private:
-    LPTRENDERDEVICE m_pDevice;
     HINSTANCE m_hInst;
     HMODULE m_hDLL;
 };
-
-typedef TRenderer* LPTRENDERER;
 
 #endif // TRENDERER_H

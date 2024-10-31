@@ -5,7 +5,6 @@
 #include <wrl/client.h>
 #include <DirectXMath.h>
 #include <vector>
-#include <string>
 
 struct Vertex {
     DirectX::XMFLOAT3 position;
@@ -18,12 +17,13 @@ public:
     Mesh();
     ~Mesh();
 
-    bool LoadFromFile(const std::string& filePath);
+    void InitializeBuffers(ID3D11Device* device);
     void Render(ID3D11DeviceContext* context);
 
-private:
-    bool InitializeBuffers(ID3D11Device* device);
+    void SetVertices(const std::vector<Vertex>& vertices);
+    void SetIndices(const std::vector<unsigned int>& indices);
 
+private:
     std::vector<Vertex> vertices;
     std::vector<unsigned int> indices;
 

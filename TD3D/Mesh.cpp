@@ -1,40 +1,21 @@
 #include "Mesh.h"
-#include <fstream>
+#include "stdexcept"
 
 Mesh::Mesh() : indexCount(0) {}
 
 Mesh::~Mesh() {}
 
-bool Mesh::LoadFromFile(const std::string& filePath) {
-    // Loading data from file.
-
-    std::ifstream file(filePath);
-    if (!file.is_open()) {
-        return false;
-    }
-
-    int vertexCount, indexCount;
-    file >> vertexCount >> indexCount;
-
-    vertices.resize(vertexCount);
-    for (int i = 0; i < vertexCount; ++i) {
-        file >> vertices[i].position.x >> vertices[i].position.y >> vertices[i].position.z;
-        file >> vertices[i].normal.x >> vertices[i].normal.y >> vertices[i].normal.z;
-        file >> vertices[i].texcoord.x >> vertices[i].texcoord.y;
-    }
-
-    indices.resize(indexCount);
-    for (int i = 0; i < indexCount; ++i) {
-        file >> indices[i];
-    }
-
-    file.close();
-    indexCount = static_cast<unsigned int>(indices.size());
-
-    return true;
+void Mesh::SetVertices(const std::vector<Vertex>& vertices) {
+    this->vertices = vertices;
 }
 
-bool Mesh::InitializeBuffers(ID3D11Device* device) {
+void Mesh::SetIndices(const std::vector<unsigned int>& indices) {
+    this->indices = indices;
+    indexCount = static_cast<unsigned int>(indices.size());
+}
+
+void Mesh::InitializeBuffers(ID3D11Device* device) {
+    // Vertex buffer creation
     D3D11_BUFFER_DESC vertexBufferDesc = {};
     vertexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
     vertexBufferDesc.ByteWidth = sizeof(Vertex) * static_cast<UINT>(vertices.size());
@@ -45,7 +26,7 @@ bool Mesh::InitializeBuffers(ID3D11Device* device) {
 
     HRESULT hr = device->CreateBuffer(&vertexBufferDesc, &vertexData, vertexBuffer.GetAddressOf());
     if (FAILED(hr)) {
-        return false;
+        throw std::runtime_error("Failed to create vertex buffer");
     }
 
     D3D11_BUFFER_DESC indexBufferDesc = {};
@@ -58,10 +39,8 @@ bool Mesh::InitializeBuffers(ID3D11Device* device) {
 
     hr = device->CreateBuffer(&indexBufferDesc, &indexData, indexBuffer.GetAddressOf());
     if (FAILED(hr)) {
-        return false;
+        throw std::runtime_error("Failed to create index buffer");
     }
-
-    return true;
 }
 
 void Mesh::Render(ID3D11DeviceContext* context) {

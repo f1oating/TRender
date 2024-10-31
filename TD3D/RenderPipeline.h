@@ -5,20 +5,30 @@
 #include <vector>
 
 #include "RenderCommand.h"
-#include "TRenderDevice.h"
 
 class RenderPipeline {
+protected:
+    RenderPipeline();
+    static RenderPipeline m_RenderPipeline;
+
 public:
-    RenderPipeline(TRenderDevice* renderDevice);
 
     void AddRenderCommand(std::shared_ptr<RenderCommand> command);
     void Execute(ID3D11DeviceContext* context);
 
     void ClearPipeline();
 
+    static RenderPipeline* GetRenderPipeline();
+
 private:
     std::vector<std::shared_ptr<RenderCommand>> renderCommands;
-    TRenderDevice* renderDevice;
+
 };
+
+extern "C"
+{
+    RenderPipeline* GetRenderPipeline();
+    typedef RenderPipeline* (*GetRenderPipelineFunc)();
+}
 
 #endif // RENDERPIPELINE_H

@@ -86,15 +86,15 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NOMINMAX</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>../TRenderer;Include;C:\Program Files %28x86%29\Windows Kits\10\Include\10.0.19041.0\um;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Development\Assimp\include;../TRenderer;Include;C:\Program Files %28x86%29\Windows Kits\10\Include\10.0.19041.0\um;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>Lib\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>T3DMath.lib;d3d11.lib;dxgi.lib;dxguid.lib;d3dcompiler.lib;TLogManager.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>T3DMath.lib;d3d11.lib;dxgi.lib;dxguid.lib;d3dcompiler.lib;assimp-vc143-mt;%(AdditionalDependencies)</AdditionalDependencies>
       <ModuleDefinitionFile>TD3D.def</ModuleDefinitionFile>
     </Link>
   </ItemDefinitionGroup>
@@ -121,15 +121,15 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NOMINMAX</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>../TRenderer;Include;C:\Program Files %28x86%29\Windows Kits\10\Include\10.0.19041.0\um;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Development\Assimp\include;../TRenderer;Include;C:\Program Files %28x86%29\Windows Kits\10\Include\10.0.19041.0\um;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>Lib\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>T3DMath.lib;d3d11.lib;dxgi.lib;dxguid.lib;d3dcompiler.lib;TLogManager.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>T3DMath.lib;d3d11.lib;dxgi.lib;dxguid.lib;d3dcompiler.lib;assimp-vc143-mt;%(AdditionalDependencies)</AdditionalDependencies>
       <ModuleDefinitionFile>TD3D.def</ModuleDefinitionFile>
     </Link>
   </ItemDefinitionGroup>
@@ -153,16 +153,28 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="T.h" />
-    <ClInclude Include="TD3D.h" />
-    <ClInclude Include="TD3D_MACROS.h" />
-    <ClInclude Include="TMesh.h" />
+    <ClInclude Include="Camera.h" />
+    <ClInclude Include="Mesh.h" />
+    <ClInclude Include="Model.h" />
+    <ClInclude Include="RenderCommand.h" />
+    <ClInclude Include="RenderPipeline.h" />
+    <ClInclude Include="SceneManager.h" />
+    <ClInclude Include="SceneObject.h" />
+    <ClInclude Include="Shader.h" />
+    <ClInclude Include="ShaderManager.h" />
+    <ClInclude Include="TRenderDevice.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Mesh.cpp" />
-    <ClCompile Include="t_init.cpp" />
-    <ClCompile Include="t_main.cpp" />
-    <ClCompile Include="t_util.cpp" />
+    <ClCompile Include="Model.cpp" />
+    <ClCompile Include="RenderCommand.cpp" />
+    <ClCompile Include="RenderPipeline.cpp" />
+    <ClCompile Include="SceneManager.cpp" />
+    <ClCompile Include="SceneObject.cpp" />
+    <ClCompile Include="Shader.cpp" />
+    <ClCompile Include="ShaderManager.cpp" />
+    <ClCompile Include="TRenderDevice.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="TD3D.def" />

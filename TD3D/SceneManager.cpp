@@ -2,6 +2,8 @@
 #include "SceneObject.h"
 #include "Camera.h"
 
+SceneManager SceneManager::m_SceneManager;
+
 SceneManager::SceneManager() : activeCamera(nullptr) {}
 
 void SceneManager::SetActiveCamera(std::shared_ptr<Camera> camera) {
@@ -26,4 +28,14 @@ void SceneManager::Render(ID3D11DeviceContext* context) {
     for (auto& object : rootObjects) {
         object->Render(context);
     }
+}
+
+SceneManager* SceneManager::GetSceneManager()
+{
+    return &m_SceneManager;
+}
+
+SceneManager* GetSceneManager()
+{
+    return SceneManager::GetSceneManager();
 }
