@@ -42,16 +42,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int nCmdShow) {
 
     ShowWindow(hwnd, nCmdShow);
 
-    // Create a renderer
-    TRenderer renderer(hInstance);
-
-    TRenderDevice* renderDevice = renderer.GetRenderDevice();
-
-    renderDevice->Initialize(hwnd, 800, 600);
-
-    ShaderManager* shaderManager = renderer.GetShaderManager();
-    RenderPipeline* renderPipeline = renderer.GetRenderPipeline();
-    SceneManager* sceneManager = renderer.GetSceneManager();
+    
 
     // Main message loop
     MSG msg = {};
@@ -62,9 +53,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int nCmdShow) {
             DispatchMessage(&msg);
         }
         else {
-            renderDevice->BeginFrame(0.1f, 0.1f, 0.1f, 0.1f);
-
-            renderDevice->EndFrame();
         }
     }
 

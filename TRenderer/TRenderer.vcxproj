@@ -145,6 +145,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="TRenderDevice.h" />
     <ClInclude Include="TRenderer.h" />
   </ItemGroup>
   <ItemGroup>

@@ -153,30 +153,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="Camera.h" />
-    <ClInclude Include="Mesh.h" />
-    <ClInclude Include="Model.h" />
-    <ClInclude Include="RenderCommand.h" />
-    <ClInclude Include="RenderPipeline.h" />
-    <ClInclude Include="SceneManager.h" />
-    <ClInclude Include="SceneObject.h" />
-    <ClInclude Include="Shader.h" />
-    <ClInclude Include="ShaderManager.h" />
-    <ClInclude Include="TRenderDevice.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="Camera.cpp" />
-    <ClCompile Include="Mesh.cpp" />
-    <ClCompile Include="Model.cpp" />
-    <ClCompile Include="RenderCommand.cpp" />
-    <ClCompile Include="RenderPipeline.cpp" />
-    <ClCompile Include="SceneManager.cpp" />
-    <ClCompile Include="SceneObject.cpp" />
-    <ClCompile Include="Shader.cpp" />
-    <ClCompile Include="ShaderManager.cpp" />
-    <ClCompile Include="TRenderDevice.cpp" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="TD3D.def" />
   </ItemGroup>
   <ItemGroup>
@@ -192,6 +168,13 @@
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(ProjectDir)%(Filename).cso</ObjectFileOutput>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ProjectDir)%(Filename).cso</ObjectFileOutput>
     </FxCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="T.h" />
+    <ClInclude Include="TDXRenderDevice.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="TDXRenderDevice.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
