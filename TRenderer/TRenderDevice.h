@@ -7,17 +7,19 @@
 class TRenderDevice
 {
 public:
-	virtual bool Initizialize(HWND hWnd, int width, int height);
+	virtual ~TRenderDevice() {};
 
-	virtual void BeginFrame(float r, float g, float b, float a);
-	virtual void EndFrame();
+	virtual bool Initizialize(HWND hWnd, int width, int height) = 0;
 
-	virtual void Draw(TVertex3* vertices, unsigned short numVertices);
-	virtual void DrawIndexed(TVertex3* vertices, unsigned short numVertices, unsigned short* indices, unsigned short numIndices);
+	virtual void BeginFrame(float r, float g, float b, float a) = 0;
+	virtual void EndFrame() = 0;
 
-	virtual void SetProjectionMatrix(float width, float height, float farZ, float nearZ);
+	virtual void Draw(TVertexColor* vertices, unsigned short numVertices) = 0;
+	virtual void DrawIndexed(TVertexColor* vertices, unsigned short numVertices, unsigned short* indices, unsigned short numIndices) = 0;
 
-	virtual bool OnResize(int width, int height);
+	virtual void SetProjectionMatrix(float width, float height, float farZ, float nearZ) = 0;
+
+	virtual bool OnResize(int width, int height) = 0;
 
 protected:
 	HWND hWnd;

@@ -1,11 +1,21 @@
 #ifndef T_H
 #define T_H
 
-struct TVertex3
+struct TVertexColor
 {
-	float x;
-	float y;
-	float z;
+	struct
+	{
+		float x;
+		float y;
+		float z;
+	} pos;
+	struct
+	{
+		float r;
+		float g;
+		float b;
+		float a;
+	} color;
 };
 
 #endif

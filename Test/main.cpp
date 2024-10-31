@@ -42,7 +42,35 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int nCmdShow) {
 
     ShowWindow(hwnd, nCmdShow);
 
-    
+    // Create a renderer
+    TRenderer renderer(hInstance);
+
+    // Create the rendering device
+    HRESULT hr = renderer.CreateDevice("Direct3D");
+    if (FAILED(hr)) {
+        MessageBox(NULL, L"Failed to create renderer device.", L"Error", MB_OK | MB_ICONERROR);
+        return -1;
+    }
+
+    TRenderDevice* renderDevice = renderer.GetDevice();
+
+    renderDevice->Initizialize(hwnd, 800, 600);
+
+    TVertexColor vertices[] = {
+    {{0.0f, 0.5f, 0.0f}, {1.0f, 0.0f, 0.0f, 1.0f}},
+    {{ 0.5f, -0.5f, 0.0f}, {0.0f, 1.0f, 0.0f, 1.0f}},
+    {{-0.5f,  -0.5f, 0.0f}, {0.0f, 0.0f, 1.0f, 1.0f}},
+    {{ -0.3f,  0.3f, 0.0f}, {1.0f, 1.0f, 0.0f, 1.0f}},
+    {{0.3f, 0.3f,  0.0f}, {1.0f, 0.0f, 1.0f, 1.0f}},
+    {{ 0.0f, -0.8f,  0.0f}, {0.0f, 1.0f, 1.0f, 1.0f}},
+    };
+
+    unsigned short indices[] = {
+        0,1,2,
+        0,2,3,
+        0,4,1,
+        2,1,5
+    };
 
     // Main message loop
     MSG msg = {};
@@ -53,6 +81,11 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int nCmdShow) {
             DispatchMessage(&msg);
         }
         else {
+            renderDevice->BeginFrame(0.1f, 0.1f, 0.1f, 1.0f);
+
+            renderDevice->DrawIndexed(vertices, sizeof(vertices) / sizeof(TVertexColor), indices, sizeof(indices) / sizeof(unsigned short));
+
+            renderDevice->EndFrame();
         }
     }
 

@@ -1,6 +1,7 @@
 #include "TDXRenderDevice.h"
 
 #include <stdexcept>
+#include <d3dcompiler.h>
 
 TDXRenderDevice::TDXRenderDevice() :
 	m_pDevice(nullptr),
@@ -43,6 +44,45 @@ bool TDXRenderDevice::Initizialize(HWND hwnd, int width, int height)
 
     OnResize(width, height);
 
+    D3DReadFileToBlob(L"..\\TD3D\\PixelShader.cso", &m_pBlob);
+    hr = m_pDevice->CreatePixelShader(m_pBlob->GetBufferPointer(), m_pBlob->GetBufferSize(), nullptr, &m_pPixelShader);
+
+    if (FAILED(hr)) {
+        throw std::runtime_error("Failed to create PixelShader.");
+    }
+
+    // bind pixel shader
+    m_pDeviceContext->PSSetShader(m_pPixelShader.Get(), nullptr, 0u);
+
+    // create vertex shader
+    D3DReadFileToBlob(L"..\\TD3D\\VertexShader.cso", &m_pBlob);
+    hr = m_pDevice->CreateVertexShader(m_pBlob->GetBufferPointer(), m_pBlob->GetBufferSize(), nullptr, &m_pVertexShader);
+
+    if (FAILED(hr)) {
+        throw std::runtime_error("Failed to create VertexShader.");
+    }
+
+    // bind vertex shader
+    m_pDeviceContext->VSSetShader(m_pVertexShader.Get(), nullptr, 0u);
+
+    const D3D11_INPUT_ELEMENT_DESC ied[] =
+    {
+            { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+            { "COLOR", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 12u, D3D11_INPUT_PER_VERTEX_DATA, 0 }
+    };
+    hr = m_pDevice->CreateInputLayout(
+        ied, (UINT)std::size(ied),
+        m_pBlob->GetBufferPointer(),
+        m_pBlob->GetBufferSize(),
+        &m_pInputLayout
+    );
+
+    if (FAILED(hr)) {
+        throw std::runtime_error("Failed to create InputLayout.");
+    }
+
+    m_pDeviceContext->IASetInputLayout(m_pInputLayout.Get());
+
     return true;
 }
 
@@ -56,6 +96,54 @@ void TDXRenderDevice::EndFrame() {
     m_pSwapChain->Present(1, 0);
 }
 
+void TDXRenderDevice::Draw(TVertexColor* vertices, unsigned short numVertices)
+{
+    
+}
+
+void TDXRenderDevice::DrawIndexed(TVertexColor* vertices, unsigned short numVertices, unsigned short* indices, unsigned short numIndices)
+{
+    Microsoft::WRL::ComPtr<ID3D11Buffer> vertexBuffer;
+    D3D11_BUFFER_DESC bd = {};
+    bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+    bd.Usage = D3D11_USAGE_DEFAULT;
+    bd.CPUAccessFlags = 0u;
+    bd.MiscFlags = 0u;
+    bd.ByteWidth = numVertices * sizeof(TVertexColor);
+    bd.StructureByteStride = sizeof(TVertexColor);
+
+    D3D11_SUBRESOURCE_DATA sd = {};
+    sd.pSysMem = vertices;
+    m_pDevice->CreateBuffer(&bd, &sd, &vertexBuffer);
+
+    Microsoft::WRL::ComPtr<ID3D11Buffer> indexBuffer;
+    D3D11_BUFFER_DESC ibd = {};
+    ibd.BindFlags = D3D11_BIND_INDEX_BUFFER;
+    ibd.Usage = D3D11_USAGE_DEFAULT;
+    ibd.CPUAccessFlags = 0u;
+    ibd.MiscFlags = 0u;
+    ibd.ByteWidth = numIndices * sizeof(unsigned short);
+    ibd.StructureByteStride = sizeof(unsigned short);
+    D3D11_SUBRESOURCE_DATA isd = {};
+    isd.pSysMem = indices;
+    m_pDevice->CreateBuffer(&ibd, &isd, &indexBuffer);
+
+    const UINT stride = sizeof(TVertexColor);
+    const UINT offset = 0u;
+
+    m_pDeviceContext->IASetVertexBuffers(0, 1u, vertexBuffer.GetAddressOf(), &stride, &offset);
+    m_pDeviceContext->IASetIndexBuffer(indexBuffer.Get(), DXGI_FORMAT_R16_UINT, 0u);
+
+    m_pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+    m_pDeviceContext->DrawIndexed(numIndices, 0, 0);
+}
+
+void TDXRenderDevice::SetProjectionMatrix(float width, float height, float farZ, float nearZ)
+{
+
+}
+
 bool TDXRenderDevice::OnResize(int width, int height)
 {
     HRESULT hr = m_pSwapChain->ResizeBuffers(1, width, height, DXGI_FORMAT_R8G8B8A8_UNORM, 0);
@@ -64,7 +152,7 @@ bool TDXRenderDevice::OnResize(int width, int height)
     }
 
     Microsoft::WRL::ComPtr<ID3D11Texture2D> backBuffer;
-    hr = m_pSwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), reinterpret_cast<void**>(backBuffer.GetAddressOf()));
+    hr = m_pSwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (&backBuffer));
     if (FAILED(hr)) {
         throw std::runtime_error("Failed to get back buffer.");
     }
@@ -84,12 +172,12 @@ bool TDXRenderDevice::OnResize(int width, int height)
     depthStencilDesc.Usage = D3D11_USAGE_DEFAULT;
     depthStencilDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
 
-    hr = m_pDevice->CreateTexture2D(&depthStencilDesc, nullptr, m_pDepthStencilBuffer.GetAddressOf());
+    hr = m_pDevice->CreateTexture2D(&depthStencilDesc, nullptr, &m_pDepthStencilBuffer);
     if (FAILED(hr)) {
         throw std::runtime_error("Failed to create depth stencil buffer.");
     }
 
-    hr = m_pDevice->CreateDepthStencilView(m_pDepthStencilBuffer.Get(), nullptr, m_pDepthStencilView.GetAddressOf());
+    hr = m_pDevice->CreateDepthStencilView(m_pDepthStencilBuffer.Get(), nullptr, &m_pDepthStencilView);
     if (FAILED(hr)) {
         throw std::runtime_error("Failed to create depth stencil view.");
     }
@@ -107,4 +195,21 @@ bool TDXRenderDevice::OnResize(int width, int height)
     m_pDeviceContext->RSSetViewports(1, &viewport);
 
     return true;
+}
+
+HRESULT CreateRenderDevice(TDXRenderDevice** pDevice) {
+    if (!*pDevice) {
+        *pDevice = new TDXRenderDevice();
+        return S_OK;
+    }
+    return 0x82000001;
+}
+
+HRESULT ReleaseRenderDevice(TDXRenderDevice** pDevice) {
+    if (!*pDevice) {
+        return 0x82000001;
+    }
+    delete* pDevice;
+    *pDevice = nullptr;
+    return S_OK;
 }

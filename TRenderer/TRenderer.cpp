@@ -25,9 +25,7 @@ HRESULT TRenderer::CreateDevice(const char* chAPI) {
         }
     }
     else {
-        _snprintf(buffer, 300, "API '%s' not yet supported.", chAPI);
-        MessageBoxA(NULL, buffer, "TEngine - error", MB_OK |
-            MB_ICONERROR);
+
         return E_FAIL;
     }
 
