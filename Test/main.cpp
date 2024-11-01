@@ -1,11 +1,15 @@
 #include <windows.h>
 #include "TRenderer.h"
 
+TRenderDevice* renderDevice;
+
 LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
     switch (uMsg) {
     case WM_DESTROY:
         PostQuitMessage(0);
         return 0;
+    case WM_SIZE:
+        if (renderDevice) renderDevice->OnResize(LOWORD(lParam), HIWORD(lParam));
     case WM_PAINT:
         break;
     }
@@ -52,7 +56,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int nCmdShow) {
         return -1;
     }
 
-    TRenderDevice* renderDevice = renderer.GetDevice();
+    renderDevice = renderer.GetDevice();
 
     renderDevice->Initizialize(hwnd, 800, 600);
 

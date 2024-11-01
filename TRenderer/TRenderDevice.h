@@ -20,9 +20,11 @@ public:
 	virtual void SetProjectionMatrix(float width, float height, float farZ, float nearZ) = 0;
 
 	virtual bool OnResize(int width, int height) = 0;
+	virtual bool IsRunning() = 0;
 
 protected:
 	HWND hWnd;
+	bool isRunning;
 
 };
 
