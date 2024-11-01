@@ -19,7 +19,7 @@ public:
 
 private:
 	std::unordered_map<std::string, TMesh*> m_MeshesMap;
-	TDXRenderDevice* tdxRenderDevice;
+	TDXRenderDevice* m_TDXRenderDevice;
 
 };
 

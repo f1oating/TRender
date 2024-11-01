@@ -13,6 +13,12 @@ TDXRenderDevice::TDXRenderDevice() :
 	m_pDepthStencilBuffer(nullptr)
 {
     m_TMeshManager = new TDXMeshManager(this);
+
+    DirectX::XMVECTOR eye = DirectX::XMVectorSet(0.0f, 0.0f, -5.0f, 1.0f);
+    DirectX::XMVECTOR at = DirectX::XMVectorSet(0.0f, 0.0f, 0.0f, 1.0f);
+    DirectX::XMVECTOR up = DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
+    m_ViewMatrix = DirectX::XMMatrixLookAtLH(eye, at, up);
+    m_ProjMatrix = DirectX::XMMatrixIdentity();
 }
 
 bool TDXRenderDevice::Initizialize(HWND hwnd, int width, int height)
@@ -163,9 +169,17 @@ void TDXRenderDevice::Draw(TVertexColor* vertices, unsigned short numVertices, u
     m_pDeviceContext->DrawIndexed(numIndices, 0, 0);
 }
 
-void TDXRenderDevice::SetProjectionMatrix(float width, float height, float farZ, float nearZ)
+void TDXRenderDevice::SetProjectionMatrix(float fieldOfView, float aspectRatio, float nearZ, float farZ)
 {
+    m_ProjMatrix = DirectX::XMMatrixPerspectiveFovLH(fieldOfView, aspectRatio, nearZ, farZ);
+}
 
+void TDXRenderDevice::SetViewMatrix(TVector4 eye, TVector4 at, TVector4 up)
+{
+    DirectX::XMVECTOR deye = DirectX::XMVectorSet(eye.x, eye.y, eye.z, eye.w);
+    DirectX::XMVECTOR dat = DirectX::XMVectorSet(at.x, at.y, at.z, at.w);
+    DirectX::XMVECTOR dup = DirectX::XMVectorSet(up.x, up.y, up.z, up.w);
+    m_ViewMatrix = DirectX::XMMatrixLookAtLH(deye, dat, dup);
 }
 
 TMeshManager* TDXRenderDevice::GetMeshManager()
@@ -178,6 +192,12 @@ bool TDXRenderDevice::OnResize(int width, int height)
     m_pRenderTargetView.Reset();
     m_pDepthStencilBuffer.Reset();
     m_pDepthStencilView.Reset();
+
+    float fieldOfView = DirectX::XM_PIDIV4;
+    float aspectRatio = width / height;
+    float nearZ = 0.1f;
+    float farZ = 100.0f;
+    m_ProjMatrix = DirectX::XMMatrixPerspectiveFovLH(fieldOfView, aspectRatio, nearZ, farZ);
 
     HRESULT hr = m_pSwapChain->ResizeBuffers(1, width, height, DXGI_FORMAT_R8G8B8A8_UNORM, 0);
     if (FAILED(hr)) {

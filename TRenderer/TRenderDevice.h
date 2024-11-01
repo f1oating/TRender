@@ -19,7 +19,8 @@ public:
 	virtual void Draw(TVertexColor* vertices, unsigned short numVertices) = 0;
 	virtual void Draw(TVertexColor* vertices, unsigned short numVertices, unsigned short* indices, unsigned short numIndices) = 0;
 
-	virtual void SetProjectionMatrix(float width, float height, float farZ, float nearZ) = 0;
+	virtual void SetProjectionMatrix(float fieldOfView, float aspectRatio, float nearZ, float farZ) = 0;
+	virtual void SetViewMatrix(TVector4 eye, TVector4 at, TVector4 up) = 0;
 
 	virtual TMeshManager* GetMeshManager() = 0;
 

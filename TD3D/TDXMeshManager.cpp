@@ -3,7 +3,7 @@
 
 TDXMeshManager::TDXMeshManager(TDXRenderDevice* tdxRenderDevice)
 {
-	this->tdxRenderDevice = tdxRenderDevice;
+	m_TDXRenderDevice = tdxRenderDevice;
 }
 
 TMesh* TDXMeshManager::AddMesh(TVertexColor* vertices, unsigned short numVertices, std::string key)
@@ -15,7 +15,7 @@ TMesh* TDXMeshManager::AddMesh(TVertexColor* vertices, unsigned short numVertice
 	else
 	{
 		TMesh* mesh = new TDXMesh();
-		mesh->CreateBuffers(vertices, numVertices, tdxRenderDevice);
+		mesh->CreateBuffers(vertices, numVertices, m_TDXRenderDevice);
 		m_MeshesMap[key] = mesh;
 		return mesh;
 	}
@@ -30,7 +30,7 @@ TMesh* TDXMeshManager::AddMesh(TVertexColor* vertices, unsigned short numVertice
 	else
 	{
 		TMesh* mesh = new TDXMesh();
-		mesh->CreateBuffers(vertices, numVertices, indices, numIndices, tdxRenderDevice);
+		mesh->CreateBuffers(vertices, numVertices, indices, numIndices, m_TDXRenderDevice);
 		m_MeshesMap[key] = mesh;
 		return mesh;
 	}

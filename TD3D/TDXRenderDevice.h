@@ -4,6 +4,7 @@
 #include "TRenderDevice.h"
 #include "TMeshManager.h"
 #include <d3d11.h>
+#include <DirectXMath.h>
 #include <wrl/client.h>
 
 class TDXRenderDevice : public TRenderDevice
@@ -21,7 +22,8 @@ public:
 	virtual void Draw(TVertexColor* vertices, unsigned short numVertices) override;
 	virtual void Draw(TVertexColor* vertices, unsigned short numVertices, unsigned short* indices, unsigned short numIndices) override;
 
-	virtual void SetProjectionMatrix(float width, float height, float farZ, float nearZ) override;
+	virtual void SetProjectionMatrix(float fieldOfView, float aspectRatio, float nearZ, float farZ) override;
+	virtual void SetViewMatrix(TVector4 eye, TVector4 at, TVector4 up) override;
 
 	virtual TMeshManager* GetMeshManager() override;
 
@@ -40,6 +42,9 @@ private:
 	Microsoft::WRL::ComPtr <ID3D11PixelShader> m_pPixelShader;
 	Microsoft::WRL::ComPtr <ID3DBlob> m_pBlob;
 	Microsoft::WRL::ComPtr <ID3D11InputLayout> m_pInputLayout;
+
+	DirectX::XMMATRIX m_ProjMatrix;
+	DirectX::XMMATRIX m_ViewMatrix;
 
 	TMeshManager* m_TMeshManager;
 
