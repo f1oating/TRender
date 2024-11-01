@@ -83,6 +83,8 @@ bool TDXRenderDevice::Initizialize(HWND hwnd, int width, int height)
 
     m_pDeviceContext->IASetInputLayout(m_pInputLayout.Get());
 
+    isRunning = true;
+
     return true;
 }
 
@@ -166,6 +168,10 @@ void TDXRenderDevice::SetProjectionMatrix(float width, float height, float farZ,
 
 bool TDXRenderDevice::OnResize(int width, int height)
 {
+    m_pRenderTargetView.Reset();
+    m_pDepthStencilBuffer.Reset();
+    m_pDepthStencilView.Reset();
+
     HRESULT hr = m_pSwapChain->ResizeBuffers(1, width, height, DXGI_FORMAT_R8G8B8A8_UNORM, 0);
     if (FAILED(hr)) {
         throw std::runtime_error("Failed to resize back buffer.");
@@ -215,6 +221,11 @@ bool TDXRenderDevice::OnResize(int width, int height)
     m_pDeviceContext->RSSetViewports(1, &viewport);
 
     return true;
+}
+
+bool TDXRenderDevice::IsRunning()
+{
+    return isRunning;
 }
 
 HRESULT CreateRenderDevice(TDXRenderDevice** pDevice) {

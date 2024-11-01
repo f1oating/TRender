@@ -21,6 +21,7 @@ public:
 	virtual void SetProjectionMatrix(float width, float height, float farZ, float nearZ) override;
 
 	virtual bool OnResize(int width, int height) override;
+	virtual bool IsRunning() override;
 
 private:
 	Microsoft::WRL::ComPtr<ID3D11Device> m_pDevice;
