@@ -83,7 +83,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int nCmdShow) {
         else {
             renderDevice->BeginFrame(0.1f, 0.1f, 0.1f, 1.0f);
 
-            renderDevice->DrawIndexed(vertices, sizeof(vertices) / sizeof(TVertexColor), indices, sizeof(indices) / sizeof(unsigned short));
+            renderDevice->Draw(vertices, sizeof(vertices) / sizeof(TVertexColor), indices, sizeof(indices) / sizeof(unsigned short));
 
             renderDevice->EndFrame();
         }

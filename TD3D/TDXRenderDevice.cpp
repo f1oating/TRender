@@ -98,10 +98,30 @@ void TDXRenderDevice::EndFrame() {
 
 void TDXRenderDevice::Draw(TVertexColor* vertices, unsigned short numVertices)
 {
-    
+    Microsoft::WRL::ComPtr<ID3D11Buffer> vertexBuffer;
+    D3D11_BUFFER_DESC bd = {};
+    bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+    bd.Usage = D3D11_USAGE_DEFAULT;
+    bd.CPUAccessFlags = 0u;
+    bd.MiscFlags = 0u;
+    bd.ByteWidth = numVertices * sizeof(TVertexColor);
+    bd.StructureByteStride = sizeof(TVertexColor);
+
+    D3D11_SUBRESOURCE_DATA sd = {};
+    sd.pSysMem = vertices;
+    m_pDevice->CreateBuffer(&bd, &sd, &vertexBuffer);
+
+    const UINT stride = sizeof(TVertexColor);
+    const UINT offset = 0u;
+
+    m_pDeviceContext->IASetVertexBuffers(0, 1u, vertexBuffer.GetAddressOf(), &stride, &offset);
+
+    m_pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+    m_pDeviceContext->Draw(numVertices, 0);
 }
 
-void TDXRenderDevice::DrawIndexed(TVertexColor* vertices, unsigned short numVertices, unsigned short* indices, unsigned short numIndices)
+void TDXRenderDevice::Draw(TVertexColor* vertices, unsigned short numVertices, unsigned short* indices, unsigned short numIndices)
 {
     Microsoft::WRL::ComPtr<ID3D11Buffer> vertexBuffer;
     D3D11_BUFFER_DESC bd = {};

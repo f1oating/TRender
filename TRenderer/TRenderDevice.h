@@ -15,7 +15,7 @@ public:
 	virtual void EndFrame() = 0;
 
 	virtual void Draw(TVertexColor* vertices, unsigned short numVertices) = 0;
-	virtual void DrawIndexed(TVertexColor* vertices, unsigned short numVertices, unsigned short* indices, unsigned short numIndices) = 0;
+	virtual void Draw(TVertexColor* vertices, unsigned short numVertices, unsigned short* indices, unsigned short numIndices) = 0;
 
 	virtual void SetProjectionMatrix(float width, float height, float farZ, float nearZ) = 0;
 

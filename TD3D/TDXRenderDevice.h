@@ -16,7 +16,7 @@ public:
 	virtual void EndFrame() override;
 
 	virtual void Draw(TVertexColor* vertices, unsigned short numVertices) override;
-	virtual void DrawIndexed(TVertexColor* vertices, unsigned short numVertices, unsigned short* indices, unsigned short numIndices) override;
+	virtual void Draw(TVertexColor* vertices, unsigned short numVertices, unsigned short* indices, unsigned short numIndices) override;
 
 	virtual void SetProjectionMatrix(float width, float height, float farZ, float nearZ) override;
 
