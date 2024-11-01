@@ -1,5 +1,6 @@
 #include "TDXRenderDevice.h"
 
+#include "TDXMeshManager.h"
 #include <stdexcept>
 #include <d3dcompiler.h>
 
@@ -11,6 +12,7 @@ TDXRenderDevice::TDXRenderDevice() :
 	m_pDepthStencilView(nullptr),
 	m_pDepthStencilBuffer(nullptr)
 {
+    m_TMeshManager = new TDXMeshManager(this);
 }
 
 bool TDXRenderDevice::Initizialize(HWND hwnd, int width, int height)
@@ -83,7 +85,7 @@ bool TDXRenderDevice::Initizialize(HWND hwnd, int width, int height)
 
     m_pDeviceContext->IASetInputLayout(m_pInputLayout.Get());
 
-    isRunning = true;
+    m_IsRunning = true;
 
     return true;
 }
@@ -166,6 +168,11 @@ void TDXRenderDevice::SetProjectionMatrix(float width, float height, float farZ,
 
 }
 
+TMeshManager* TDXRenderDevice::GetMeshManager()
+{
+    return m_TMeshManager;
+}
+
 bool TDXRenderDevice::OnResize(int width, int height)
 {
     m_pRenderTargetView.Reset();
@@ -225,7 +232,7 @@ bool TDXRenderDevice::OnResize(int width, int height)
 
 bool TDXRenderDevice::IsRunning()
 {
-    return isRunning;
+    return m_IsRunning;
 }
 
 HRESULT CreateRenderDevice(TDXRenderDevice** pDevice) {

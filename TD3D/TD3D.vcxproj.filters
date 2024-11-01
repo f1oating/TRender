@@ -30,9 +30,21 @@
     <ClInclude Include="TDXRenderDevice.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="TDXMesh.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="TDXMeshManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="TDXRenderDevice.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="TDXMeshManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="TDXMesh.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

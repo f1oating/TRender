@@ -1,5 +1,6 @@
 #include <windows.h>
 #include "TRenderer.h"
+#include "TMeshManager.h"
 
 TRenderDevice* renderDevice;
 
@@ -76,6 +77,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int nCmdShow) {
         2,1,5
     };
 
+    TMeshManager* tMeshManager = renderDevice->GetMeshManager();
+    TMesh* mesh = tMeshManager->AddMesh(vertices, sizeof(vertices) / sizeof(TVertexColor), indices, sizeof(indices) / sizeof(unsigned short), "romb");
+
     // Main message loop
     MSG msg = {};
     while (msg.message != WM_QUIT) {
@@ -87,7 +91,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int nCmdShow) {
         else {
             renderDevice->BeginFrame(0.1f, 0.1f, 0.1f, 1.0f);
 
-            renderDevice->Draw(vertices, sizeof(vertices) / sizeof(TVertexColor), indices, sizeof(indices) / sizeof(unsigned short));
+            mesh->Render(renderDevice);
 
             renderDevice->EndFrame();
         }

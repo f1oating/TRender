@@ -4,6 +4,8 @@
 #include <windows.h>
 #include "T.h" 
 
+class TMeshManager;
+
 class TRenderDevice
 {
 public:
@@ -19,12 +21,13 @@ public:
 
 	virtual void SetProjectionMatrix(float width, float height, float farZ, float nearZ) = 0;
 
+	virtual TMeshManager* GetMeshManager() = 0;
+
 	virtual bool OnResize(int width, int height) = 0;
 	virtual bool IsRunning() = 0;
 
 protected:
-	HWND hWnd;
-	bool isRunning;
+	bool m_IsRunning;
 
 };
 

@@ -2,11 +2,14 @@
 #define TDXRENDERDEVICE_H
 
 #include "TRenderDevice.h"
+#include "TMeshManager.h"
 #include <d3d11.h>
 #include <wrl/client.h>
 
-class TDXRenderDevice : TRenderDevice
+class TDXRenderDevice : public TRenderDevice
 {
+friend class TDXMesh;
+friend class TDXMeshManager;
 public:
 	TDXRenderDevice();
 
@@ -19,6 +22,8 @@ public:
 	virtual void Draw(TVertexColor* vertices, unsigned short numVertices, unsigned short* indices, unsigned short numIndices) override;
 
 	virtual void SetProjectionMatrix(float width, float height, float farZ, float nearZ) override;
+
+	virtual TMeshManager* GetMeshManager() override;
 
 	virtual bool OnResize(int width, int height) override;
 	virtual bool IsRunning() override;
@@ -35,6 +40,8 @@ private:
 	Microsoft::WRL::ComPtr <ID3D11PixelShader> m_pPixelShader;
 	Microsoft::WRL::ComPtr <ID3DBlob> m_pBlob;
 	Microsoft::WRL::ComPtr <ID3D11InputLayout> m_pInputLayout;
+
+	TMeshManager* m_TMeshManager;
 
 };
 
