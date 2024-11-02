@@ -19,7 +19,7 @@ TMesh* TDXObjectManager::AddMesh(TVertexColor* vertices, unsigned short numVerti
 	}
 	else
 	{
-		TMesh* mesh = new TDXMesh();
+		TDXMesh* mesh = new TDXMesh();
 		mesh->CreateBuffers(vertices, numVertices, m_TDXRenderDevice);
 		m_MeshesMap[key] = mesh;
 		return mesh;
@@ -34,7 +34,7 @@ TMesh* TDXObjectManager::AddMesh(TVertexColor* vertices, unsigned short numVerti
 	}
 	else
 	{
-		TMesh* mesh = new TDXMesh();
+		TDXMesh* mesh = new TDXMesh();
 		mesh->CreateBuffers(vertices, numVertices, indices, numIndices, m_TDXRenderDevice);
 		m_MeshesMap[key] = mesh;
 		return mesh;

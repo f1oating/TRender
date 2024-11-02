@@ -11,10 +11,6 @@ class TMesh
 public:
 	virtual ~TMesh() {};
 
-	virtual void CreateBuffers(TVertexColor* vertices, unsigned short numVertices, TRenderDevice* tRenderDevice) = 0;
-	virtual void CreateBuffers(TVertexColor* vertices, unsigned short numVertices, unsigned short* indices, unsigned
-		short numIndices, TRenderDevice* tRenderDevice) = 0;
-
 	virtual void SetPosition(float x, float y, float z) = 0;
 
 	virtual void SetRotationX(float angle) = 0;

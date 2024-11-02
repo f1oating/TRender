@@ -16,9 +16,9 @@ class TDXMesh : public TMesh
 public:
 	TDXMesh();
 
-	virtual void CreateBuffers(TVertexColor* vertices, unsigned short numVertices, TRenderDevice* tRenderDevice) override;
-	virtual void CreateBuffers(TVertexColor* vertices, unsigned short numVertices, unsigned short* indices, unsigned
-		short numIndices, TRenderDevice* tRenderDevice) override;
+	void CreateBuffers(TVertexColor* vertices, unsigned short numVertices, TRenderDevice* tRenderDevice);
+	void CreateBuffers(TVertexColor* vertices, unsigned short numVertices, unsigned short* indices, unsigned
+		short numIndices, TRenderDevice* tRenderDevice);
 
 	virtual void SetPosition(float x, float y, float z) override;
 
