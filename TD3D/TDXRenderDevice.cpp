@@ -1,6 +1,6 @@
 #include "TDXRenderDevice.h"
 
-#include "TDXMeshManager.h"
+#include "TDXObjectManager.h"
 #include <stdexcept>
 #include <d3dcompiler.h>
 
@@ -12,13 +12,18 @@ TDXRenderDevice::TDXRenderDevice() :
 	m_pDepthStencilView(nullptr),
 	m_pDepthStencilBuffer(nullptr)
 {
-    m_TMeshManager = new TDXMeshManager(this);
+    m_TObjectManager = new TDXObjectManager(this);
 
     DirectX::XMVECTOR eye = DirectX::XMVectorSet(0.0f, 0.0f, -5.0f, 1.0f);
     DirectX::XMVECTOR at = DirectX::XMVectorSet(0.0f, 0.0f, 0.0f, 1.0f);
     DirectX::XMVECTOR up = DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
     m_ViewMatrix = DirectX::XMMatrixLookAtLH(eye, at, up);
     m_ProjMatrix = DirectX::XMMatrixIdentity();
+}
+
+TDXRenderDevice::~TDXRenderDevice()
+{
+    delete m_TObjectManager;
 }
 
 bool TDXRenderDevice::Initizialize(HWND hwnd, int width, int height)
@@ -182,9 +187,9 @@ void TDXRenderDevice::SetViewMatrix(TVector4 eye, TVector4 at, TVector4 up)
     m_ViewMatrix = DirectX::XMMatrixLookAtLH(deye, dat, dup);
 }
 
-TMeshManager* TDXRenderDevice::GetMeshManager()
+TObjectManager* TDXRenderDevice::GeTObjectManager()
 {
-    return m_TMeshManager;
+    return m_TObjectManager;
 }
 
 bool TDXRenderDevice::OnResize(int width, int height)

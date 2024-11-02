@@ -4,7 +4,7 @@
 #include <windows.h>
 #include "T.h" 
 
-class TMeshManager;
+class TObjectManager;
 
 class TRenderDevice
 {
@@ -22,7 +22,7 @@ public:
 	virtual void SetProjectionMatrix(float fieldOfView, float aspectRatio, float nearZ, float farZ) = 0;
 	virtual void SetViewMatrix(TVector4 eye, TVector4 at, TVector4 up) = 0;
 
-	virtual TMeshManager* GetMeshManager() = 0;
+	virtual TObjectManager* GeTObjectManager() = 0;
 
 	virtual bool OnResize(int width, int height) = 0;
 	virtual bool IsRunning() = 0;

@@ -1,6 +1,6 @@
 #include <windows.h>
 #include "TRenderer.h"
-#include "TMeshManager.h"
+#include "TObjectManager.h"
 
 TRenderDevice* renderDevice;
 
@@ -81,8 +81,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int nCmdShow) {
         0,1,4, 1,5,4
     };
 
-    TMeshManager* tMeshManager = renderDevice->GetMeshManager();
-    TMesh* mesh = tMeshManager->AddMesh(vertices, sizeof(vertices) / sizeof(TVertexColor), indices, sizeof(indices) / sizeof(unsigned short), "romb");
+    TObjectManager* TObjectManager = renderDevice->GeTObjectManager();
+    TMesh* mesh = TObjectManager->AddMesh(vertices, sizeof(vertices) / sizeof(TVertexColor), indices, sizeof(indices) / sizeof(unsigned short), "romb");
 
     renderDevice->SetViewMatrix({ 5.0f, 5.0f, -5.0f, 1.0f }, { 0.0f, 0.0f, 0.0f, 1.0f }, { 0.0f, 1.0f, 0.0f, 0.0f });
 

@@ -1,21 +1,22 @@
-#ifndef TDXMESHMANAGER_H
-#define TDXMESHMANAGER_H
+#ifndef TDXObjectManager_H
+#define TDXObjectManager_H
 
-#include "TMeshManager.h"
+#include "TObjectManager.h"
 #include "TDXRenderDevice.h"
 #include <unordered_map>
 
-class TDXMeshManager : public TMeshManager
+class TDXObjectManager : public TObjectManager
 {
 public:
-	TDXMeshManager(TDXRenderDevice* tdxRenderDevice);
+	TDXObjectManager(TDXRenderDevice* tdxRenderDevice);
+	~TDXObjectManager();
 
 	virtual TMesh* AddMesh(TVertexColor* vertices, unsigned short numVertices, std::string key) override;
 	virtual TMesh* AddMesh(TVertexColor* vertices, unsigned short numVertices, unsigned short* indices, unsigned short numIndices, std::string key) override;
 	virtual TMesh* GetMesh(std::string key) override;
 	virtual bool RemoveMesh(std::string key) override;
 
-	virtual void Flush() override;
+	virtual void FlushMeshes() override;
 
 private:
 	std::unordered_map<std::string, TMesh*> m_MeshesMap;

@@ -33,7 +33,7 @@
     <ClInclude Include="TDXMesh.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="TDXMeshManager.h">
+    <ClInclude Include="TDXObjectManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -41,7 +41,7 @@
     <ClCompile Include="TDXRenderDevice.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="TDXMeshManager.cpp">
+    <ClCompile Include="TDXObjectManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="TDXMesh.cpp">

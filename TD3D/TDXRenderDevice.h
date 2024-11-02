@@ -2,7 +2,7 @@
 #define TDXRENDERDEVICE_H
 
 #include "TRenderDevice.h"
-#include "TMeshManager.h"
+#include "TObjectManager.h"
 #include <d3d11.h>
 #include <DirectXMath.h>
 #include <wrl/client.h>
@@ -10,9 +10,10 @@
 class TDXRenderDevice : public TRenderDevice
 {
 friend class TDXMesh;
-friend class TDXMeshManager;
+friend class TDXObjectManager;
 public:
 	TDXRenderDevice();
+	~TDXRenderDevice();
 
 	virtual bool Initizialize(HWND hWnd, int width, int height) override;
 
@@ -25,7 +26,7 @@ public:
 	virtual void SetProjectionMatrix(float fieldOfView, float aspectRatio, float nearZ, float farZ) override;
 	virtual void SetViewMatrix(TVector4 eye, TVector4 at, TVector4 up) override;
 
-	virtual TMeshManager* GetMeshManager() override;
+	virtual TObjectManager* GeTObjectManager() override;
 
 	virtual bool OnResize(int width, int height) override;
 	virtual bool IsRunning() override;
@@ -46,7 +47,7 @@ private:
 	DirectX::XMMATRIX m_ProjMatrix;
 	DirectX::XMMATRIX m_ViewMatrix;
 
-	TMeshManager* m_TMeshManager;
+	TObjectManager* m_TObjectManager;
 
 };
 

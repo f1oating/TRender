@@ -146,7 +146,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="TMesh.h" />
-    <ClInclude Include="TMeshManager.h" />
+    <ClInclude Include="TObjectManager.h" />
     <ClInclude Include="TRenderDevice.h" />
     <ClInclude Include="TRenderer.h" />
   </ItemGroup>
