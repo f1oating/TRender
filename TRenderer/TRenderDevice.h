@@ -22,6 +22,8 @@ public:
 	virtual void SetProjectionMatrix(float fieldOfView, float aspectRatio, float nearZ, float farZ) = 0;
 	virtual void SetViewMatrix(TVector4 eye, TVector4 at, TVector4 up) = 0;
 
+	virtual void SetAmbientLight(float r, float g, float b, float a) = 0;
+
 	virtual TObjectManager* GeTObjectManager() = 0;
 
 	virtual bool OnResize(int width, int height) = 0;

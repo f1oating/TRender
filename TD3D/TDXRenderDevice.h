@@ -7,6 +7,11 @@
 #include <DirectXMath.h>
 #include <wrl/client.h>
 
+struct AmbientLightConstantBuffer
+{
+	DirectX::XMFLOAT4 ambientColor;
+};
+
 class TDXRenderDevice : public TRenderDevice
 {
 friend class TDXMesh;
@@ -26,6 +31,8 @@ public:
 	virtual void SetProjectionMatrix(float fieldOfView, float aspectRatio, float nearZ, float farZ) override;
 	virtual void SetViewMatrix(TVector4 eye, TVector4 at, TVector4 up) override;
 
+	virtual void SetAmbientLight(float r, float g, float b, float a) override;
+
 	virtual TObjectManager* GeTObjectManager() override;
 
 	virtual bool OnResize(int width, int height) override;
@@ -43,6 +50,8 @@ private:
 	Microsoft::WRL::ComPtr <ID3D11PixelShader> m_pPixelShader;
 	Microsoft::WRL::ComPtr <ID3DBlob> m_pBlob;
 	Microsoft::WRL::ComPtr <ID3D11InputLayout> m_pInputLayout;
+
+	Microsoft::WRL::ComPtr <ID3D11Buffer> m_pAmbientLightBuffer;
 
 	DirectX::XMMATRIX m_ProjMatrix;
 	DirectX::XMMATRIX m_ViewMatrix;

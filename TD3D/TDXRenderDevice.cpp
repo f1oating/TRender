@@ -96,6 +96,20 @@ bool TDXRenderDevice::Initizialize(HWND hwnd, int width, int height)
 
     m_pDeviceContext->IASetInputLayout(m_pInputLayout.Get());
 
+    D3D11_BUFFER_DESC ambientLightBufferDesc = {};
+    ambientLightBufferDesc.Usage = D3D11_USAGE_DEFAULT;
+    ambientLightBufferDesc.ByteWidth = sizeof(AmbientLightConstantBuffer);
+    ambientLightBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+    ambientLightBufferDesc.CPUAccessFlags = 0;
+    hr = m_pDevice->CreateBuffer(&ambientLightBufferDesc, nullptr, &m_pAmbientLightBuffer);
+    if (FAILED(hr)) {
+        throw std::runtime_error("Failed to create AmbientLightBuffer.");
+    }
+
+    AmbientLightConstantBuffer cb = { { 0.2f, 0.2f, 0.2f, 1.0f } };
+    m_pDeviceContext->UpdateSubresource(m_pAmbientLightBuffer.Get(), 0, nullptr, &cb, 0, 0);
+    m_pDeviceContext->PSSetConstantBuffers(0, 1, m_pAmbientLightBuffer.GetAddressOf());
+
     m_IsRunning = true;
 
     return true;
@@ -185,6 +199,13 @@ void TDXRenderDevice::SetViewMatrix(TVector4 eye, TVector4 at, TVector4 up)
     DirectX::XMVECTOR dat = DirectX::XMVectorSet(at.x, at.y, at.z, at.w);
     DirectX::XMVECTOR dup = DirectX::XMVectorSet(up.x, up.y, up.z, up.w);
     m_ViewMatrix = DirectX::XMMatrixLookAtLH(deye, dat, dup);
+}
+
+void TDXRenderDevice::SetAmbientLight(float r, float g, float b, float a)
+{
+    AmbientLightConstantBuffer cb = { { r, g, b, a } };
+    m_pDeviceContext->UpdateSubresource(m_pAmbientLightBuffer.Get(), 0, nullptr, &cb, 0, 0);
+    m_pDeviceContext->PSSetConstantBuffers(0, 1, m_pAmbientLightBuffer.GetAddressOf());
 }
 
 TObjectManager* TDXRenderDevice::GeTObjectManager()
