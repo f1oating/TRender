@@ -13,11 +13,12 @@ struct TConstantBuffer
 
 class TDXMesh : public TMesh
 {
-public:
+protected:
 	TDXMesh();
 
-	void CreateBuffers(TVertexColor* vertices, unsigned short numVertices, TRenderDevice* tRenderDevice);
-	void CreateBuffers(TVertexColor* vertices, unsigned short numVertices, unsigned short* indices, unsigned
+public:
+	TDXMesh(TVertexColor* vertices, unsigned short numVertices, TRenderDevice* tRenderDevice);
+	TDXMesh(TVertexColor* vertices, unsigned short numVertices, unsigned short* indices, unsigned
 		short numIndices, TRenderDevice* tRenderDevice);
 
 	virtual void SetPosition(float x, float y, float z) override;

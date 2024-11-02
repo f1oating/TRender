@@ -11,8 +11,10 @@ TDXMesh::TDXMesh() :
 {
 }
 
-void TDXMesh::CreateBuffers(TVertexColor* vertices, unsigned short numVertices, TRenderDevice* tRenderDevice)
+TDXMesh::TDXMesh(TVertexColor* vertices, unsigned short numVertices, TRenderDevice* tRenderDevice)
 {
+    TDXMesh();
+
     D3D11_BUFFER_DESC bd = {};
     bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
     bd.Usage = D3D11_USAGE_DEFAULT;
@@ -36,8 +38,10 @@ void TDXMesh::CreateBuffers(TVertexColor* vertices, unsigned short numVertices, 
     m_NumVertices = numVertices;
 }
 
-void TDXMesh::CreateBuffers(TVertexColor* vertices, unsigned short numVertices, unsigned short* indices, unsigned short numIndices, TRenderDevice* tRenderDevice)
+TDXMesh::TDXMesh(TVertexColor* vertices, unsigned short numVertices, unsigned short* indices, unsigned short numIndices, TRenderDevice* tRenderDevice)
 {
+    TDXMesh();
+
     D3D11_BUFFER_DESC bd = {};
     bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
     bd.Usage = D3D11_USAGE_DEFAULT;
