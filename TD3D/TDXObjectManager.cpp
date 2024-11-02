@@ -75,6 +75,11 @@ void TDXObjectManager::FlushMeshes()
 
 TPointLight* TDXObjectManager::AddPointLight(TVector3 position, TVector3 color, float range, float intencity, std::string key)
 {
+	if (m_PointLightsMap.size() > 7)
+	{
+		return nullptr;
+	}
+
 	if (m_PointLightsMap.find(key) != m_PointLightsMap.end())
 	{
 		return m_PointLightsMap[key];
