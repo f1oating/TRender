@@ -18,19 +18,19 @@ struct TVertexColor
 	} color;
 };
 
-struct TPosition
-{
-	float x;
-	float y;
-	float z;
-};
-
 struct TVector4
 {
 	float x;
 	float y;
 	float z;
 	float w;
+};
+
+struct TVector3
+{
+	float x;
+	float y;
+	float z;
 };
 
 #endif

@@ -36,7 +36,7 @@ private:
 	Microsoft::WRL::ComPtr<ID3D11Buffer> m_pIndexBuffer;
 	Microsoft::WRL::ComPtr<ID3D11Buffer> m_pConstantBuffer;
 
-	TPosition m_Pos;
+	TVector3 m_Pos;
 
 	float m_RotationX;
 	float m_RotationY;
