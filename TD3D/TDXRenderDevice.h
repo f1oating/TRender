@@ -56,7 +56,7 @@ private:
 	DirectX::XMMATRIX m_ProjMatrix;
 	DirectX::XMMATRIX m_ViewMatrix;
 
-	TObjectManager* m_TObjectManager;
+	TDXObjectManager* m_TDXObjectManager;
 
 };
 

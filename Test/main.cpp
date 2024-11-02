@@ -62,14 +62,14 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int nCmdShow) {
     renderDevice->Initizialize(hwnd, 800, 600);
 
     TVertexColor vertices[] = {
-    {{-1.0f,-1.0f,-1.0f}, {1.0f, 0.0f, 0.0f, 1.0f}},
-    {{1.0f,-1.0f,-1.0f}, {0.0f, 1.0f, 0.0f, 1.0f}},
-    {{-1.0f,1.0f,-1.0f}, {0.0f, 0.0f, 1.0f, 1.0f}},
-    {{1.0f,1.0f,-1.0f}, {1.0f, 1.0f, 0.0f, 1.0f}},
-    {{-1.0f,-1.0f,1.0f}, {1.0f, 0.0f, 1.0f, 1.0f}},
-    {{1.0f,-1.0f,1.0f}, {0.0f, 1.0f, 1.0f, 1.0f}},
-    {{-1.0f,1.0f,1.0f}, {0.0f, 1.0f, 1.0f, 1.0f}},
-    {{1.0f,1.0f,1.0f}, {0.0f, 1.0f, 1.0f, 1.0f}},
+        {{-1.0f,-1.0f,-1.0f}, {1.0f, 0.0f, 0.0f, 1.0f}, {-1.0f, 0.0f, 0.0f}},
+        {{1.0f,-1.0f,-1.0f}, {0.0f, 1.0f, 0.0f, 1.0f}, { 1.0f, 0.0f, 0.0f}},
+        {{-1.0f,1.0f,-1.0f}, {0.0f, 0.0f, 1.0f, 1.0f}, {-1.0f, 0.0f, 0.0f}},
+        {{1.0f,1.0f,-1.0f}, {1.0f, 1.0f, 0.0f, 1.0f}, { 1.0f, 0.0f, 0.0f}},
+        {{-1.0f,-1.0f,1.0f}, {1.0f, 0.0f, 1.0f, 1.0f}, {-1.0f, 0.0f, 0.0f}},
+        {{1.0f,-1.0f,1.0f}, {0.0f, 1.0f, 1.0f, 1.0f}, { 1.0f, 0.0f, 0.0f}},
+        {{-1.0f,1.0f,1.0f}, {0.0f, 1.0f, 1.0f, 1.0f}, {-1.0f, 0.0f, 0.0f}},
+        {{1.0f,1.0f,1.0f}, {0.0f, 1.0f, 1.0f, 1.0f}, { 1.0f, 0.0f, 0.0f}},
     };
 
     unsigned short indices[] = {
@@ -87,6 +87,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int nCmdShow) {
     mesh->SetPosition(0.2f, 1.5f, 1.0f);
 
     renderDevice->SetViewMatrix({ 5.0f, 5.0f, -5.0f, 1.0f }, { 0.0f, 0.0f, 0.0f, 1.0f }, { 0.0f, 1.0f, 0.0f, 0.0f });
+
+    TPointLight* light = TObjectManager->AddPointLight({ 0.5f, 1.0f, 1.0f }, { 1.0f, 0.8f, 0.6f }, 5.0f, 10.0f, "pointLight");
 
     // Main message loop
     MSG msg = {};

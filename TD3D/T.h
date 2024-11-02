@@ -16,6 +16,12 @@ struct TVertexColor
 		float b;
 		float a;
 	} color;
+	struct
+	{
+		float x;
+		float y;
+		float z;
+	} normal;
 };
 
 struct TVector4

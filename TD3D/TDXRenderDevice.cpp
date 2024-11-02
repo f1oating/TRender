@@ -12,7 +12,7 @@ TDXRenderDevice::TDXRenderDevice() :
 	m_pDepthStencilView(nullptr),
 	m_pDepthStencilBuffer(nullptr)
 {
-    m_TObjectManager = new TDXObjectManager(this);
+    m_TDXObjectManager = new TDXObjectManager(this);
 
     DirectX::XMVECTOR eye = DirectX::XMVectorSet(0.0f, 0.0f, -5.0f, 1.0f);
     DirectX::XMVECTOR at = DirectX::XMVectorSet(0.0f, 0.0f, 0.0f, 1.0f);
@@ -23,7 +23,7 @@ TDXRenderDevice::TDXRenderDevice() :
 
 TDXRenderDevice::~TDXRenderDevice()
 {
-    delete m_TObjectManager;
+    delete m_TDXObjectManager;
 }
 
 bool TDXRenderDevice::Initizialize(HWND hwnd, int width, int height)
@@ -81,7 +81,8 @@ bool TDXRenderDevice::Initizialize(HWND hwnd, int width, int height)
     const D3D11_INPUT_ELEMENT_DESC ied[] =
     {
             { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-            { "COLOR", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 12u, D3D11_INPUT_PER_VERTEX_DATA, 0 }
+            { "COLOR", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 12u, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+            { "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 28u, D3D11_INPUT_PER_VERTEX_DATA, 0 },
     };
     hr = m_pDevice->CreateInputLayout(
         ied, (UINT)std::size(ied),
@@ -110,6 +111,8 @@ bool TDXRenderDevice::Initizialize(HWND hwnd, int width, int height)
     m_pDeviceContext->UpdateSubresource(m_pAmbientLightBuffer.Get(), 0, nullptr, &cb, 0, 0);
     m_pDeviceContext->PSSetConstantBuffers(0, 1, m_pAmbientLightBuffer.GetAddressOf());
 
+    m_TDXObjectManager->CreatePointLightConstantBuffer();
+
     m_IsRunning = true;
 
     return true;
@@ -119,6 +122,8 @@ void TDXRenderDevice::BeginFrame(float r, float g, float b, float a) {
     float clearColor[] = { r, g, b, a };
     m_pDeviceContext->ClearRenderTargetView(m_pRenderTargetView.Get(), clearColor);
     m_pDeviceContext->ClearDepthStencilView(m_pDepthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
+
+    m_TDXObjectManager->UpdatePointLightConstantBuffer();
 }
 
 void TDXRenderDevice::EndFrame() {
@@ -210,7 +215,7 @@ void TDXRenderDevice::SetAmbientLight(float r, float g, float b, float a)
 
 TObjectManager* TDXRenderDevice::GeTObjectManager()
 {
-    return m_TObjectManager;
+    return m_TDXObjectManager;
 }
 
 bool TDXRenderDevice::OnResize(int width, int height)
