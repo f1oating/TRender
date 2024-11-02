@@ -1,4 +1,4 @@
-cbuffer CBuf
+cbuffer CBuf : register(b0)
 {
 	matrix transform;
 };

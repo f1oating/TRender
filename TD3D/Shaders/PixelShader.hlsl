@@ -1,4 +1,4 @@
-cbuffer AmbientLightBuffer
+cbuffer AmbientLightBuffer : register(b0)
 {
 	float4 ambientColor;
 };
