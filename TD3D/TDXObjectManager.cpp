@@ -122,12 +122,12 @@ void TDXObjectManager::FlushPointLights()
 
 void TDXObjectManager::CreatePointLightConstantBuffer()
 {
-	D3D11_BUFFER_DESC ambientLightBufferDesc = {};
-	ambientLightBufferDesc.Usage = D3D11_USAGE_DEFAULT;
-	ambientLightBufferDesc.ByteWidth = sizeof(AmbientLightConstantBuffer);
-	ambientLightBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-	ambientLightBufferDesc.CPUAccessFlags = 0;
-	m_TDXRenderDevice->m_pDevice->CreateBuffer(&ambientLightBufferDesc, nullptr, &m_pPointLightConstantBuffer);
+	D3D11_BUFFER_DESC pointLightBufferDesc = {};
+	pointLightBufferDesc.Usage = D3D11_USAGE_DEFAULT;
+	pointLightBufferDesc.ByteWidth = sizeof(PointLightConstantBuffer);
+	pointLightBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	pointLightBufferDesc.CPUAccessFlags = 0;
+	HRESULT hr = m_TDXRenderDevice->m_pDevice->CreateBuffer(&pointLightBufferDesc, nullptr, &m_pPointLightConstantBuffer);
 }
 
 void TDXObjectManager::UpdatePointLightConstantBuffer()
@@ -151,9 +151,10 @@ void TDXObjectManager::UpdatePointLightConstantBuffer()
 				intencity
 			};
 			cb.pointLight[count] = pl;
+			count++;
 		}
 
-		cb.numPointLights = count + 1;
+		cb.numPointLights = count;
 
 		m_TDXRenderDevice->m_pDeviceContext->UpdateSubresource(m_pPointLightConstantBuffer.Get(), 0, nullptr, &cb, 0, 0);
 		m_TDXRenderDevice->m_pDeviceContext->PSSetConstantBuffers(1, 1, m_pPointLightConstantBuffer.GetAddressOf());

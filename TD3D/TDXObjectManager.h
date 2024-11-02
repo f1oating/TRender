@@ -16,6 +16,7 @@ struct PointLightConstantBuffer
 {
 	PointLight pointLight[8];
 	int numPointLights;
+	DirectX::XMFLOAT3 padding;
 };
 
 class TDXObjectManager : public TObjectManager

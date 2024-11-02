@@ -13,6 +13,7 @@ struct PointLight {
 cbuffer LightBuffer : register(b1) {
     PointLight pointLights[8];
     int numPointLights;
+    float3 padding;
 };
 
 float4 main(float4 color : COLOR, float3 normal : NORMAL, float3 worldPos : POSITION) : SV_Target
