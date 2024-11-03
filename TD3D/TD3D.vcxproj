@@ -171,16 +171,19 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="T.h" />
+    <ClInclude Include="TD3D.h" />
     <ClInclude Include="TDXMesh.h" />
     <ClInclude Include="TDXObjectManager.h" />
     <ClInclude Include="TDXPointLight.h" />
     <ClInclude Include="TDXRenderDevice.h" />
+    <ClInclude Include="TDXShaderManager.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="TDXPointLight.cpp" />
     <ClCompile Include="TDXRenderDevice.cpp" />
     <ClCompile Include="TDXMesh.cpp" />
     <ClCompile Include="TDXObjectManager.cpp" />
+    <ClCompile Include="TDXShaderManager.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

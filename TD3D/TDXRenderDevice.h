@@ -7,6 +7,8 @@
 #include <DirectXMath.h>
 #include <wrl/client.h>
 
+class TDXShaderManager;
+
 struct AmbientLightConstantBuffer
 {
 	DirectX::XMFLOAT4 ambientColor;
@@ -16,6 +18,7 @@ class TDXRenderDevice : public TRenderDevice
 {
 friend class TDXMesh;
 friend class TDXObjectManager;
+friend class TDXShaderManager;
 public:
 	TDXRenderDevice();
 	~TDXRenderDevice();
