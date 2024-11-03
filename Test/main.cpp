@@ -82,9 +82,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int nCmdShow) {
     };
 
     TObjectManager* TObjectManager = renderDevice->GeTObjectManager();
-    TMesh* mesh = TObjectManager->AddMesh(vertices, sizeof(vertices) / sizeof(TVertexColor), indices, sizeof(indices) / sizeof(unsigned short), "romb");
-
-    mesh->SetPosition(0.2f, 1.5f, 1.0f);
 
     renderDevice->SetViewMatrix({ 5.0f, 5.0f, -5.0f, 1.0f }, { 0.0f, 0.0f, 0.0f, 1.0f }, { 0.0f, 1.0f, 0.0f, 0.0f });
 
@@ -103,7 +100,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int nCmdShow) {
         else {
             renderDevice->BeginFrame(0.1f, 0.1f, 0.1f, 1.0f);
 
-            mesh->Render(renderDevice);
+            renderDevice->Draw(vertices, sizeof(vertices) / sizeof(TVertexColor), indices, sizeof(indices) / sizeof(unsigned short));
 
             renderDevice->EndFrame();
         }

@@ -21,9 +21,6 @@
     <ClInclude Include="TRenderDevice.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="TMesh.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="TObjectManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>

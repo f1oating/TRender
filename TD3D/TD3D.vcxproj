@@ -172,7 +172,6 @@
   <ItemGroup>
     <ClInclude Include="T.h" />
     <ClInclude Include="TD3D.h" />
-    <ClInclude Include="TDXMesh.h" />
     <ClInclude Include="TDXObjectManager.h" />
     <ClInclude Include="TDXPointLight.h" />
     <ClInclude Include="TDXRenderDevice.h" />
@@ -181,7 +180,6 @@
   <ItemGroup>
     <ClCompile Include="TDXPointLight.cpp" />
     <ClCompile Include="TDXRenderDevice.cpp" />
-    <ClCompile Include="TDXMesh.cpp" />
     <ClCompile Include="TDXObjectManager.cpp" />
     <ClCompile Include="TDXShaderManager.cpp" />
   </ItemGroup>

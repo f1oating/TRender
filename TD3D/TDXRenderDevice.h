@@ -14,6 +14,11 @@ struct AmbientLightConstantBuffer
 	DirectX::XMFLOAT4 ambientColor;
 };
 
+struct TransformConstantBuffer
+{
+	DirectX::XMMATRIX transform;
+};
+
 class TDXRenderDevice : public TRenderDevice
 {
 friend class TDXMesh;
@@ -55,6 +60,10 @@ private:
 	Microsoft::WRL::ComPtr <ID3D11InputLayout> m_pInputLayout;
 
 	Microsoft::WRL::ComPtr <ID3D11Buffer> m_pAmbientLightBuffer;
+	Microsoft::WRL::ComPtr <ID3D11Buffer> m_pTransformBuffer;
+
+	Microsoft::WRL::ComPtr<ID3D11Buffer> m_pVertexBuffer;
+	Microsoft::WRL::ComPtr<ID3D11Buffer> m_pIndexBuffer;
 
 	DirectX::XMMATRIX m_ProjMatrix;
 	DirectX::XMMATRIX m_ViewMatrix;

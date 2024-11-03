@@ -55,6 +55,26 @@ bool TDXRenderDevice::Initizialize(HWND hwnd, int width, int height)
         throw std::runtime_error("Failed to create Direct3D device and swap chain.");
     }
 
+    D3D11_BUFFER_DESC vbd = {};
+    vbd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+    vbd.Usage = D3D11_USAGE_DYNAMIC;
+    vbd.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+    vbd.MiscFlags = 0u;
+    vbd.ByteWidth = 16000;
+    vbd.StructureByteStride = sizeof(TVertexColor);
+
+    hr = m_pDevice->CreateBuffer(&vbd, nullptr, &m_pVertexBuffer);
+
+    D3D11_BUFFER_DESC ibd = {};
+    ibd.BindFlags = D3D11_BIND_INDEX_BUFFER;
+    ibd.Usage = D3D11_USAGE_DYNAMIC;
+    ibd.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+    ibd.MiscFlags = 0u;
+    ibd.ByteWidth = 16000;
+    ibd.StructureByteStride = sizeof(unsigned short);
+
+    hr = m_pDevice->CreateBuffer(&ibd, nullptr, &m_pIndexBuffer);
+
     OnResize(width, height);
 
     D3DReadFileToBlob(L"..\\TD3D\\PixelShader.cso", &m_pBlob);
@@ -113,6 +133,18 @@ bool TDXRenderDevice::Initizialize(HWND hwnd, int width, int height)
 
     m_TDXObjectManager->CreatePointLightConstantBuffer();
 
+    D3D11_BUFFER_DESC transformBufferDesc = {};
+    transformBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
+    transformBufferDesc.ByteWidth = sizeof(TransformConstantBuffer);
+    transformBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+    transformBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+    hr = m_pDevice->CreateBuffer(&transformBufferDesc, nullptr, &m_pTransformBuffer);
+    if (FAILED(hr)) {
+        throw std::runtime_error("Failed to create TransformLightBuffer.");
+    }
+
+    m_pDeviceContext->VSSetConstantBuffers(0, 1, m_pTransformBuffer.GetAddressOf());
+
     m_IsRunning = true;
 
     return true;
@@ -123,6 +155,14 @@ void TDXRenderDevice::BeginFrame(float r, float g, float b, float a) {
     m_pDeviceContext->ClearRenderTargetView(m_pRenderTargetView.Get(), clearColor);
     m_pDeviceContext->ClearDepthStencilView(m_pDepthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 
+    TransformConstantBuffer tcb = {
+        DirectX::XMMatrixTranspose(m_ViewMatrix * m_ProjMatrix)
+    };
+    D3D11_MAPPED_SUBRESOURCE mappedResource;
+    m_pDeviceContext->Map(m_pTransformBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
+    memcpy(mappedResource.pData, &tcb, sizeof(TransformConstantBuffer));
+    m_pDeviceContext->Unmap(m_pTransformBuffer.Get(), 0);
+
     m_TDXObjectManager->UpdatePointLightConstantBuffer();
 }
 
@@ -132,23 +172,15 @@ void TDXRenderDevice::EndFrame() {
 
 void TDXRenderDevice::Draw(TVertexColor* vertices, unsigned short numVertices)
 {
-    Microsoft::WRL::ComPtr<ID3D11Buffer> vertexBuffer;
-    D3D11_BUFFER_DESC bd = {};
-    bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-    bd.Usage = D3D11_USAGE_DEFAULT;
-    bd.CPUAccessFlags = 0u;
-    bd.MiscFlags = 0u;
-    bd.ByteWidth = numVertices * sizeof(TVertexColor);
-    bd.StructureByteStride = sizeof(TVertexColor);
-
-    D3D11_SUBRESOURCE_DATA sd = {};
-    sd.pSysMem = vertices;
-    m_pDevice->CreateBuffer(&bd, &sd, &vertexBuffer);
+    D3D11_MAPPED_SUBRESOURCE mappedResource;
+    m_pDeviceContext->Map(m_pVertexBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
+    memcpy(mappedResource.pData, vertices, sizeof(TVertexColor) * numVertices);
+    m_pDeviceContext->Unmap(m_pVertexBuffer.Get(), 0);
 
     const UINT stride = sizeof(TVertexColor);
     const UINT offset = 0u;
 
-    m_pDeviceContext->IASetVertexBuffers(0, 1u, vertexBuffer.GetAddressOf(), &stride, &offset);
+    m_pDeviceContext->IASetVertexBuffers(0, 1u, m_pVertexBuffer.GetAddressOf(), &stride, &offset);
 
     m_pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
@@ -157,36 +189,21 @@ void TDXRenderDevice::Draw(TVertexColor* vertices, unsigned short numVertices)
 
 void TDXRenderDevice::Draw(TVertexColor* vertices, unsigned short numVertices, unsigned short* indices, unsigned short numIndices)
 {
-    Microsoft::WRL::ComPtr<ID3D11Buffer> vertexBuffer;
-    D3D11_BUFFER_DESC bd = {};
-    bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-    bd.Usage = D3D11_USAGE_DEFAULT;
-    bd.CPUAccessFlags = 0u;
-    bd.MiscFlags = 0u;
-    bd.ByteWidth = numVertices * sizeof(TVertexColor);
-    bd.StructureByteStride = sizeof(TVertexColor);
+    D3D11_MAPPED_SUBRESOURCE vMappedResource;
+    HRESULT hr = m_pDeviceContext->Map(m_pVertexBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &vMappedResource);
+    memcpy(vMappedResource.pData, vertices, sizeof(TVertexColor) * numVertices);
+    m_pDeviceContext->Unmap(m_pVertexBuffer.Get(), 0);
 
-    D3D11_SUBRESOURCE_DATA sd = {};
-    sd.pSysMem = vertices;
-    m_pDevice->CreateBuffer(&bd, &sd, &vertexBuffer);
-
-    Microsoft::WRL::ComPtr<ID3D11Buffer> indexBuffer;
-    D3D11_BUFFER_DESC ibd = {};
-    ibd.BindFlags = D3D11_BIND_INDEX_BUFFER;
-    ibd.Usage = D3D11_USAGE_DEFAULT;
-    ibd.CPUAccessFlags = 0u;
-    ibd.MiscFlags = 0u;
-    ibd.ByteWidth = numIndices * sizeof(unsigned short);
-    ibd.StructureByteStride = sizeof(unsigned short);
-    D3D11_SUBRESOURCE_DATA isd = {};
-    isd.pSysMem = indices;
-    m_pDevice->CreateBuffer(&ibd, &isd, &indexBuffer);
+    D3D11_MAPPED_SUBRESOURCE iMappedResource;
+    m_pDeviceContext->Map(m_pIndexBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &iMappedResource);
+    memcpy(iMappedResource.pData, indices, sizeof(unsigned short) * numIndices);
+    m_pDeviceContext->Unmap(m_pIndexBuffer.Get(), 0);
 
     const UINT stride = sizeof(TVertexColor);
     const UINT offset = 0u;
 
-    m_pDeviceContext->IASetVertexBuffers(0, 1u, vertexBuffer.GetAddressOf(), &stride, &offset);
-    m_pDeviceContext->IASetIndexBuffer(indexBuffer.Get(), DXGI_FORMAT_R16_UINT, 0u);
+    m_pDeviceContext->IASetVertexBuffers(0, 1u, m_pVertexBuffer.GetAddressOf(), &stride, &offset);
+    m_pDeviceContext->IASetIndexBuffer(m_pIndexBuffer.Get(), DXGI_FORMAT_R16_UINT, 0u);
 
     m_pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
