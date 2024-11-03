@@ -62,13 +62,13 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int nCmdShow) {
     renderDevice->Initizialize(hwnd, 800, 600);
 
     TVertexColor vertices[] = {
-        {{-1.0f,-1.0f,-1.0f}, {1.0f, 0.0f, 0.0f, 1.0f}, {-1.0f, 0.0f, 0.0f}},
+        {{-1.0f,-1.0f,-1.0f}, {1.0f, 0.0f, 0.0f, 1.0f}, { 1.0f, 0.0f, 0.0f}},
         {{1.0f,-1.0f,-1.0f}, {0.0f, 1.0f, 0.0f, 1.0f}, { 1.0f, 0.0f, 0.0f}},
-        {{-1.0f,1.0f,-1.0f}, {0.0f, 0.0f, 1.0f, 1.0f}, {-1.0f, 0.0f, 0.0f}},
+        {{-1.0f,1.0f,-1.0f}, {0.0f, 0.0f, 1.0f, 1.0f}, { 1.0f, 0.0f, 0.0f}},
         {{1.0f,1.0f,-1.0f}, {1.0f, 1.0f, 0.0f, 1.0f}, { 1.0f, 0.0f, 0.0f}},
         {{-1.0f,-1.0f,1.0f}, {1.0f, 0.0f, 1.0f, 1.0f}, {-1.0f, 0.0f, 0.0f}},
         {{1.0f,-1.0f,1.0f}, {0.0f, 1.0f, 1.0f, 1.0f}, { 1.0f, 0.0f, 0.0f}},
-        {{-1.0f,1.0f,1.0f}, {0.0f, 1.0f, 1.0f, 1.0f}, {-1.0f, 0.0f, 0.0f}},
+        {{-1.0f,1.0f,1.0f}, {0.0f, 1.0f, 1.0f, 1.0f}, { 1.0f, 0.0f, 0.0f}},
         {{1.0f,1.0f,1.0f}, {0.0f, 1.0f, 1.0f, 1.0f}, { 1.0f, 0.0f, 0.0f}},
     };
 
@@ -84,11 +84,13 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int nCmdShow) {
     TObjectManager* TObjectManager = renderDevice->GeTObjectManager();
     TMesh* mesh = TObjectManager->AddMesh(vertices, sizeof(vertices) / sizeof(TVertexColor), indices, sizeof(indices) / sizeof(unsigned short), "romb");
 
-    //mesh->SetPosition(0.2f, 1.5f, 1.0f);
+    mesh->SetPosition(0.2f, 1.5f, 1.0f);
 
     renderDevice->SetViewMatrix({ 5.0f, 5.0f, -5.0f, 1.0f }, { 0.0f, 0.0f, 0.0f, 1.0f }, { 0.0f, 1.0f, 0.0f, 0.0f });
 
-    TPointLight* light = TObjectManager->AddPointLight({ 2.0f, 2.0f, 2.0f }, { 1.0f, 0.8f, 0.6f }, 10.0f, 5.0f, "pointLight");
+    TPointLight* light = TObjectManager->AddPointLight({ 10.0f, 5.0f, 4.0f }, { 1.0f, 0.8f, 0.6f }, 10.0f, 5.0f, "pointLight");
+    TPointLight* light1 = TObjectManager->AddPointLight({ 3.0f, 3.0f, 3.0f }, { 1.0f, 0.8f, 0.6f }, 10.0f, 5.0f, "pointLight1");
+
 
     // Main message loop
     MSG msg = {};
