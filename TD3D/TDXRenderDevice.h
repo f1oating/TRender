@@ -42,6 +42,8 @@ public:
 	virtual bool OnResize(int width, int height) override;
 	virtual bool IsRunning() override;
 
+	void CreateBuffers();
+
 private:
 	Microsoft::WRL::ComPtr<ID3D11Device> m_pDevice;
 	Microsoft::WRL::ComPtr<ID3D11DeviceContext> m_pDeviceContext;

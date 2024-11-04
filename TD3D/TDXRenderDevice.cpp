@@ -54,26 +54,7 @@ bool TDXRenderDevice::Initizialize(HWND hwnd, int width, int height)
         throw std::runtime_error("Failed to create Direct3D device and swap chain.");
     }
 
-    D3D11_BUFFER_DESC vbd = {};
-    vbd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-    vbd.Usage = D3D11_USAGE_DYNAMIC;
-    vbd.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-    vbd.MiscFlags = 0u;
-    vbd.ByteWidth = 16000;
-    vbd.StructureByteStride = sizeof(TVertexColor);
-
-    hr = m_pDevice->CreateBuffer(&vbd, nullptr, &m_pVertexBuffer);
-
-    D3D11_BUFFER_DESC ibd = {};
-    ibd.BindFlags = D3D11_BIND_INDEX_BUFFER;
-    ibd.Usage = D3D11_USAGE_DYNAMIC;
-    ibd.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-    ibd.MiscFlags = 0u;
-    ibd.ByteWidth = 16000;
-    ibd.StructureByteStride = sizeof(unsigned short);
-
-    hr = m_pDevice->CreateBuffer(&ibd, nullptr, &m_pIndexBuffer);
-
+    CreateBuffers();
     OnResize(width, height);
 
     D3DReadFileToBlob(L"..\\TD3D\\PixelShader.cso", &m_pBlob);
@@ -115,44 +96,6 @@ bool TDXRenderDevice::Initizialize(HWND hwnd, int width, int height)
     }
 
     m_pDeviceContext->IASetInputLayout(m_pInputLayout.Get());
-
-    D3D11_BUFFER_DESC ambientLightBufferDesc = {};
-    ambientLightBufferDesc.Usage = D3D11_USAGE_DEFAULT;
-    ambientLightBufferDesc.ByteWidth = sizeof(AmbientLightConstantBuffer);
-    ambientLightBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-    ambientLightBufferDesc.CPUAccessFlags = 0;
-    hr = m_pDevice->CreateBuffer(&ambientLightBufferDesc, nullptr, &m_pAmbientLightBuffer);
-    if (FAILED(hr)) {
-        throw std::runtime_error("Failed to create AmbientLightBuffer.");
-    }
-
-    m_AmbientLightConstantBuffer = { { 0.2f, 0.2f, 0.2f, 1.0f } };
-    m_pDeviceContext->UpdateSubresource(m_pAmbientLightBuffer.Get(), 0, nullptr, &m_AmbientLightConstantBuffer, 0, 0);
-    m_pDeviceContext->PSSetConstantBuffers(0, 1, m_pAmbientLightBuffer.GetAddressOf());
-
-    D3D11_BUFFER_DESC lightsBufferDesc = {};
-    lightsBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
-    lightsBufferDesc.ByteWidth = sizeof(LightConstantBuffer);
-    lightsBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-    lightsBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-    hr = m_pDevice->CreateBuffer(&lightsBufferDesc, nullptr, &m_pLightsBuffer);
-    if (FAILED(hr)) {
-        throw std::runtime_error("Failed to create LightsBuffer.");
-    }
-
-    m_pDeviceContext->PSSetConstantBuffers(1, 1, m_pLightsBuffer.GetAddressOf());
-
-    D3D11_BUFFER_DESC transformBufferDesc = {};
-    transformBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
-    transformBufferDesc.ByteWidth = sizeof(TransformConstantBuffer);
-    transformBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-    transformBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-    hr = m_pDevice->CreateBuffer(&transformBufferDesc, nullptr, &m_pTransformBuffer);
-    if (FAILED(hr)) {
-        throw std::runtime_error("Failed to create TransformLightBuffer.");
-    }
-
-    m_pDeviceContext->VSSetConstantBuffers(0, 1, m_pTransformBuffer.GetAddressOf());
 
     m_IsRunning = true;
 
@@ -313,6 +256,73 @@ bool TDXRenderDevice::OnResize(int width, int height)
 bool TDXRenderDevice::IsRunning()
 {
     return m_IsRunning;
+}
+
+void TDXRenderDevice::CreateBuffers()
+{
+    D3D11_BUFFER_DESC vbd = {};
+    vbd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+    vbd.Usage = D3D11_USAGE_DYNAMIC;
+    vbd.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+    vbd.MiscFlags = 0u;
+    vbd.ByteWidth = 16000;
+    vbd.StructureByteStride = sizeof(TVertexColor);
+
+    HRESULT hr = m_pDevice->CreateBuffer(&vbd, nullptr, &m_pVertexBuffer);
+    if (FAILED(hr)) {
+        throw std::runtime_error("Failed to create VertexBuffer.");
+    }
+
+    D3D11_BUFFER_DESC ibd = {};
+    ibd.BindFlags = D3D11_BIND_INDEX_BUFFER;
+    ibd.Usage = D3D11_USAGE_DYNAMIC;
+    ibd.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+    ibd.MiscFlags = 0u;
+    ibd.ByteWidth = 16000;
+    ibd.StructureByteStride = sizeof(unsigned short);
+
+    hr = m_pDevice->CreateBuffer(&ibd, nullptr, &m_pIndexBuffer);
+    if (FAILED(hr)) {
+        throw std::runtime_error("Failed to create IndexBuffer.");
+    }
+
+    D3D11_BUFFER_DESC ambientLightBufferDesc = {};
+    ambientLightBufferDesc.Usage = D3D11_USAGE_DEFAULT;
+    ambientLightBufferDesc.ByteWidth = sizeof(AmbientLightConstantBuffer);
+    ambientLightBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+    ambientLightBufferDesc.CPUAccessFlags = 0;
+    hr = m_pDevice->CreateBuffer(&ambientLightBufferDesc, nullptr, &m_pAmbientLightBuffer);
+    if (FAILED(hr)) {
+        throw std::runtime_error("Failed to create AmbientLightBuffer.");
+    }
+
+    m_AmbientLightConstantBuffer = { { 0.2f, 0.2f, 0.2f, 1.0f } };
+    m_pDeviceContext->UpdateSubresource(m_pAmbientLightBuffer.Get(), 0, nullptr, &m_AmbientLightConstantBuffer, 0, 0);
+    m_pDeviceContext->PSSetConstantBuffers(0, 1, m_pAmbientLightBuffer.GetAddressOf());
+
+    D3D11_BUFFER_DESC lightsBufferDesc = {};
+    lightsBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
+    lightsBufferDesc.ByteWidth = sizeof(LightConstantBuffer);
+    lightsBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+    lightsBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+    hr = m_pDevice->CreateBuffer(&lightsBufferDesc, nullptr, &m_pLightsBuffer);
+    if (FAILED(hr)) {
+        throw std::runtime_error("Failed to create LightsBuffer.");
+    }
+
+    m_pDeviceContext->PSSetConstantBuffers(1, 1, m_pLightsBuffer.GetAddressOf());
+
+    D3D11_BUFFER_DESC transformBufferDesc = {};
+    transformBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
+    transformBufferDesc.ByteWidth = sizeof(TransformConstantBuffer);
+    transformBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+    transformBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+    hr = m_pDevice->CreateBuffer(&transformBufferDesc, nullptr, &m_pTransformBuffer);
+    if (FAILED(hr)) {
+        throw std::runtime_error("Failed to create TransformBuffer.");
+    }
+
+    m_pDeviceContext->VSSetConstantBuffers(0, 1, m_pTransformBuffer.GetAddressOf());
 }
 
 HRESULT CreateRenderDevice(TDXRenderDevice** pDevice) {
