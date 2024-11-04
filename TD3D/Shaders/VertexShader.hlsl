@@ -17,6 +17,6 @@ VSOut main(float3 pos : POSITION, float4 color : COLOR, float3 normal : NORMAL)
 	vso.pos = mul(float4(pos, 1.0f), transform);
 	vso.worldPos = vso.pos;
 	vso.color = color;
-	vso.normal = normal;
+	vso.normal = normalize(normal);
 	return vso;
 }

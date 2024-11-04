@@ -39,17 +39,29 @@ struct TVector3
 	float z;
 };
 
+enum LightType
+{
+	POINTLIGHT,
+	SPOTLIGHT
+};
+
 struct Light {
+	int type;
+
 	TVector3 Position;
 	float Range;
 	TVector3 Color;
 	float Intensity;
+	TVector3 Direction;
+	float SpotAngle;
+
+	TVector3 padding;
 };
 
 struct LightConstantBuffer
 {
-	Light pointLight[8];
-	int numPointLights;
+	Light light[6];
+	int numLights;
 	TVector3 padding;
 };
 
