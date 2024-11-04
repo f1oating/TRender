@@ -39,4 +39,18 @@ struct TVector3
 	float z;
 };
 
+struct Light {
+	TVector3 Position;
+	float Range;
+	TVector3 Color;
+	float Intensity;
+};
+
+struct LightConstantBuffer
+{
+	Light pointLight[8];
+	int numPointLights;
+	TVector3 padding;
+};
+
 #endif

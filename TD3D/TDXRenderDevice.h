@@ -2,7 +2,6 @@
 #define TDXRENDERDEVICE_H
 
 #include "TRenderDevice.h"
-#include "TObjectManager.h"
 #include <d3d11.h>
 #include <DirectXMath.h>
 #include <wrl/client.h>
@@ -21,8 +20,6 @@ struct TransformConstantBuffer
 
 class TDXRenderDevice : public TRenderDevice
 {
-friend class TDXMesh;
-friend class TDXObjectManager;
 friend class TDXShaderManager;
 public:
 	TDXRenderDevice();
@@ -40,8 +37,7 @@ public:
 	virtual void SetViewMatrix(TVector4 eye, TVector4 at, TVector4 up) override;
 
 	virtual void SetAmbientLight(float r, float g, float b, float a) override;
-
-	virtual TObjectManager* GeTObjectManager() override;
+	virtual void SetLights(LightConstantBuffer lights) override;
 
 	virtual bool OnResize(int width, int height) override;
 	virtual bool IsRunning() override;
@@ -60,6 +56,7 @@ private:
 	Microsoft::WRL::ComPtr <ID3D11InputLayout> m_pInputLayout;
 
 	Microsoft::WRL::ComPtr <ID3D11Buffer> m_pAmbientLightBuffer;
+	Microsoft::WRL::ComPtr <ID3D11Buffer> m_pLightsBuffer;
 	Microsoft::WRL::ComPtr <ID3D11Buffer> m_pTransformBuffer;
 
 	Microsoft::WRL::ComPtr<ID3D11Buffer> m_pVertexBuffer;
@@ -68,7 +65,9 @@ private:
 	DirectX::XMMATRIX m_ProjMatrix;
 	DirectX::XMMATRIX m_ViewMatrix;
 
-	TDXObjectManager* m_TDXObjectManager;
+	LightConstantBuffer m_LightsConstantBuffer;
+	AmbientLightConstantBuffer m_AmbientLightConstantBuffer;
+	TransformConstantBuffer m_TransformConstantBuffer;
 
 };
 

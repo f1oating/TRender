@@ -1,6 +1,5 @@
 #include "TDXRenderDevice.h"
 
-#include "TDXObjectManager.h"
 #include <stdexcept>
 #include <d3dcompiler.h>
 
@@ -10,10 +9,11 @@ TDXRenderDevice::TDXRenderDevice() :
 	m_pSwapChain(nullptr),
 	m_pRenderTargetView(nullptr),
 	m_pDepthStencilView(nullptr),
-	m_pDepthStencilBuffer(nullptr)
+	m_pDepthStencilBuffer(nullptr),
+    m_LightsConstantBuffer(),
+    m_AmbientLightConstantBuffer(),
+    m_TransformConstantBuffer()
 {
-    m_TDXObjectManager = new TDXObjectManager(this);
-
     DirectX::XMVECTOR eye = DirectX::XMVectorSet(0.0f, 0.0f, -5.0f, 1.0f);
     DirectX::XMVECTOR at = DirectX::XMVectorSet(0.0f, 0.0f, 0.0f, 1.0f);
     DirectX::XMVECTOR up = DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
@@ -23,7 +23,6 @@ TDXRenderDevice::TDXRenderDevice() :
 
 TDXRenderDevice::~TDXRenderDevice()
 {
-    delete m_TDXObjectManager;
 }
 
 bool TDXRenderDevice::Initizialize(HWND hwnd, int width, int height)
@@ -127,11 +126,21 @@ bool TDXRenderDevice::Initizialize(HWND hwnd, int width, int height)
         throw std::runtime_error("Failed to create AmbientLightBuffer.");
     }
 
-    AmbientLightConstantBuffer cb = { { 0.2f, 0.2f, 0.2f, 1.0f } };
-    m_pDeviceContext->UpdateSubresource(m_pAmbientLightBuffer.Get(), 0, nullptr, &cb, 0, 0);
+    m_AmbientLightConstantBuffer = { { 0.2f, 0.2f, 0.2f, 1.0f } };
+    m_pDeviceContext->UpdateSubresource(m_pAmbientLightBuffer.Get(), 0, nullptr, &m_AmbientLightConstantBuffer, 0, 0);
     m_pDeviceContext->PSSetConstantBuffers(0, 1, m_pAmbientLightBuffer.GetAddressOf());
 
-    m_TDXObjectManager->CreatePointLightConstantBuffer();
+    D3D11_BUFFER_DESC lightsBufferDesc = {};
+    lightsBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
+    lightsBufferDesc.ByteWidth = sizeof(LightConstantBuffer);
+    lightsBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+    lightsBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+    hr = m_pDevice->CreateBuffer(&lightsBufferDesc, nullptr, &m_pLightsBuffer);
+    if (FAILED(hr)) {
+        throw std::runtime_error("Failed to create LightsBuffer.");
+    }
+
+    m_pDeviceContext->PSSetConstantBuffers(1, 1, m_pLightsBuffer.GetAddressOf());
 
     D3D11_BUFFER_DESC transformBufferDesc = {};
     transformBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
@@ -155,15 +164,18 @@ void TDXRenderDevice::BeginFrame(float r, float g, float b, float a) {
     m_pDeviceContext->ClearRenderTargetView(m_pRenderTargetView.Get(), clearColor);
     m_pDeviceContext->ClearDepthStencilView(m_pDepthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 
-    TransformConstantBuffer tcb = {
+    m_TransformConstantBuffer = {
         DirectX::XMMatrixTranspose(m_ViewMatrix * m_ProjMatrix)
     };
+
     D3D11_MAPPED_SUBRESOURCE mappedResource;
     m_pDeviceContext->Map(m_pTransformBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
-    memcpy(mappedResource.pData, &tcb, sizeof(TransformConstantBuffer));
+    memcpy(mappedResource.pData, &m_TransformConstantBuffer, sizeof(TransformConstantBuffer));
     m_pDeviceContext->Unmap(m_pTransformBuffer.Get(), 0);
 
-    m_TDXObjectManager->UpdatePointLightConstantBuffer();
+    m_pDeviceContext->Map(m_pLightsBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
+    memcpy(mappedResource.pData, &m_LightsConstantBuffer, sizeof(LightConstantBuffer));
+    m_pDeviceContext->Unmap(m_pLightsBuffer.Get(), 0);
 }
 
 void TDXRenderDevice::EndFrame() {
@@ -225,14 +237,14 @@ void TDXRenderDevice::SetViewMatrix(TVector4 eye, TVector4 at, TVector4 up)
 
 void TDXRenderDevice::SetAmbientLight(float r, float g, float b, float a)
 {
-    AmbientLightConstantBuffer cb = { { r, g, b, a } };
-    m_pDeviceContext->UpdateSubresource(m_pAmbientLightBuffer.Get(), 0, nullptr, &cb, 0, 0);
+    m_AmbientLightConstantBuffer = { { r, g, b, a } };
+    m_pDeviceContext->UpdateSubresource(m_pAmbientLightBuffer.Get(), 0, nullptr, &m_AmbientLightConstantBuffer, 0, 0);
     m_pDeviceContext->PSSetConstantBuffers(0, 1, m_pAmbientLightBuffer.GetAddressOf());
 }
 
-TObjectManager* TDXRenderDevice::GeTObjectManager()
+void TDXRenderDevice::SetLights(LightConstantBuffer lights)
 {
-    return m_TDXObjectManager;
+    m_LightsConstantBuffer = lights;
 }
 
 bool TDXRenderDevice::OnResize(int width, int height)

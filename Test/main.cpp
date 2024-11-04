@@ -1,6 +1,5 @@
 #include <windows.h>
 #include "TRenderer.h"
-#include "TObjectManager.h"
 
 TRenderDevice* renderDevice;
 
@@ -81,13 +80,14 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int nCmdShow) {
         0,1,4, 1,5,4
     };
 
-    TObjectManager* TObjectManager = renderDevice->GeTObjectManager();
-
     renderDevice->SetViewMatrix({ 5.0f, 5.0f, -5.0f, 1.0f }, { 0.0f, 0.0f, 0.0f, 1.0f }, { 0.0f, 1.0f, 0.0f, 0.0f });
 
-    TPointLight* light = TObjectManager->AddPointLight({ 10.0f, 5.0f, 4.0f }, { 1.0f, 0.8f, 0.6f }, 10.0f, 5.0f, "pointLight");
-    TPointLight* light1 = TObjectManager->AddPointLight({ 3.0f, 3.0f, 3.0f }, { 1.0f, 0.8f, 0.6f }, 10.0f, 5.0f, "pointLight1");
+    LightConstantBuffer lcb;
+    lcb.pointLight[0] = { {10.0f, 5.0f, 4.0f}, 10.0f, { 1.0f, 0.8f, 0.6f }, 5.0f };
+    lcb.pointLight[1] = { {3.0f, 3.0f, 3.0f}, 10.0f, { 1.0f, 0.8f, 0.6f }, 5.0f };
+    lcb.numPointLights = 2;
 
+    renderDevice->SetLights(lcb);
 
     // Main message loop
     MSG msg = {};

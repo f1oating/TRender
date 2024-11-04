@@ -21,12 +21,6 @@
     <ClInclude Include="TRenderDevice.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="TObjectManager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="TPointLight.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="TRenderer.cpp">

@@ -4,8 +4,6 @@
 #include <windows.h>
 #include "T.h" 
 
-class TObjectManager;
-
 class TRenderDevice
 {
 public:
@@ -23,8 +21,7 @@ public:
 	virtual void SetViewMatrix(TVector4 eye, TVector4 at, TVector4 up) = 0;
 
 	virtual void SetAmbientLight(float r, float g, float b, float a) = 0;
-
-	virtual TObjectManager* GeTObjectManager() = 0;
+	virtual void SetLights(LightConstantBuffer lights) = 0;
 
 	virtual bool OnResize(int width, int height) = 0;
 	virtual bool IsRunning() = 0;

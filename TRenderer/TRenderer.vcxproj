@@ -145,8 +145,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="TObjectManager.h" />
-    <ClInclude Include="TPointLight.h" />
     <ClInclude Include="TRenderDevice.h" />
     <ClInclude Include="TRenderer.h" />
   </ItemGroup>

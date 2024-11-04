@@ -2,6 +2,7 @@
 #define TDXSHADERMANAGER_H
 
 #include "TDXRenderDevice.h"
+#include <unordered_map>
 
 class TDXShaderManager
 {
