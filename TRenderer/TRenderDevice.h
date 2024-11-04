@@ -22,6 +22,7 @@ public:
 
 	virtual void SetAmbientLight(float r, float g, float b, float a) = 0;
 	virtual void SetLights(LightConstantBuffer lights) = 0;
+	virtual void SetDirectLight(TVector3 direction, float intencity, TVector3 color, float pad) = 0;
 
 	virtual bool OnResize(int width, int height) = 0;
 	virtual bool IsRunning() = 0;

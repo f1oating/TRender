@@ -13,6 +13,14 @@ struct AmbientLightConstantBuffer
 	DirectX::XMFLOAT4 ambientColor;
 };
 
+struct DirectLightConstantBuffer
+{
+	TVector3 Direction;
+	float Intensity;
+	TVector3 Color;
+	float Pad;
+};
+
 struct TransformConstantBuffer
 {
 	DirectX::XMMATRIX transform;
@@ -38,6 +46,7 @@ public:
 
 	virtual void SetAmbientLight(float r, float g, float b, float a) override;
 	virtual void SetLights(LightConstantBuffer lights) override;
+	virtual void SetDirectLight(TVector3 direction, float intencity, TVector3 color, float pad) override;
 
 	virtual bool OnResize(int width, int height) override;
 	virtual bool IsRunning() override;
@@ -58,6 +67,7 @@ private:
 	Microsoft::WRL::ComPtr <ID3D11InputLayout> m_pInputLayout;
 
 	Microsoft::WRL::ComPtr <ID3D11Buffer> m_pAmbientLightBuffer;
+	Microsoft::WRL::ComPtr <ID3D11Buffer> m_pDirectLightBuffer;
 	Microsoft::WRL::ComPtr <ID3D11Buffer> m_pLightsBuffer;
 	Microsoft::WRL::ComPtr <ID3D11Buffer> m_pTransformBuffer;
 
@@ -69,6 +79,7 @@ private:
 
 	LightConstantBuffer m_LightsConstantBuffer;
 	AmbientLightConstantBuffer m_AmbientLightConstantBuffer;
+	DirectLightConstantBuffer m_DirectLightConstantBuffer;
 	TransformConstantBuffer m_TransformConstantBuffer;
 
 };

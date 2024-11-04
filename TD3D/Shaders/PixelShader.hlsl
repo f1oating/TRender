@@ -11,9 +11,22 @@ struct Light {
     float3 lightPadding;
 };
 
+struct AmbientLight
+{
+    float4 Color;
+};
+
+struct DirectLight
+{
+    float3 Direction;
+    float Intensity;
+    float3 Color;
+    float Pad;
+};
+
 cbuffer AmbientLightBuffer : register(b0)
 {
-    float4 ambientColor;
+    AmbientLight ambientLight;
 };
 
 cbuffer LightBuffer : register(b1) {
@@ -21,6 +34,11 @@ cbuffer LightBuffer : register(b1) {
     int numLights;
     float3 padding;
 };
+
+cbuffer DirectLightBuffer : register (b2)
+{
+    DirectLight directLight;
+}
 
 float3 CalculatePointLight(Light light, float3 normal, float3 worldPos)
 {
@@ -55,9 +73,19 @@ float4 CalculateSpotLight(Light light, float3 normal, float3 fragPos) {
     return float4(light.Color * diff * intensity * light.Intensity, 1.0);
 }
 
+float4 CalculateDirectLight(float3 normal)
+{
+    float3 lightDir = normalize(directLight.Direction);
+
+    float diff = max(dot(normal, -lightDir), 0.0f);
+
+    return float4(directLight.Color * diff * directLight.Intensity, 1.0f);
+}
+
 float4 main(float4 color : COLOR, float3 normal : NORMAL, float3 worldPos : POSITION) : SV_Target
 {
-    float3 finalColor = color.rgb * ambientColor.rgb;
+    float3 finalColor = color.rgb * ambientLight.Color.rgb;
+    finalColor += CalculateDirectLight(normal);
 
     for (int i = 0; i < numLights; ++i)
     {

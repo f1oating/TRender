@@ -88,7 +88,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int nCmdShow) {
     lcb.light[0] = { LightType::POINTLIGHT, {3.0f, 3.0f, 3.0f}, 10.0f, { 1.0f, 0.8f, 0.6f }, 5.0f };
     lcb.numLights = 1;
 
-    renderDevice->SetLights(lcb);
+    //renderDevice->SetLights(lcb);
+    renderDevice->SetDirectLight({ -1.0f, -1.0f, -1.0f }, 1.0f, { 1.0f, 0.8f, 0.6f }, 0.0f);
 
     // Main message loop
     MSG msg = {};

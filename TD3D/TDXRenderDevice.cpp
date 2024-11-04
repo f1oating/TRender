@@ -12,7 +12,8 @@ TDXRenderDevice::TDXRenderDevice() :
 	m_pDepthStencilBuffer(nullptr),
     m_LightsConstantBuffer(),
     m_AmbientLightConstantBuffer(),
-    m_TransformConstantBuffer()
+    m_TransformConstantBuffer(),
+    m_DirectLightConstantBuffer()
 {
     DirectX::XMVECTOR eye = DirectX::XMVectorSet(0.0f, 0.0f, -5.0f, 1.0f);
     DirectX::XMVECTOR at = DirectX::XMVectorSet(0.0f, 0.0f, 0.0f, 1.0f);
@@ -119,6 +120,10 @@ void TDXRenderDevice::BeginFrame(float r, float g, float b, float a) {
     m_pDeviceContext->Map(m_pLightsBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
     memcpy(mappedResource.pData, &m_LightsConstantBuffer, sizeof(LightConstantBuffer));
     m_pDeviceContext->Unmap(m_pLightsBuffer.Get(), 0);
+
+    m_pDeviceContext->Map(m_pDirectLightBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
+    memcpy(mappedResource.pData, &m_DirectLightConstantBuffer, sizeof(DirectLightConstantBuffer));
+    m_pDeviceContext->Unmap(m_pDirectLightBuffer.Get(), 0);
 }
 
 void TDXRenderDevice::EndFrame() {
@@ -188,6 +193,11 @@ void TDXRenderDevice::SetAmbientLight(float r, float g, float b, float a)
 void TDXRenderDevice::SetLights(LightConstantBuffer lights)
 {
     m_LightsConstantBuffer = lights;
+}
+
+void TDXRenderDevice::SetDirectLight(TVector3 direction, float intencity, TVector3 color, float pad)
+{
+    m_DirectLightConstantBuffer = { direction, intencity, color, pad };
 }
 
 bool TDXRenderDevice::OnResize(int width, int height)
@@ -311,6 +321,18 @@ void TDXRenderDevice::CreateBuffers()
     }
 
     m_pDeviceContext->PSSetConstantBuffers(1, 1, m_pLightsBuffer.GetAddressOf());
+
+    D3D11_BUFFER_DESC directLightBufferDesc = {};
+    directLightBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
+    directLightBufferDesc.ByteWidth = sizeof(DirectLightConstantBuffer);
+    directLightBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+    directLightBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+    hr = m_pDevice->CreateBuffer(&directLightBufferDesc, nullptr, &m_pDirectLightBuffer);
+    if (FAILED(hr)) {
+        throw std::runtime_error("Failed to create DirectLightBuffer.");
+    }
+
+    m_pDeviceContext->PSSetConstantBuffers(2, 1, m_pDirectLightBuffer.GetAddressOf());
 
     D3D11_BUFFER_DESC transformBufferDesc = {};
     transformBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
