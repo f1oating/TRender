@@ -2,11 +2,10 @@
 #define TDXRENDERDEVICE_H
 
 #include "TRenderDevice.h"
+#include "TDXShaderManager.h"
 #include <d3d11.h>
 #include <DirectXMath.h>
 #include <wrl/client.h>
-
-class TDXShaderManager;
 
 struct AmbientLightConstantBuffer
 {
@@ -28,7 +27,6 @@ struct TransformConstantBuffer
 
 class TDXRenderDevice : public TRenderDevice
 {
-friend class TDXShaderManager;
 public:
 	TDXRenderDevice();
 	~TDXRenderDevice();
@@ -81,6 +79,8 @@ private:
 	AmbientLightConstantBuffer m_AmbientLightConstantBuffer;
 	DirectLightConstantBuffer m_DirectLightConstantBuffer;
 	TransformConstantBuffer m_TransformConstantBuffer;
+
+	TDXShaderManager m_TDXShaderManager;
 
 };
 

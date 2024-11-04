@@ -1,5 +1,6 @@
 #include "TDXRenderDevice.h"
 
+#include "TD3D.h"
 #include <stdexcept>
 #include <d3dcompiler.h>
 
@@ -13,7 +14,8 @@ TDXRenderDevice::TDXRenderDevice() :
     m_LightsConstantBuffer(),
     m_AmbientLightConstantBuffer(),
     m_TransformConstantBuffer(),
-    m_DirectLightConstantBuffer()
+    m_DirectLightConstantBuffer(),
+    m_TDXShaderManager()
 {
     DirectX::XMVECTOR eye = DirectX::XMVectorSet(0.0f, 0.0f, -5.0f, 1.0f);
     DirectX::XMVECTOR at = DirectX::XMVectorSet(0.0f, 0.0f, 0.0f, 1.0f);
@@ -58,45 +60,9 @@ bool TDXRenderDevice::Initizialize(HWND hwnd, int width, int height)
     CreateBuffers();
     OnResize(width, height);
 
-    D3DReadFileToBlob(L"..\\TD3D\\PixelShader.cso", &m_pBlob);
-    hr = m_pDevice->CreatePixelShader(m_pBlob->GetBufferPointer(), m_pBlob->GetBufferSize(), nullptr, &m_pPixelShader);
-
-    if (FAILED(hr)) {
-        throw std::runtime_error("Failed to create PixelShader.");
-    }
-
-    // bind pixel shader
-    m_pDeviceContext->PSSetShader(m_pPixelShader.Get(), nullptr, 0u);
-
-    // create vertex shader
-    D3DReadFileToBlob(L"..\\TD3D\\VertexShader.cso", &m_pBlob);
-    hr = m_pDevice->CreateVertexShader(m_pBlob->GetBufferPointer(), m_pBlob->GetBufferSize(), nullptr, &m_pVertexShader);
-
-    if (FAILED(hr)) {
-        throw std::runtime_error("Failed to create VertexShader.");
-    }
-
-    // bind vertex shader
-    m_pDeviceContext->VSSetShader(m_pVertexShader.Get(), nullptr, 0u);
-
-    const D3D11_INPUT_ELEMENT_DESC ied[] =
-    {
-            { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-            { "COLOR", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 12u, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-            { "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 28u, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-    };
-    hr = m_pDevice->CreateInputLayout(
-        ied, (UINT)std::size(ied),
-        m_pBlob->GetBufferPointer(),
-        m_pBlob->GetBufferSize(),
-        &m_pInputLayout
-    );
-
-    if (FAILED(hr)) {
-        throw std::runtime_error("Failed to create InputLayout.");
-    }
-
-    m_pDeviceContext->IASetInputLayout(m_pInputLayout.Get());
+    m_TDXShaderManager.AddShaders("mesh", L"..\\TD3D\\VertexShader.cso", L"..\\TD3D\\PixelShader.cso", 
+        MESH_INPUT_LAYOUT, sizeof(MESH_INPUT_LAYOUT) / sizeof(D3D11_INPUT_ELEMENT_DESC), m_pDevice.Get());
+    m_TDXShaderManager.BindShaders("mesh", m_pDeviceContext.Get());
 
     m_IsRunning = true;
 
