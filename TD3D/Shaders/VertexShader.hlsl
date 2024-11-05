@@ -6,17 +6,13 @@ cbuffer CBuf : register(b0)
 struct VSOut
 {
 	float4 color : COLOR;
-	float3 normal : NORMAL;
-	float3 worldPos : POSITION;
 	float4 pos : SV_Position;
 };
 
-VSOut main(float3 pos : POSITION, float4 color : COLOR, float3 normal : NORMAL)
+VSOut main(float3 pos : POSITION, float4 color : COLOR)
 {
 	VSOut vso;
 	vso.pos = mul(float4(pos, 1.0f), transform);
-	vso.worldPos = vso.pos;
 	vso.color = color;
-	vso.normal = normalize(normal);
 	return vso;
 }

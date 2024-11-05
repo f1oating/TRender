@@ -7,19 +7,6 @@
 #include <DirectXMath.h>
 #include <wrl/client.h>
 
-struct AmbientLightConstantBuffer
-{
-	DirectX::XMFLOAT4 ambientColor;
-};
-
-struct DirectLightConstantBuffer
-{
-	TVector3 Direction;
-	float Intensity;
-	TVector3 Color;
-	float Pad;
-};
-
 struct TransformConstantBuffer
 {
 	DirectX::XMMATRIX transform;
@@ -42,10 +29,6 @@ public:
 	virtual void SetProjectionMatrix(float fieldOfView, float aspectRatio, float nearZ, float farZ) override;
 	virtual void SetViewMatrix(TVector4 eye, TVector4 at, TVector4 up) override;
 
-	virtual void SetAmbientLight(float r, float g, float b, float a) override;
-	virtual void SetLights(LightConstantBuffer lights) override;
-	virtual void SetDirectLight(TVector3 direction, float intencity, TVector3 color, float pad) override;
-
 	virtual bool OnResize(int width, int height) override;
 	virtual bool IsRunning() override;
 
@@ -59,14 +42,6 @@ private:
 	Microsoft::WRL::ComPtr<ID3D11DepthStencilView> m_pDepthStencilView;
 	Microsoft::WRL::ComPtr<ID3D11Texture2D> m_pDepthStencilBuffer;
 
-	Microsoft::WRL::ComPtr <ID3D11VertexShader> m_pVertexShader;
-	Microsoft::WRL::ComPtr <ID3D11PixelShader> m_pPixelShader;
-	Microsoft::WRL::ComPtr <ID3DBlob> m_pBlob;
-	Microsoft::WRL::ComPtr <ID3D11InputLayout> m_pInputLayout;
-
-	Microsoft::WRL::ComPtr <ID3D11Buffer> m_pAmbientLightBuffer;
-	Microsoft::WRL::ComPtr <ID3D11Buffer> m_pDirectLightBuffer;
-	Microsoft::WRL::ComPtr <ID3D11Buffer> m_pLightsBuffer;
 	Microsoft::WRL::ComPtr <ID3D11Buffer> m_pTransformBuffer;
 
 	Microsoft::WRL::ComPtr<ID3D11Buffer> m_pVertexBuffer;
@@ -75,9 +50,6 @@ private:
 	DirectX::XMMATRIX m_ProjMatrix;
 	DirectX::XMMATRIX m_ViewMatrix;
 
-	LightConstantBuffer m_LightsConstantBuffer;
-	AmbientLightConstantBuffer m_AmbientLightConstantBuffer;
-	DirectLightConstantBuffer m_DirectLightConstantBuffer;
 	TransformConstantBuffer m_TransformConstantBuffer;
 
 	TDXShaderManager m_TDXShaderManager;

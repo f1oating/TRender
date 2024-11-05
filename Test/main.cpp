@@ -61,14 +61,14 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int nCmdShow) {
     renderDevice->Initizialize(hwnd, 800, 600);
 
     TVertexColor vertices[] = {
-        {{-1.0f,-1.0f,-1.0f}, {1.0f, 0.0f, 0.0f, 1.0f}, { 1.0f, 0.0f, 0.0f}},
-        {{1.0f,-1.0f,-1.0f}, {0.0f, 1.0f, 0.0f, 1.0f}, { 1.0f, 0.0f, 0.0f}},
-        {{-1.0f,1.0f,-1.0f}, {0.0f, 0.0f, 1.0f, 1.0f}, { 1.0f, 0.0f, 0.0f}},
-        {{1.0f,1.0f,-1.0f}, {1.0f, 1.0f, 0.0f, 1.0f}, { 1.0f, 0.0f, 0.0f}},
-        {{-1.0f,-1.0f,1.0f}, {1.0f, 0.0f, 1.0f, 1.0f}, {-1.0f, 0.0f, 0.0f}},
-        {{1.0f,-1.0f,1.0f}, {0.0f, 1.0f, 1.0f, 1.0f}, { 1.0f, 0.0f, 0.0f}},
-        {{-1.0f,1.0f,1.0f}, {0.0f, 1.0f, 1.0f, 1.0f}, { 1.0f, 0.0f, 0.0f}},
-        {{1.0f,1.0f,1.0f}, {0.0f, 1.0f, 1.0f, 1.0f}, { 1.0f, 0.0f, 0.0f}},
+        {{-1.0f,-1.0f,-1.0f}, {1.0f, 0.0f, 0.0f, 1.0f}},
+        {{1.0f,-1.0f,-1.0f}, {0.0f, 1.0f, 0.0f, 1.0f}},
+        {{-1.0f,1.0f,-1.0f}, {0.0f, 0.0f, 1.0f, 1.0f}},
+        {{1.0f,1.0f,-1.0f}, {1.0f, 1.0f, 0.0f, 1.0f}},
+        {{-1.0f,-1.0f,1.0f}, {1.0f, 0.0f, 1.0f, 1.0f}},
+        {{1.0f,-1.0f,1.0f}, {0.0f, 1.0f, 1.0f, 1.0f}},
+        {{-1.0f,1.0f,1.0f}, {0.0f, 1.0f, 1.0f, 1.0f}},
+        {{1.0f,1.0f,1.0f}, {0.0f, 1.0f, 1.0f, 1.0f}},
     };
 
     unsigned short indices[] = {
@@ -81,15 +81,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int nCmdShow) {
     };
 
     renderDevice->SetViewMatrix({ 5.0f, 5.0f, -5.0f, 1.0f }, { 0.0f, 0.0f, 0.0f, 1.0f }, { 0.0f, 1.0f, 0.0f, 0.0f });
-
-    LightConstantBuffer lcb;
-    //lcb.light[0] = { LightType::POINTLIGHT, {10.0f, 5.0f, 4.0f}, 10.0f, { 1.0f, 0.8f, 0.6f }, 5.0f };
-    //lcb.light[0] = { LightType::SPOTLIGHT, {1.0f, 2.0f, 1.0f}, 10.0f, {1.0f, 0.8f, 0.6f}, 5.0f, {-1.0f, -1.0f, -1.0f}, 1.5f };
-    lcb.light[0] = { LightType::POINTLIGHT, {3.0f, 3.0f, 3.0f}, 10.0f, { 1.0f, 0.8f, 0.6f }, 5.0f };
-    lcb.numLights = 1;
-
-    //renderDevice->SetLights(lcb);
-    renderDevice->SetDirectLight({ -1.0f, -1.0f, -1.0f }, 1.0f, { 1.0f, 0.8f, 0.6f }, 0.0f);
 
     // Main message loop
     MSG msg = {};
