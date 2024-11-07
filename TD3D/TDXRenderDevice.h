@@ -3,6 +3,7 @@
 
 #include "TRenderDevice.h"
 #include "TDXShaderManager.h"
+#include "TDXTextureManager.h"
 #include <d3d11.h>
 #include <DirectXMath.h>
 #include <wrl/client.h>
@@ -54,6 +55,7 @@ private:
 	TransformConstantBuffer m_TransformConstantBuffer;
 
 	TDXShaderManager m_TDXShaderManager;
+	TDXTextureManager m_TDXTextureManager;
 
 };
 

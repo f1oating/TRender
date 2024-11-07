@@ -1,6 +1,6 @@
 <mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:132.0) Gecko/20100101 Firefox/132.0" version="24.8.4">
   <diagram name="Страница — 1" id="iS9kPeVT_qTxmNW6HSiJ">
-    <mxGraphModel dx="3190" dy="1303" grid="1" gridSize="13" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="827" pageHeight="1169" background="none" math="0" shadow="0">
+    <mxGraphModel dx="1789" dy="539" grid="1" gridSize="13" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="827" pageHeight="1169" background="none" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -57,6 +57,18 @@
         </mxCell>
         <mxCell id="Nmb29etkxSLf_LVVn4ak-4" value="&lt;div&gt;std::unordered_map&amp;lt;std::string, ID3D11VertexShader*&amp;gt; m_VertexShadersMap;&lt;/div&gt;&lt;div&gt;&lt;div&gt;std::unordered_map&amp;lt;std::string, ID3D11PixelShader*&amp;gt; m_PixelShadersMap;&lt;/div&gt;&lt;div&gt;&lt;div&gt;std::unordered_map&amp;lt;std::string, ID3D11InputLayout&amp;gt; m_InputLayoutsMap;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;Microsoft::WRL::ComPtr &amp;lt;ID3DBlob&amp;gt; m_pBlob;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" parent="Nmb29etkxSLf_LVVn4ak-1" vertex="1">
           <mxGeometry y="242" width="637" height="122" as="geometry" />
+        </mxCell>
+        <mxCell id="j0UoL_jZY-VV4XArSAp1-1" value="&lt;div&gt;TDXTextureManager&lt;/div&gt;" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="-689" y="195" width="637" height="273" as="geometry" />
+        </mxCell>
+        <mxCell id="j0UoL_jZY-VV4XArSAp1-2" value="&lt;div&gt;TDXTexutureManager();&lt;/div&gt;&lt;div&gt;~TDXTextureManager();&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;void CreateSampler(ID3D11Device* device, ID3D11DeviceContext* context);&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;void AddTexture(std::string name, std::string path, ID3D11Device* device);&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;void BindTexture(std::string name, ID3D11DeviceContext* context);&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;void DeleteTexture(std::string name);&lt;/div&gt;" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" vertex="1" parent="j0UoL_jZY-VV4XArSAp1-1">
+          <mxGeometry y="26" width="637" height="169" as="geometry" />
+        </mxCell>
+        <mxCell id="j0UoL_jZY-VV4XArSAp1-3" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;strokeColor=inherit;" vertex="1" parent="j0UoL_jZY-VV4XArSAp1-1">
+          <mxGeometry y="195" width="637" height="8" as="geometry" />
+        </mxCell>
+        <mxCell id="j0UoL_jZY-VV4XArSAp1-4" value="&lt;div&gt;std::unordered_map&amp;lt;std::string, ID3D11ShaderResourceView*&amp;gt; m_TexturesMap;&lt;/div&gt;" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" vertex="1" parent="j0UoL_jZY-VV4XArSAp1-1">
+          <mxGeometry y="203" width="637" height="70" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
