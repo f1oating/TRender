@@ -68,7 +68,6 @@ void TDXTextureManager::AddTexture(std::string name, std::string path, ID3D11Dev
     hr = device->CreateShaderResourceView(pTexture, nullptr, &pTextureView);
     if (FAILED(hr)) {
         pTexture->Release();
-        stbi_image_free(imageData);
         throw std::runtime_error("Failed to create shader resource view!");
     }
 

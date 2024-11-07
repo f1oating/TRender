@@ -60,15 +60,15 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int nCmdShow) {
 
     renderDevice->Initizialize(hwnd, 800, 600);
 
-    TVertexColor vertices[] = {
-        {{-1.0f,-1.0f,-1.0f}, {1.0f, 0.0f, 0.0f, 1.0f}},
-        {{1.0f,-1.0f,-1.0f}, {0.0f, 1.0f, 0.0f, 1.0f}},
-        {{-1.0f,1.0f,-1.0f}, {0.0f, 0.0f, 1.0f, 1.0f}},
-        {{1.0f,1.0f,-1.0f}, {1.0f, 1.0f, 0.0f, 1.0f}},
-        {{-1.0f,-1.0f,1.0f}, {1.0f, 0.0f, 1.0f, 1.0f}},
-        {{1.0f,-1.0f,1.0f}, {0.0f, 1.0f, 1.0f, 1.0f}},
-        {{-1.0f,1.0f,1.0f}, {0.0f, 1.0f, 1.0f, 1.0f}},
-        {{1.0f,1.0f,1.0f}, {0.0f, 1.0f, 1.0f, 1.0f}},
+    TVertexPT vertices[] = {
+        {{-1.0f,-1.0f,-1.0f}, {0.0f, 1.0f}},
+        {{1.0f,-1.0f,-1.0f}, {1.0f, 1.0f}},
+        {{-1.0f,1.0f,-1.0f}, {0.0f, 0.0f}},
+        {{1.0f,1.0f,-1.0f}, {1.0f, 0.0f}},
+        {{-1.0f,-1.0f,1.0f}, {1.0f, 0.0f}},
+        {{1.0f,-1.0f,1.0f}, {0.0f, 0.0f}},
+        {{-1.0f,1.0f,1.0f}, {1.0f, 1.0f}},
+        {{1.0f,1.0f,1.0f}, {0.0f, 1.0f}},
     };
 
     unsigned short indices[] = {
@@ -81,6 +81,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int nCmdShow) {
     };
 
     renderDevice->SetViewMatrix({ 5.0f, 5.0f, -5.0f, 1.0f }, { 0.0f, 0.0f, 0.0f, 1.0f }, { 0.0f, 1.0f, 0.0f, 0.0f });
+    renderDevice->AddTexture("crate", "crate.jpg");
 
     // Main message loop
     MSG msg = {};
@@ -93,7 +94,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int nCmdShow) {
         else {
             renderDevice->BeginFrame(0.1f, 0.1f, 0.1f, 1.0f);
 
-            renderDevice->Draw(vertices, sizeof(vertices) / sizeof(TVertexColor), indices, sizeof(indices) / sizeof(unsigned short));
+            renderDevice->BindTexture("crate");
+            renderDevice->Draw(vertices, sizeof(vertices) / sizeof(TVertexPT), indices, sizeof(indices) / sizeof(unsigned short));
 
             renderDevice->EndFrame();
         }

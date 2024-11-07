@@ -58,6 +58,8 @@ bool TDXRenderDevice::Initizialize(HWND hwnd, int width, int height)
     OnResize(width, height);
     AddShaders();
 
+    m_TDXTextureManager.CreateSampler(m_pDevice.Get(), m_pDeviceContext.Get());
+
     m_IsRunning = true;
 
     return true;
@@ -82,14 +84,14 @@ void TDXRenderDevice::EndFrame() {
     m_pSwapChain->Present(1, 0);
 }
 
-void TDXRenderDevice::Draw(TVertexColor* vertices, unsigned short numVertices)
+void TDXRenderDevice::Draw(TVertexPT* vertices, unsigned short numVertices)
 {
     D3D11_MAPPED_SUBRESOURCE mappedResource;
     m_pDeviceContext->Map(m_pVertexBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
-    memcpy(mappedResource.pData, vertices, sizeof(TVertexColor) * numVertices);
+    memcpy(mappedResource.pData, vertices, sizeof(TVertexPT) * numVertices);
     m_pDeviceContext->Unmap(m_pVertexBuffer.Get(), 0);
 
-    const UINT stride = sizeof(TVertexColor);
+    const UINT stride = sizeof(TVertexPT);
     const UINT offset = 0u;
 
     m_pDeviceContext->IASetVertexBuffers(0, 1u, m_pVertexBuffer.GetAddressOf(), &stride, &offset);
@@ -99,11 +101,11 @@ void TDXRenderDevice::Draw(TVertexColor* vertices, unsigned short numVertices)
     m_pDeviceContext->Draw(numVertices, 0);
 }
 
-void TDXRenderDevice::Draw(TVertexColor* vertices, unsigned short numVertices, unsigned short* indices, unsigned short numIndices)
+void TDXRenderDevice::Draw(TVertexPT* vertices, unsigned short numVertices, unsigned short* indices, unsigned short numIndices)
 {
     D3D11_MAPPED_SUBRESOURCE vMappedResource;
     HRESULT hr = m_pDeviceContext->Map(m_pVertexBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &vMappedResource);
-    memcpy(vMappedResource.pData, vertices, sizeof(TVertexColor) * numVertices);
+    memcpy(vMappedResource.pData, vertices, sizeof(TVertexPT) * numVertices);
     m_pDeviceContext->Unmap(m_pVertexBuffer.Get(), 0);
 
     D3D11_MAPPED_SUBRESOURCE iMappedResource;
@@ -111,7 +113,7 @@ void TDXRenderDevice::Draw(TVertexColor* vertices, unsigned short numVertices, u
     memcpy(iMappedResource.pData, indices, sizeof(unsigned short) * numIndices);
     m_pDeviceContext->Unmap(m_pIndexBuffer.Get(), 0);
 
-    const UINT stride = sizeof(TVertexColor);
+    const UINT stride = sizeof(TVertexPT);
     const UINT offset = 0u;
 
     m_pDeviceContext->IASetVertexBuffers(0, 1u, m_pVertexBuffer.GetAddressOf(), &stride, &offset);
@@ -133,6 +135,16 @@ void TDXRenderDevice::SetViewMatrix(TVector4 eye, TVector4 at, TVector4 up)
     DirectX::XMVECTOR dat = DirectX::XMVectorSet(at.x, at.y, at.z, at.w);
     DirectX::XMVECTOR dup = DirectX::XMVectorSet(up.x, up.y, up.z, up.w);
     m_ViewMatrix = DirectX::XMMatrixLookAtLH(deye, dat, dup);
+}
+
+void TDXRenderDevice::AddTexture(std::string name, std::string path)
+{
+    m_TDXTextureManager.AddTexture(name, path, m_pDevice.Get());
+}
+
+void TDXRenderDevice::BindTexture(std::string name)
+{
+    m_TDXTextureManager.BindTexture(name, m_pDeviceContext.Get());
 }
 
 bool TDXRenderDevice::OnResize(int width, int height)
@@ -211,7 +223,7 @@ void TDXRenderDevice::CreateBuffers()
     vbd.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
     vbd.MiscFlags = 0u;
     vbd.ByteWidth = 16000;
-    vbd.StructureByteStride = sizeof(TVertexColor);
+    vbd.StructureByteStride = sizeof(TVertexPT);
 
     HRESULT hr = m_pDevice->CreateBuffer(&vbd, nullptr, &m_pVertexBuffer);
     if (FAILED(hr)) {

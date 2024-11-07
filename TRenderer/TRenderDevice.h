@@ -2,6 +2,7 @@
 #define TRENDERDEVICE_H
 
 #include <windows.h>
+#include <string>
 #include "T.h" 
 
 class TRenderDevice
@@ -14,11 +15,14 @@ public:
 	virtual void BeginFrame(float r, float g, float b, float a) = 0;
 	virtual void EndFrame() = 0;
 
-	virtual void Draw(TVertexColor* vertices, unsigned short numVertices) = 0;
-	virtual void Draw(TVertexColor* vertices, unsigned short numVertices, unsigned short* indices, unsigned short numIndices) = 0;
+	virtual void Draw(TVertexPT* vertices, unsigned short numVertices) = 0;
+	virtual void Draw(TVertexPT* vertices, unsigned short numVertices, unsigned short* indices, unsigned short numIndices) = 0;
 
 	virtual void SetProjectionMatrix(float fieldOfView, float aspectRatio, float nearZ, float farZ) = 0;
 	virtual void SetViewMatrix(TVector4 eye, TVector4 at, TVector4 up) = 0;
+
+	virtual void AddTexture(std::string name, std::string path) = 0;
+	virtual void BindTexture(std::string name) = 0;
 
 	virtual bool OnResize(int width, int height) = 0;
 	virtual bool IsRunning() = 0;

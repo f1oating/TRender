@@ -24,11 +24,14 @@ public:
 	virtual void BeginFrame(float r, float g, float b, float a) override;
 	virtual void EndFrame() override;
 
-	virtual void Draw(TVertexColor* vertices, unsigned short numVertices) override;
-	virtual void Draw(TVertexColor* vertices, unsigned short numVertices, unsigned short* indices, unsigned short numIndices) override;
+	virtual void Draw(TVertexPT* vertices, unsigned short numVertices) override;
+	virtual void Draw(TVertexPT* vertices, unsigned short numVertices, unsigned short* indices, unsigned short numIndices) override;
 
 	virtual void SetProjectionMatrix(float fieldOfView, float aspectRatio, float nearZ, float farZ) override;
 	virtual void SetViewMatrix(TVector4 eye, TVector4 at, TVector4 up) override;
+
+	virtual void AddTexture(std::string name, std::string path) override;
+	virtual void BindTexture(std::string name) override;
 
 	virtual bool OnResize(int width, int height) override;
 	virtual bool IsRunning() override;

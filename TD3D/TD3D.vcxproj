@@ -178,10 +178,12 @@
     <ClInclude Include="TD3D.h" />
     <ClInclude Include="TDXRenderDevice.h" />
     <ClInclude Include="TDXShaderManager.h" />
+    <ClInclude Include="TDXTextureManager.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="TDXRenderDevice.cpp" />
     <ClCompile Include="TDXShaderManager.cpp" />
+    <ClCompile Include="TDXTextureManager.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
