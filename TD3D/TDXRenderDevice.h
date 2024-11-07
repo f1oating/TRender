@@ -33,6 +33,7 @@ public:
 	virtual bool IsRunning() override;
 
 	void CreateBuffers();
+	void AddShaders();
 
 private:
 	Microsoft::WRL::ComPtr<ID3D11Device> m_pDevice;

@@ -11,6 +11,7 @@ TDXRenderDevice::TDXRenderDevice() :
 	m_pRenderTargetView(nullptr),
 	m_pDepthStencilView(nullptr),
 	m_pDepthStencilBuffer(nullptr),
+    m_TransformConstantBuffer(),
     m_TDXShaderManager()
 {
     DirectX::XMVECTOR eye = DirectX::XMVectorSet(0.0f, 0.0f, -5.0f, 1.0f);
@@ -55,10 +56,7 @@ bool TDXRenderDevice::Initizialize(HWND hwnd, int width, int height)
 
     CreateBuffers();
     OnResize(width, height);
-
-    m_TDXShaderManager.AddShaders("mesh", L"..\\TD3D\\VertexShader.cso", L"..\\TD3D\\PixelShader.cso", 
-        MESH_INPUT_LAYOUT, sizeof(MESH_INPUT_LAYOUT) / sizeof(D3D11_INPUT_ELEMENT_DESC), m_pDevice.Get());
-    m_TDXShaderManager.BindShaders("mesh", m_pDeviceContext.Get());
+    AddShaders();
 
     m_IsRunning = true;
 
@@ -244,6 +242,16 @@ void TDXRenderDevice::CreateBuffers()
     }
 
     m_pDeviceContext->VSSetConstantBuffers(0, 1, m_pTransformBuffer.GetAddressOf());
+}
+
+void TDXRenderDevice::AddShaders()
+{
+    m_TDXShaderManager.AddVertexShader("mesh", L"..\\TD3D\\VertexShader.cso",
+        MESH_INPUT_LAYOUT, sizeof(MESH_INPUT_LAYOUT) / sizeof(D3D11_INPUT_ELEMENT_DESC), m_pDevice.Get());
+    m_TDXShaderManager.AddPixelShader("mesh", L"..\\TD3D\\PixelShader.cso", m_pDevice.Get());
+
+    m_TDXShaderManager.BindVertexShader("mesh", m_pDeviceContext.Get());
+    m_TDXShaderManager.BindPixelShader("mesh", m_pDeviceContext.Get());
 }
 
 HRESULT CreateRenderDevice(TDXRenderDevice** pDevice) {
