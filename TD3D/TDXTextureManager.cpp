@@ -10,7 +10,12 @@ TDXTextureManager::TDXTextureManager()
 
 TDXTextureManager::~TDXTextureManager()
 {
+    for (const std::pair<std::string, ID3D11ShaderResourceView*> pair : m_TexturesMap)
+    {
+        pair.second->Release();
+    }
 
+    m_TexturesMap.clear();
 }
 
 void TDXTextureManager::CreateSampler(ID3D11Device* device, ID3D11DeviceContext* context)

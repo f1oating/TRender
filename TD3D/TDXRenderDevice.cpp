@@ -84,44 +84,17 @@ void TDXRenderDevice::EndFrame() {
     m_pSwapChain->Present(1, 0);
 }
 
-void TDXRenderDevice::Draw(TVertexPT* vertices, unsigned short numVertices)
+void TDXRenderDevice::DrawPT(unsigned short numIndices, unsigned short startIndexLocation, unsigned short baseVertexLocation)
 {
-    D3D11_MAPPED_SUBRESOURCE mappedResource;
-    m_pDeviceContext->Map(m_pVertexBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
-    memcpy(mappedResource.pData, vertices, sizeof(TVertexPT) * numVertices);
-    m_pDeviceContext->Unmap(m_pVertexBuffer.Get(), 0);
-
     const UINT stride = sizeof(TVertexPT);
     const UINT offset = 0u;
 
-    m_pDeviceContext->IASetVertexBuffers(0, 1u, m_pVertexBuffer.GetAddressOf(), &stride, &offset);
+    m_pDeviceContext->IASetVertexBuffers(0, 1u, m_pStaticVertexBufferPT.GetAddressOf(), &stride, &offset);
+    m_pDeviceContext->IASetIndexBuffer(m_pStaticIndexBufferPT.Get(), DXGI_FORMAT_R16_UINT, 0u);
 
     m_pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-    m_pDeviceContext->Draw(numVertices, 0);
-}
-
-void TDXRenderDevice::Draw(TVertexPT* vertices, unsigned short numVertices, unsigned short* indices, unsigned short numIndices)
-{
-    D3D11_MAPPED_SUBRESOURCE vMappedResource;
-    HRESULT hr = m_pDeviceContext->Map(m_pVertexBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &vMappedResource);
-    memcpy(vMappedResource.pData, vertices, sizeof(TVertexPT) * numVertices);
-    m_pDeviceContext->Unmap(m_pVertexBuffer.Get(), 0);
-
-    D3D11_MAPPED_SUBRESOURCE iMappedResource;
-    m_pDeviceContext->Map(m_pIndexBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &iMappedResource);
-    memcpy(iMappedResource.pData, indices, sizeof(unsigned short) * numIndices);
-    m_pDeviceContext->Unmap(m_pIndexBuffer.Get(), 0);
-
-    const UINT stride = sizeof(TVertexPT);
-    const UINT offset = 0u;
-
-    m_pDeviceContext->IASetVertexBuffers(0, 1u, m_pVertexBuffer.GetAddressOf(), &stride, &offset);
-    m_pDeviceContext->IASetIndexBuffer(m_pIndexBuffer.Get(), DXGI_FORMAT_R16_UINT, 0u);
-
-    m_pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-
-    m_pDeviceContext->DrawIndexed(numIndices, 0, 0);
+    m_pDeviceContext->DrawIndexed(numIndices, startIndexLocation, baseVertexLocation);
 }
 
 void TDXRenderDevice::SetProjectionMatrix(float fieldOfView, float aspectRatio, float nearZ, float farZ)
@@ -135,6 +108,45 @@ void TDXRenderDevice::SetViewMatrix(TVector4 eye, TVector4 at, TVector4 up)
     DirectX::XMVECTOR dat = DirectX::XMVectorSet(at.x, at.y, at.z, at.w);
     DirectX::XMVECTOR dup = DirectX::XMVectorSet(up.x, up.y, up.z, up.w);
     m_ViewMatrix = DirectX::XMMatrixLookAtLH(deye, dat, dup);
+}
+
+void TDXRenderDevice::UpdatePTBuffer(TVertexPT* vertices, unsigned short numVertices, unsigned short* indices, unsigned short numIndices)
+{
+    if (m_pStaticVertexBufferPT) {
+        m_pStaticVertexBufferPT->Release();
+        m_pStaticVertexBufferPT = nullptr;
+    }
+
+    if (m_pStaticIndexBufferPT) {
+        m_pStaticIndexBufferPT->Release();
+        m_pStaticIndexBufferPT = nullptr;
+    }
+
+    D3D11_BUFFER_DESC staticVertexBufferPTDesc = {};
+    staticVertexBufferPTDesc.Usage = D3D11_USAGE_DEFAULT;
+    staticVertexBufferPTDesc.ByteWidth = sizeof(TVertexPT) * numVertices;
+    staticVertexBufferPTDesc.StructureByteStride = sizeof(TVertexPT);
+    staticVertexBufferPTDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+    staticVertexBufferPTDesc.CPUAccessFlags = 0;
+    D3D11_SUBRESOURCE_DATA staticVertexBufferPTInitData = {};
+    staticVertexBufferPTInitData.pSysMem = vertices;
+    HRESULT hr = m_pDevice->CreateBuffer(&staticVertexBufferPTDesc, &staticVertexBufferPTInitData, &m_pStaticVertexBufferPT);
+    if (FAILED(hr)) {
+        throw std::runtime_error("Failed to create static PT vertex buffer.");
+    }
+
+    D3D11_BUFFER_DESC staticIndexBufferPTDesc = {};
+    staticIndexBufferPTDesc.Usage = D3D11_USAGE_DEFAULT;
+    staticIndexBufferPTDesc.ByteWidth = sizeof(unsigned short) * numIndices;
+    staticVertexBufferPTDesc.StructureByteStride = sizeof(unsigned short);
+    staticIndexBufferPTDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
+    staticIndexBufferPTDesc.CPUAccessFlags = 0;
+    D3D11_SUBRESOURCE_DATA staticIndexBufferPTInitData = {};
+    staticIndexBufferPTInitData.pSysMem = indices;
+    hr = m_pDevice->CreateBuffer(&staticIndexBufferPTDesc, &staticIndexBufferPTInitData, &m_pStaticIndexBufferPT);
+    if (FAILED(hr)) {
+        throw std::runtime_error("Failed to create static PT index buffer.");
+    }
 }
 
 void TDXRenderDevice::AddTexture(std::string name, std::string path)
@@ -217,38 +229,12 @@ bool TDXRenderDevice::IsRunning()
 
 void TDXRenderDevice::CreateBuffers()
 {
-    D3D11_BUFFER_DESC vbd = {};
-    vbd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-    vbd.Usage = D3D11_USAGE_DYNAMIC;
-    vbd.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-    vbd.MiscFlags = 0u;
-    vbd.ByteWidth = 16000;
-    vbd.StructureByteStride = sizeof(TVertexPT);
-
-    HRESULT hr = m_pDevice->CreateBuffer(&vbd, nullptr, &m_pVertexBuffer);
-    if (FAILED(hr)) {
-        throw std::runtime_error("Failed to create VertexBuffer.");
-    }
-
-    D3D11_BUFFER_DESC ibd = {};
-    ibd.BindFlags = D3D11_BIND_INDEX_BUFFER;
-    ibd.Usage = D3D11_USAGE_DYNAMIC;
-    ibd.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-    ibd.MiscFlags = 0u;
-    ibd.ByteWidth = 16000;
-    ibd.StructureByteStride = sizeof(unsigned short);
-
-    hr = m_pDevice->CreateBuffer(&ibd, nullptr, &m_pIndexBuffer);
-    if (FAILED(hr)) {
-        throw std::runtime_error("Failed to create IndexBuffer.");
-    }
-
     D3D11_BUFFER_DESC transformBufferDesc = {};
     transformBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
     transformBufferDesc.ByteWidth = sizeof(TransformConstantBuffer);
     transformBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
     transformBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-    hr = m_pDevice->CreateBuffer(&transformBufferDesc, nullptr, &m_pTransformBuffer);
+    HRESULT hr = m_pDevice->CreateBuffer(&transformBufferDesc, nullptr, &m_pTransformBuffer);
     if (FAILED(hr)) {
         throw std::runtime_error("Failed to create TransformBuffer.");
     }

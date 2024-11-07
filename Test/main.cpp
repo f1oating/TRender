@@ -69,9 +69,25 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int nCmdShow) {
         {{1.0f,-1.0f,1.0f}, {0.0f, 0.0f}},
         {{-1.0f,1.0f,1.0f}, {1.0f, 1.0f}},
         {{1.0f,1.0f,1.0f}, {0.0f, 1.0f}},
+
+        {{-4.0f,-4.0f,-4.0f}, {0.0f, 1.0f}},
+        {{-2.0f,-4.0f,-4.0f}, {1.0f, 1.0f}},
+        {{-4.0f,-2.0f,-4.0f}, {0.0f, 0.0f}},
+        {{-2.0f,-2.0f,-4.0f}, {1.0f, 0.0f}},
+        {{-4.0f,-4.0f,-2.0f}, {1.0f, 0.0f}},
+        {{-2.0f,-4.0f,-2.0f}, {0.0f, 0.0f}},
+        {{-4.0f,-2.0f,-2.0f}, {1.0f, 1.0f}},
+        {{-2.0f,-2.0f,-2.0f}, {0.0f, 1.0f}},
     };
 
     unsigned short indices[] = {
+        0,2,1, 2,3,1,
+        1,3,5, 3,7,5,
+        2,6,3, 3,6,7,
+        4,5,7, 4,7,6,
+        0,4,2, 2,4,6,
+        0,1,4, 1,5,4,
+
         0,2,1, 2,3,1,
         1,3,5, 3,7,5,
         2,6,3, 3,6,7,
@@ -82,6 +98,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int nCmdShow) {
 
     renderDevice->SetViewMatrix({ 5.0f, 5.0f, -5.0f, 1.0f }, { 0.0f, 0.0f, 0.0f, 1.0f }, { 0.0f, 1.0f, 0.0f, 0.0f });
     renderDevice->AddTexture("crate", "crate.jpg");
+    renderDevice->UpdatePTBuffer(vertices, sizeof(vertices) / sizeof(TVertexPT), indices, sizeof(indices) / sizeof(unsigned short));
 
     // Main message loop
     MSG msg = {};
@@ -95,11 +112,14 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int nCmdShow) {
             renderDevice->BeginFrame(0.1f, 0.1f, 0.1f, 1.0f);
 
             renderDevice->BindTexture("crate");
-            renderDevice->Draw(vertices, sizeof(vertices) / sizeof(TVertexPT), indices, sizeof(indices) / sizeof(unsigned short));
+            renderDevice->DrawPT(36, 0, 0);
+            renderDevice->DrawPT(36, 36, 8);
 
             renderDevice->EndFrame();
         }
     }
+
+    renderer.Release();
 
     return 0;
 }
