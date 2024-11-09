@@ -26,3 +26,29 @@ void TDXFeatureController::ChangeDepthStencilComparison(D3D11_COMPARISON_FUNC co
         newDepthStencilState->Release();
     }
 }
+
+void TDXFeatureController::ChangeRasterizerCulling(D3D11_CULL_MODE cullMode, ID3D11Device* device, ID3D11DeviceContext* deviceContext)
+{
+    ID3D11RasterizerState* currentRasterizerState = nullptr;
+    deviceContext->RSGetState(&currentRasterizerState);
+
+    if (currentRasterizerState)
+    {
+        currentRasterizerState->Release();
+    }
+
+    D3D11_RASTERIZER_DESC rasterizerDesc = {};
+    rasterizerDesc.CullMode = cullMode;
+    rasterizerDesc.FillMode = D3D11_FILL_SOLID;
+    rasterizerDesc.FrontCounterClockwise = TRUE;
+
+    ID3D11RasterizerState* newRasterizerState;
+    device->CreateRasterizerState(&rasterizerDesc, &newRasterizerState);
+
+    deviceContext->RSSetState(newRasterizerState);
+
+    if (newRasterizerState)
+    {
+        newRasterizerState->Release();
+    }
+}
