@@ -8,9 +8,10 @@
 #include <DirectXMath.h>
 #include <wrl/client.h>
 
-struct TransformConstantBuffer
+struct ViewProjectionConstantBuffer
 {
-	DirectX::XMMATRIX transform;
+	DirectX::XMMATRIX view;
+	DirectX::XMMATRIX projection;
 };
 
 class TDXRenderDevice : public TRenderDevice
@@ -48,7 +49,7 @@ private:
 	Microsoft::WRL::ComPtr<ID3D11DepthStencilView> m_pDepthStencilView;
 	Microsoft::WRL::ComPtr<ID3D11Texture2D> m_pDepthStencilBuffer;
 
-	Microsoft::WRL::ComPtr <ID3D11Buffer> m_pTransformBuffer;
+	Microsoft::WRL::ComPtr <ID3D11Buffer> m_pViewProjectionBuffer;
 
 	Microsoft::WRL::ComPtr<ID3D11Buffer> m_pStaticVertexBufferPT;
 	Microsoft::WRL::ComPtr<ID3D11Buffer> m_pStaticIndexBufferPT;
@@ -56,7 +57,7 @@ private:
 	DirectX::XMMATRIX m_ProjMatrix;
 	DirectX::XMMATRIX m_ViewMatrix;
 
-	TransformConstantBuffer m_TransformConstantBuffer;
+	ViewProjectionConstantBuffer m_ViewProjectionConstantBuffer;
 
 	TDXShaderManager m_TDXShaderManager;
 	TDXTextureManager m_TDXTextureManager;

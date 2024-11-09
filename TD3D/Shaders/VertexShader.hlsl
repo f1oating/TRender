@@ -1,6 +1,7 @@
 cbuffer CBuf : register(b0)
 {
-	matrix transform;
+	matrix viewMatrix;
+	matrix projectionMatrix;
 };
 
 struct VSOut
@@ -12,7 +13,7 @@ struct VSOut
 VSOut main(float3 pos : POSITION, float2 uv : TEXCOORD)
 {
 	VSOut vso;
-	vso.pos = mul(float4(pos, 1.0f), transform);
+	vso.pos = mul(float4(pos, 1.0f), mul(viewMatrix, projectionMatrix));
 	vso.uv = uv;
 	return vso;
 }

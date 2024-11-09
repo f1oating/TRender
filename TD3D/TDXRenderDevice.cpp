@@ -11,7 +11,7 @@ TDXRenderDevice::TDXRenderDevice() :
 	m_pRenderTargetView(nullptr),
 	m_pDepthStencilView(nullptr),
 	m_pDepthStencilBuffer(nullptr),
-    m_TransformConstantBuffer(),
+    m_ViewProjectionConstantBuffer(),
     m_TDXShaderManager()
 {
     DirectX::XMVECTOR eye = DirectX::XMVectorSet(0.0f, 0.0f, -5.0f, 1.0f);
@@ -70,14 +70,15 @@ void TDXRenderDevice::BeginFrame(float r, float g, float b, float a) {
     m_pDeviceContext->ClearRenderTargetView(m_pRenderTargetView.Get(), clearColor);
     m_pDeviceContext->ClearDepthStencilView(m_pDepthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 
-    m_TransformConstantBuffer = {
-        DirectX::XMMatrixTranspose(m_ViewMatrix * m_ProjMatrix)
+    m_ViewProjectionConstantBuffer = {
+        DirectX::XMMatrixTranspose(m_ViewMatrix),
+        DirectX::XMMatrixTranspose(m_ProjMatrix)
     };
 
     D3D11_MAPPED_SUBRESOURCE mappedResource;
-    m_pDeviceContext->Map(m_pTransformBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
-    memcpy(mappedResource.pData, &m_TransformConstantBuffer, sizeof(TransformConstantBuffer));
-    m_pDeviceContext->Unmap(m_pTransformBuffer.Get(), 0);
+    m_pDeviceContext->Map(m_pViewProjectionBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
+    memcpy(mappedResource.pData, &m_ViewProjectionConstantBuffer, sizeof(ViewProjectionConstantBuffer));
+    m_pDeviceContext->Unmap(m_pViewProjectionBuffer.Get(), 0);
 }
 
 void TDXRenderDevice::EndFrame() {
@@ -231,15 +232,15 @@ void TDXRenderDevice::CreateBuffers()
 {
     D3D11_BUFFER_DESC transformBufferDesc = {};
     transformBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
-    transformBufferDesc.ByteWidth = sizeof(TransformConstantBuffer);
+    transformBufferDesc.ByteWidth = sizeof(ViewProjectionConstantBuffer);
     transformBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
     transformBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-    HRESULT hr = m_pDevice->CreateBuffer(&transformBufferDesc, nullptr, &m_pTransformBuffer);
+    HRESULT hr = m_pDevice->CreateBuffer(&transformBufferDesc, nullptr, &m_pViewProjectionBuffer);
     if (FAILED(hr)) {
         throw std::runtime_error("Failed to create TransformBuffer.");
     }
 
-    m_pDeviceContext->VSSetConstantBuffers(0, 1, m_pTransformBuffer.GetAddressOf());
+    m_pDeviceContext->VSSetConstantBuffers(0, 1, m_pViewProjectionBuffer.GetAddressOf());
 }
 
 void TDXRenderDevice::AddShaders()
