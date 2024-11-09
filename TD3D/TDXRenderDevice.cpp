@@ -170,6 +170,30 @@ void TDXRenderDevice::BindPixelShader(std::string name)
     m_TDXShaderManager.BindPixelShader(name, m_pDeviceContext.Get());
 }
 
+void TDXRenderDevice::SetDepthStencilComparison(bool flag)
+{
+    if (flag)
+    {
+        m_TDXFeatureController.ChangeDepthStencilComparison(D3D11_COMPARISON_LESS_EQUAL, m_pDevice.Get(), m_pDeviceContext.Get());
+    }
+    else
+    {
+        m_TDXFeatureController.ChangeDepthStencilComparison(D3D11_COMPARISON_LESS, m_pDevice.Get(), m_pDeviceContext.Get());
+    }
+}
+
+void TDXRenderDevice::SetRasterizerCulling(bool flag)
+{
+    if (flag)
+    {
+        m_TDXFeatureController.ChangeRasterizerCulling(D3D11_CULL_NONE, m_pDevice.Get(), m_pDeviceContext.Get());
+    }
+    else
+    {
+        m_TDXFeatureController.ChangeRasterizerCulling(D3D11_CULL_BACK, m_pDevice.Get(), m_pDeviceContext.Get());
+    }
+}
+
 bool TDXRenderDevice::OnResize(int width, int height)
 {
     m_pRenderTargetView.Reset();

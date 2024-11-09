@@ -28,6 +28,9 @@ public:
 	virtual void BindVertexShader(std::string name) = 0;
 	virtual void BindPixelShader(std::string name) = 0;
 
+	virtual void SetDepthStencilComparison(bool flag) = 0;
+	virtual void SetRasterizerCulling(bool flag) = 0;
+
 	virtual bool OnResize(int width, int height) = 0;
 	virtual bool IsRunning() = 0;
 

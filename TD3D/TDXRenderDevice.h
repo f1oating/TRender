@@ -4,6 +4,7 @@
 #include "TRenderDevice.h"
 #include "TDXShaderManager.h"
 #include "TDXTextureManager.h"
+#include "TDXFeatureController.h"
 #include <d3d11.h>
 #include <DirectXMath.h>
 #include <wrl/client.h>
@@ -38,6 +39,9 @@ public:
 	virtual void BindVertexShader(std::string name) override;
 	virtual void BindPixelShader(std::string name) override;
 
+	virtual void SetDepthStencilComparison(bool flag) override;
+	virtual void SetRasterizerCulling(bool flag) override;
+
 	virtual bool OnResize(int width, int height) override;
 	virtual bool IsRunning() override;
 
@@ -64,6 +68,7 @@ private:
 
 	TDXShaderManager m_TDXShaderManager;
 	TDXTextureManager m_TDXTextureManager;
+	TDXFeatureController m_TDXFeatureController;
 
 };
 
