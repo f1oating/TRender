@@ -160,6 +160,16 @@ void TDXRenderDevice::BindTexture(std::string name)
     m_TDXTextureManager.BindTexture(name, m_pDeviceContext.Get());
 }
 
+void TDXRenderDevice::BindVertexShader(std::string name)
+{
+    m_TDXShaderManager.BindVertexShader(name, m_pDeviceContext.Get());
+}
+
+void TDXRenderDevice::BindPixelShader(std::string name)
+{
+    m_TDXShaderManager.BindPixelShader(name, m_pDeviceContext.Get());
+}
+
 bool TDXRenderDevice::OnResize(int width, int height)
 {
     m_pRenderTargetView.Reset();
@@ -248,9 +258,6 @@ void TDXRenderDevice::AddShaders()
     m_TDXShaderManager.AddVertexShader("mesh", L"..\\TD3D\\VertexShader.cso",
         MESH_INPUT_LAYOUT, sizeof(MESH_INPUT_LAYOUT) / sizeof(D3D11_INPUT_ELEMENT_DESC), m_pDevice.Get());
     m_TDXShaderManager.AddPixelShader("mesh", L"..\\TD3D\\PixelShader.cso", m_pDevice.Get());
-
-    m_TDXShaderManager.BindVertexShader("mesh", m_pDeviceContext.Get());
-    m_TDXShaderManager.BindPixelShader("mesh", m_pDeviceContext.Get());
 }
 
 HRESULT CreateRenderDevice(TDXRenderDevice** pDevice) {

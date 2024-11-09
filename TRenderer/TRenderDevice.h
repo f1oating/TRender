@@ -25,6 +25,9 @@ public:
 	virtual void AddTexture(std::string name, std::string path) = 0;
 	virtual void BindTexture(std::string name) = 0;
 
+	virtual void BindVertexShader(std::string name) = 0;
+	virtual void BindPixelShader(std::string name) = 0;
+
 	virtual bool OnResize(int width, int height) = 0;
 	virtual bool IsRunning() = 0;
 

@@ -35,6 +35,9 @@ public:
 	virtual void AddTexture(std::string name, std::string path) override;
 	virtual void BindTexture(std::string name) override;
 
+	virtual void BindVertexShader(std::string name) override;
+	virtual void BindPixelShader(std::string name) override;
+
 	virtual bool OnResize(int width, int height) override;
 	virtual bool IsRunning() override;
 

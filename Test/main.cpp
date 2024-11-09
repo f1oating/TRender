@@ -111,6 +111,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int nCmdShow) {
         else {
             renderDevice->BeginFrame(0.1f, 0.1f, 0.1f, 1.0f);
 
+            renderDevice->BindVertexShader("mesh");
+            renderDevice->BindPixelShader("mesh");
+
             renderDevice->BindTexture("crate");
             renderDevice->DrawPT(36, 0, 0);
             renderDevice->DrawPT(36, 36, 8);
