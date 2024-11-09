@@ -1,6 +1,6 @@
 <mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:132.0) Gecko/20100101 Firefox/132.0" version="24.8.4">
   <diagram name="Страница — 1" id="iS9kPeVT_qTxmNW6HSiJ">
-    <mxGraphModel dx="2234" dy="782" grid="1" gridSize="13" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="827" pageHeight="1169" background="none" math="0" shadow="0">
+    <mxGraphModel dx="2047" dy="680" grid="1" gridSize="13" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="827" pageHeight="1169" background="none" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -69,6 +69,18 @@
         </mxCell>
         <mxCell id="j0UoL_jZY-VV4XArSAp1-4" value="&lt;div&gt;std::unordered_map&amp;lt;std::string, ID3D11ShaderResourceView*&amp;gt; m_TexturesMap;&lt;/div&gt;" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" parent="j0UoL_jZY-VV4XArSAp1-1" vertex="1">
           <mxGeometry y="203" width="637" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="85-j-p2QJw2XKJVX7Edh-1" value="TDXFeatureController" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="676" y="624" width="559" height="273" as="geometry" />
+        </mxCell>
+        <mxCell id="85-j-p2QJw2XKJVX7Edh-2" value="&lt;span class=&quot;hljs-type&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;hljs-title&quot;&gt;ChangeDepthStencilComparison&lt;/span&gt;&lt;span class=&quot;hljs-params&quot;&gt;(D3D11_COMPARISON_FUNC comparisonFunc, &lt;/span&gt;ID3D11Device* device, ID3D11DeviceContext* deviceContext&lt;span class=&quot;hljs-params&quot;&gt;);&lt;/span&gt;" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" vertex="1" parent="85-j-p2QJw2XKJVX7Edh-1">
+          <mxGeometry y="26" width="559" height="143" as="geometry" />
+        </mxCell>
+        <mxCell id="85-j-p2QJw2XKJVX7Edh-3" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;strokeColor=inherit;" vertex="1" parent="85-j-p2QJw2XKJVX7Edh-1">
+          <mxGeometry y="169" width="559" height="8" as="geometry" />
+        </mxCell>
+        <mxCell id="85-j-p2QJw2XKJVX7Edh-4" value="+ method(type): type" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" vertex="1" parent="85-j-p2QJw2XKJVX7Edh-1">
+          <mxGeometry y="177" width="559" height="96" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
