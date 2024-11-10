@@ -1,6 +1,5 @@
 #include "TDXRenderDevice.h"
 
-#include "TD3D.h"
 #include <stdexcept>
 #include <d3dcompiler.h>
 
@@ -12,19 +11,10 @@ TDXRenderDevice::TDXRenderDevice() :
 	m_pDepthStencilView(nullptr),
 	m_pDepthStencilBuffer(nullptr),
     m_ViewProjectionConstantBuffer(),
-    m_TDXShaderManager()
+    m_TDXShaderManager(),
+    m_Camera()
 {
-    DirectX::XMVECTOR eye = DirectX::XMVectorSet(0.0f, 0.0f, -5.0f, 1.0f);
-    DirectX::XMVECTOR at = DirectX::XMVectorSet(0.0f, 0.0f, 0.0f, 1.0f);
-    DirectX::XMVECTOR up = DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
-    m_ViewMatrix = DirectX::XMMatrixLookAtLH(eye, at, up);
-    m_ProjMatrix = DirectX::XMMatrixIdentity();
-
-    this->pos = DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f);
-    this->posVector = XMLoadFloat3(&this->pos);
-    this->rot = DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f);
-    this->rotVector = XMLoadFloat3(&this->rot);
-    this->UpdateViewMatrix();
+    UpdateViewMatrix();
 }
 
 TDXRenderDevice::~TDXRenderDevice()
@@ -77,8 +67,8 @@ void TDXRenderDevice::BeginFrame(float r, float g, float b, float a) {
     m_pDeviceContext->ClearDepthStencilView(m_pDepthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 
     m_ViewProjectionConstantBuffer = {
-        DirectX::XMMatrixTranspose(m_ViewMatrix),
-        DirectX::XMMatrixTranspose(m_ProjMatrix)
+        DirectX::XMMatrixTranspose(m_Camera.viewMatrix),
+        DirectX::XMMatrixTranspose(m_Camera.projectionMatrix)
     };
 
     D3D11_MAPPED_SUBRESOURCE mappedResource;
@@ -104,59 +94,52 @@ void TDXRenderDevice::DrawPT(unsigned short numIndices, unsigned short startInde
     m_pDeviceContext->DrawIndexed(numIndices, startIndexLocation, baseVertexLocation);
 }
 
-void TDXRenderDevice::SetProjectionMatrix(float fieldOfView, float aspectRatio, float nearZ, float farZ)
+void TDXRenderDevice::SetProjectionValues(float fovDegrees, float aspectRatio, float nearZ, float farZ)
 {
-    m_ProjMatrix = DirectX::XMMatrixPerspectiveFovLH(fieldOfView, aspectRatio, nearZ, farZ);
-}
-
-void TDXRenderDevice::SetViewMatrix(TVector4 eye, TVector4 at, TVector4 up)
-{
-    DirectX::XMVECTOR deye = DirectX::XMVectorSet(eye.x, eye.y, eye.z, eye.w);
-    DirectX::XMVECTOR dat = DirectX::XMVectorSet(at.x, at.y, at.z, at.w);
-    DirectX::XMVECTOR dup = DirectX::XMVectorSet(up.x, up.y, up.z, up.w);
-    m_ViewMatrix = DirectX::XMMatrixLookAtLH(deye, dat, dup);
+    float fovRadians = (fovDegrees / 360.0f) * DirectX::XM_2PI;
+    m_Camera.projectionMatrix = DirectX::XMMatrixPerspectiveFovLH(fovRadians, aspectRatio, nearZ, farZ);
 }
 
 void TDXRenderDevice::SetViewPosition(float x, float y, float z)
 {
-    this->pos = DirectX::XMFLOAT3(x, y, z);
-    this->posVector = XMLoadFloat3(&this->pos);
-    this->UpdateViewMatrix();
+    m_Camera.pos = DirectX::XMFLOAT3(x, y, z);
+    m_Camera.posVector = DirectX::XMLoadFloat3(&m_Camera.pos);
+    UpdateViewMatrix();
 }
 
 void TDXRenderDevice::AdjustPosition(float x, float y, float z)
 {
-    this->pos.x += x;
-    this->pos.y += y;
-    this->pos.z += z;
-    this->posVector = XMLoadFloat3(&this->pos);
-    this->UpdateViewMatrix();
+    m_Camera.pos.x += x;
+    m_Camera.pos.y += y;
+    m_Camera.pos.z += z;
+    m_Camera.posVector = DirectX::XMLoadFloat3(&m_Camera.pos);
+    UpdateViewMatrix();
 }
 
 void TDXRenderDevice::SetRotation(float x, float y, float z)
 {
-    this->rot = DirectX::XMFLOAT3(x, y, z);
-    this->rotVector = XMLoadFloat3(&this->rot);
-    this->UpdateViewMatrix();
+    m_Camera.rot = DirectX::XMFLOAT3(x, y, z);
+    m_Camera.rotVector = DirectX::XMLoadFloat3(&m_Camera.rot);
+    UpdateViewMatrix();
 }
 
 void TDXRenderDevice::AdjustRotation(float x, float y, float z)
 {
-    this->rot.x += x;
-    this->rot.y += y;
-    this->rot.z += z;
-    this->rotVector = DirectX::XMLoadFloat3(&this->rot);
-    this->UpdateViewMatrix();
+    m_Camera.rot.x += x;
+    m_Camera.rot.y += y;
+    m_Camera.rot.z += z;
+    m_Camera.rotVector = DirectX::XMLoadFloat3(&m_Camera.rot);
+    UpdateViewMatrix();
 }
 
 void TDXRenderDevice::SetLookAtPos(float x, float y, float z)
 {
-    if (x == this->pos.x && y == this->pos.y && z == this->pos.z)
+    if (x == m_Camera.pos.x && y == m_Camera.pos.y && z == m_Camera.pos.z)
         return;
 
-    x = this->pos.x - x;
-    y = this->pos.y - y;
-    z = this->pos.z - z;
+    x = m_Camera.pos.x - x;
+    y = m_Camera.pos.y - y;
+    z = m_Camera.pos.z - z;
 
     float pitch = 0.0f;
     if (y != 0.0f)
@@ -252,11 +235,7 @@ bool TDXRenderDevice::OnResize(int width, int height)
     m_pDepthStencilBuffer.Reset();
     m_pDepthStencilView.Reset();
 
-    float fieldOfView = DirectX::XM_PIDIV4;
-    float aspectRatio = width / height;
-    float nearZ = 0.1f;
-    float farZ = 100.0f;
-    m_ProjMatrix = DirectX::XMMatrixPerspectiveFovLH(fieldOfView, aspectRatio, nearZ, farZ);
+    m_Camera.projectionMatrix = DirectX::XMMatrixPerspectiveFovLH(90.0f, static_cast<float>(width) / static_cast<float>(height), 0.1f, 1000.0f);
 
     HRESULT hr = m_pSwapChain->ResizeBuffers(1, width, height, DXGI_FORMAT_R8G8B8A8_UNORM, 0);
     if (FAILED(hr)) {
@@ -343,15 +322,15 @@ void TDXRenderDevice::AddShaders()
 void TDXRenderDevice::UpdateViewMatrix()
 {
     //Calculate camera rotation matrix
-    DirectX::XMMATRIX camRotationMatrix = DirectX::XMMatrixRotationRollPitchYaw(this->rot.x, this->rot.y, this->rot.z);
+    DirectX::XMMATRIX camRotationMatrix = DirectX::XMMatrixRotationRollPitchYaw(m_Camera.rot.x, m_Camera.rot.y, m_Camera.rot.z);
     //Calculate unit vector of cam target based off camera forward value transformed by cam rotation matrix
-    DirectX::XMVECTOR camTarget = XMVector3TransformCoord(this->DEFAULT_FORWARD_VECTOR, camRotationMatrix);
+    DirectX::XMVECTOR camTarget = XMVector3TransformCoord(DEFAULT_FORWARD_VECTOR, camRotationMatrix);
     //Adjust cam target to be offset by the camera's current position
-    camTarget = DirectX::XMVectorAdd(camTarget, this->posVector);
+    camTarget = DirectX::XMVectorAdd(camTarget, m_Camera.posVector);
     //Calculate up direction based on current rotation
-    DirectX::XMVECTOR upDir = XMVector3TransformCoord(this->DEFAULT_UP_VECTOR, camRotationMatrix);
+    DirectX::XMVECTOR upDir = XMVector3TransformCoord(DEFAULT_UP_VECTOR, camRotationMatrix);
     //Rebuild view matrix
-    this->m_ViewMatrix = DirectX::XMMatrixLookAtLH(this->posVector, camTarget, upDir);
+    m_Camera.viewMatrix = DirectX::XMMatrixLookAtLH(m_Camera.posVector, camTarget, upDir);
 }
 
 HRESULT CreateRenderDevice(TDXRenderDevice** pDevice) {

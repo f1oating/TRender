@@ -5,6 +5,7 @@
 #include "TDXShaderManager.h"
 #include "TDXTextureManager.h"
 #include "TDXFeatureController.h"
+#include "TD3D.h"
 #include <d3d11.h>
 #include <DirectXMath.h>
 #include <wrl/client.h>
@@ -28,8 +29,7 @@ public:
 
 	virtual void DrawPT(unsigned short numIndices, unsigned short startIndexLocation, unsigned short baseVertexLocation) override;
 
-	virtual void SetProjectionMatrix(float fieldOfView, float aspectRatio, float nearZ, float farZ) override;
-	virtual void SetViewMatrix(TVector4 eye, TVector4 at, TVector4 up) override;
+	virtual void SetProjectionValues(float fovDegrees, float aspectRatio, float nearZ, float farZ) override;
 
 	virtual void SetViewPosition(float x, float y, float z) override;
 	virtual void AdjustPosition(float x, float y, float z) override;
@@ -68,25 +68,13 @@ private:
 	Microsoft::WRL::ComPtr<ID3D11Buffer> m_pStaticVertexBufferPT;
 	Microsoft::WRL::ComPtr<ID3D11Buffer> m_pStaticIndexBufferPT;
 
-	DirectX::XMMATRIX m_ProjMatrix;
-	DirectX::XMMATRIX m_ViewMatrix;
-
 	ViewProjectionConstantBuffer m_ViewProjectionConstantBuffer;
 
 	TDXShaderManager m_TDXShaderManager;
 	TDXTextureManager m_TDXTextureManager;
 	TDXFeatureController m_TDXFeatureController;
 
-	DirectX::XMVECTOR posVector;
-	DirectX::XMVECTOR rotVector;
-	DirectX::XMFLOAT3 pos;
-	DirectX::XMFLOAT3 rot;
-
-	const DirectX::XMVECTOR DEFAULT_FORWARD_VECTOR = DirectX::XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f);
-	const DirectX::XMVECTOR DEFAULT_UP_VECTOR = DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
-	const DirectX::XMVECTOR DEFAULT_BACKWARD_VECTOR = DirectX::XMVectorSet(0.0f, 0.0f, -1.0f, 0.0f);
-	const DirectX::XMVECTOR DEFAULT_LEFT_VECTOR = DirectX::XMVectorSet(-1.0f, 0.0f, 0.0f, 0.0f);
-	const DirectX::XMVECTOR DEFAULT_RIGHT_VECTOR = DirectX::XMVectorSet(1.0f, 0.0f, 0.0f, 0.0f);
+	TDXCamera m_Camera;
 
 };
 

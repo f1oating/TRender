@@ -17,8 +17,7 @@ public:
 
 	virtual void DrawPT(unsigned short numIndices, unsigned short startIndexLocation, unsigned short baseVertexLocation) = 0;
 
-	virtual void SetProjectionMatrix(float fieldOfView, float aspectRatio, float nearZ, float farZ) = 0;
-	virtual void SetViewMatrix(TVector4 eye, TVector4 at, TVector4 up) = 0;
+	virtual void SetProjectionValues(float fovDegrees, float aspectRatio, float nearZ, float farZ) = 0;
 
 	virtual void SetViewPosition(float x, float y, float z) = 0;
 	virtual void AdjustPosition(float x, float y, float z) = 0;
