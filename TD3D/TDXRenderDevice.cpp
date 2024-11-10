@@ -172,26 +172,13 @@ void TDXRenderDevice::BindPixelShader(std::string name)
 
 void TDXRenderDevice::SetDepthStencilComparison(bool flag)
 {
-    if (flag)
-    {
-        m_TDXFeatureController.ChangeDepthStencilComparison(D3D11_COMPARISON_LESS_EQUAL, m_pDevice.Get(), m_pDeviceContext.Get());
-    }
-    else
-    {
-        m_TDXFeatureController.ChangeDepthStencilComparison(D3D11_COMPARISON_LESS, m_pDevice.Get(), m_pDeviceContext.Get());
-    }
+    m_TDXFeatureController.ChangeDepthStencilComparison(flag, m_pDevice.Get(), m_pDeviceContext.Get());
+
 }
 
 void TDXRenderDevice::SetRasterizerCulling(bool flag)
 {
-    if (flag)
-    {
-        m_TDXFeatureController.ChangeRasterizerCulling(D3D11_CULL_NONE, m_pDevice.Get(), m_pDeviceContext.Get());
-    }
-    else
-    {
-        m_TDXFeatureController.ChangeRasterizerCulling(D3D11_CULL_BACK, m_pDevice.Get(), m_pDeviceContext.Get());
-    }
+    m_TDXFeatureController.ChangeRasterizerCulling(flag, m_pDevice.Get(), m_pDeviceContext.Get());
 }
 
 bool TDXRenderDevice::OnResize(int width, int height)
@@ -282,6 +269,10 @@ void TDXRenderDevice::AddShaders()
     m_TDXShaderManager.AddVertexShader("mesh", L"..\\TD3D\\VertexShader.cso",
         MESH_INPUT_LAYOUT, sizeof(MESH_INPUT_LAYOUT) / sizeof(D3D11_INPUT_ELEMENT_DESC), m_pDevice.Get());
     m_TDXShaderManager.AddPixelShader("mesh", L"..\\TD3D\\PixelShader.cso", m_pDevice.Get());
+
+    m_TDXShaderManager.AddVertexShader("skybox", L"..\\TD3D\\SkyboxVertexShader.cso",
+        MESH_INPUT_LAYOUT, sizeof(MESH_INPUT_LAYOUT) / sizeof(D3D11_INPUT_ELEMENT_DESC), m_pDevice.Get());
+    m_TDXShaderManager.AddPixelShader("skybox", L"..\\TD3D\\SkyboxPixelShader.cso", m_pDevice.Get());
 }
 
 HRESULT CreateRenderDevice(TDXRenderDevice** pDevice) {

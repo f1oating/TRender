@@ -1,6 +1,6 @@
 #include "TDXFeatureController.h"
 
-void TDXFeatureController::ChangeDepthStencilComparison(D3D11_COMPARISON_FUNC comparisonFunc, ID3D11Device* device, ID3D11DeviceContext* deviceContext)
+void TDXFeatureController::ChangeDepthStencilComparison(bool flag, ID3D11Device* device, ID3D11DeviceContext* deviceContext)
 {
     ID3D11DepthStencilState* currentDepthStencilState = nullptr;
     deviceContext->OMGetDepthStencilState(&currentDepthStencilState, nullptr);
@@ -13,8 +13,14 @@ void TDXFeatureController::ChangeDepthStencilComparison(D3D11_COMPARISON_FUNC co
     D3D11_DEPTH_STENCIL_DESC depthStencilDesc = {};
     depthStencilDesc.DepthEnable = TRUE;
     depthStencilDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
-    depthStencilDesc.DepthFunc = comparisonFunc;
-    depthStencilDesc.StencilEnable = FALSE;
+    depthStencilDesc.DepthFunc = D3D11_COMPARISON_LESS;
+
+    if (!flag)
+    {
+        depthStencilDesc.DepthEnable = FALSE;
+        depthStencilDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ZERO;
+        depthStencilDesc.DepthFunc = D3D11_COMPARISON_ALWAYS;
+    }
 
     ID3D11DepthStencilState* newDepthStencilState;
     device->CreateDepthStencilState(&depthStencilDesc, &newDepthStencilState);
@@ -27,7 +33,7 @@ void TDXFeatureController::ChangeDepthStencilComparison(D3D11_COMPARISON_FUNC co
     }
 }
 
-void TDXFeatureController::ChangeRasterizerCulling(D3D11_CULL_MODE cullMode, ID3D11Device* device, ID3D11DeviceContext* deviceContext)
+void TDXFeatureController::ChangeRasterizerCulling(bool flag, ID3D11Device* device, ID3D11DeviceContext* deviceContext)
 {
     ID3D11RasterizerState* currentRasterizerState = nullptr;
     deviceContext->RSGetState(&currentRasterizerState);
@@ -38,9 +44,16 @@ void TDXFeatureController::ChangeRasterizerCulling(D3D11_CULL_MODE cullMode, ID3
     }
 
     D3D11_RASTERIZER_DESC rasterizerDesc = {};
-    rasterizerDesc.CullMode = cullMode;
     rasterizerDesc.FillMode = D3D11_FILL_SOLID;
-    rasterizerDesc.FrontCounterClockwise = TRUE;
+    rasterizerDesc.CullMode = D3D11_CULL_BACK;
+    rasterizerDesc.FrontCounterClockwise = FALSE;
+
+    if (!flag)
+    {
+        rasterizerDesc.CullMode = D3D11_CULL_NONE;
+        rasterizerDesc.FillMode = D3D11_FILL_SOLID;
+        rasterizerDesc.FrontCounterClockwise = TRUE;
+    }
 
     ID3D11RasterizerState* newRasterizerState;
     device->CreateRasterizerState(&rasterizerDesc, &newRasterizerState);

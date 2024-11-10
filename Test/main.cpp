@@ -103,6 +103,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int nCmdShow) {
 
     renderDevice->SetViewMatrix({ 5.0f, 5.0f, -5.0f, 1.0f }, { 0.0f, 0.0f, 0.0f, 1.0f }, { 0.0f, 1.0f, 0.0f, 0.0f });
     renderDevice->AddTexture("crate", "crate.jpg");
+    renderDevice->AddTexture("skybox", "skybox.jpg");
     renderDevice->UpdatePTBuffer(vertices, sizeof(vertices) / sizeof(TVertexPT), indices, sizeof(indices) / sizeof(unsigned short));
 
     // Main message loop
@@ -115,6 +116,18 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int nCmdShow) {
         }
         else {
             renderDevice->BeginFrame(0.1f, 0.1f, 0.1f, 1.0f);
+
+            renderDevice->SetRasterizerCulling(false);
+            renderDevice->SetDepthStencilComparison(false);
+
+            renderDevice->BindVertexShader("skybox");
+            renderDevice->BindPixelShader("skybox");
+
+            renderDevice->BindTexture("skybox");
+            renderDevice->DrawPT(36, 0, 0);
+
+            renderDevice->SetRasterizerCulling(true);
+            renderDevice->SetDepthStencilComparison(true);
 
             renderDevice->BindVertexShader("mesh");
             renderDevice->BindPixelShader("mesh");

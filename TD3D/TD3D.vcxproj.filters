@@ -22,6 +22,8 @@
   <ItemGroup>
     <FxCompile Include="Shaders\PixelShader.hlsl" />
     <FxCompile Include="Shaders\VertexShader.hlsl" />
+    <FxCompile Include="Shaders\SkyboxVertexShader.hlsl" />
+    <FxCompile Include="Shaders\SkyboxPixelShader.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="T.h">
