@@ -20,6 +20,12 @@ public:
 	virtual void SetProjectionMatrix(float fieldOfView, float aspectRatio, float nearZ, float farZ) = 0;
 	virtual void SetViewMatrix(TVector4 eye, TVector4 at, TVector4 up) = 0;
 
+	virtual void SetViewPosition(float x, float y, float z) = 0;
+	virtual void AdjustPosition(float x, float y, float z) = 0;
+	virtual void SetRotation(float x, float y, float z) = 0;
+	virtual void AdjustRotation(float x, float y, float z) = 0;
+	virtual void SetLookAtPos(float x, float y, float z) = 0;
+
 	virtual void UpdatePTBuffer(TVertexPT* vertices, unsigned short numVertices, unsigned short* indices, unsigned short numIndices) = 0;
 
 	virtual void AddTexture(std::string name, std::string path) = 0;

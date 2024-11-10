@@ -101,10 +101,12 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int nCmdShow) {
         20, 21, 22, 20, 22, 23
     };
 
-    renderDevice->SetViewMatrix({ 5.0f, 5.0f, -5.0f, 1.0f }, { 0.0f, 0.0f, 0.0f, 1.0f }, { 0.0f, 1.0f, 0.0f, 0.0f });
+    renderDevice->SetViewPosition(5.0f, 5.0f, -5.0f);
     renderDevice->AddTexture("crate", "crate.jpg");
     renderDevice->AddTexture("skybox", "skybox.jpg");
     renderDevice->UpdatePTBuffer(vertices, sizeof(vertices) / sizeof(TVertexPT), indices, sizeof(indices) / sizeof(unsigned short));
+
+    float x = 0.0001;
 
     // Main message loop
     MSG msg = {};
@@ -116,6 +118,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int nCmdShow) {
         }
         else {
             renderDevice->BeginFrame(0.1f, 0.1f, 0.1f, 1.0f);
+
+            x += 0.0000001;
+            renderDevice->AdjustPosition(x, 0.0f, 0.0f);
+            renderDevice->SetLookAtPos(1.0f, 1.0f, 0.0f);
 
             renderDevice->SetRasterizerCulling(false);
             renderDevice->SetDepthStencilComparison(false);

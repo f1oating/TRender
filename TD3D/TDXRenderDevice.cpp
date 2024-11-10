@@ -19,6 +19,12 @@ TDXRenderDevice::TDXRenderDevice() :
     DirectX::XMVECTOR up = DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
     m_ViewMatrix = DirectX::XMMatrixLookAtLH(eye, at, up);
     m_ProjMatrix = DirectX::XMMatrixIdentity();
+
+    this->pos = DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f);
+    this->posVector = XMLoadFloat3(&this->pos);
+    this->rot = DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f);
+    this->rotVector = XMLoadFloat3(&this->rot);
+    this->UpdateViewMatrix();
 }
 
 TDXRenderDevice::~TDXRenderDevice()
@@ -109,6 +115,65 @@ void TDXRenderDevice::SetViewMatrix(TVector4 eye, TVector4 at, TVector4 up)
     DirectX::XMVECTOR dat = DirectX::XMVectorSet(at.x, at.y, at.z, at.w);
     DirectX::XMVECTOR dup = DirectX::XMVectorSet(up.x, up.y, up.z, up.w);
     m_ViewMatrix = DirectX::XMMatrixLookAtLH(deye, dat, dup);
+}
+
+void TDXRenderDevice::SetViewPosition(float x, float y, float z)
+{
+    this->pos = DirectX::XMFLOAT3(x, y, z);
+    this->posVector = XMLoadFloat3(&this->pos);
+    this->UpdateViewMatrix();
+}
+
+void TDXRenderDevice::AdjustPosition(float x, float y, float z)
+{
+    this->pos.x += x;
+    this->pos.y += y;
+    this->pos.z += z;
+    this->posVector = XMLoadFloat3(&this->pos);
+    this->UpdateViewMatrix();
+}
+
+void TDXRenderDevice::SetRotation(float x, float y, float z)
+{
+    this->rot = DirectX::XMFLOAT3(x, y, z);
+    this->rotVector = XMLoadFloat3(&this->rot);
+    this->UpdateViewMatrix();
+}
+
+void TDXRenderDevice::AdjustRotation(float x, float y, float z)
+{
+    this->rot.x += x;
+    this->rot.y += y;
+    this->rot.z += z;
+    this->rotVector = DirectX::XMLoadFloat3(&this->rot);
+    this->UpdateViewMatrix();
+}
+
+void TDXRenderDevice::SetLookAtPos(float x, float y, float z)
+{
+    if (x == this->pos.x && y == this->pos.y && z == this->pos.z)
+        return;
+
+    x = this->pos.x - x;
+    y = this->pos.y - y;
+    z = this->pos.z - z;
+
+    float pitch = 0.0f;
+    if (y != 0.0f)
+    {
+        const float distance = sqrt(x * x + z * z);
+        pitch = atan(y / distance);
+    }
+
+    float yaw = 0.0f;
+    if (x != 0.0f)
+    {
+        yaw = atan(x / z);
+    }
+    if (z > 0)
+        yaw += DirectX::XM_PI;
+
+    this->SetRotation(pitch, yaw, 0.0f);
 }
 
 void TDXRenderDevice::UpdatePTBuffer(TVertexPT* vertices, unsigned short numVertices, unsigned short* indices, unsigned short numIndices)
@@ -273,6 +338,20 @@ void TDXRenderDevice::AddShaders()
     m_TDXShaderManager.AddVertexShader("skybox", L"..\\TD3D\\SkyboxVertexShader.cso",
         MESH_INPUT_LAYOUT, sizeof(MESH_INPUT_LAYOUT) / sizeof(D3D11_INPUT_ELEMENT_DESC), m_pDevice.Get());
     m_TDXShaderManager.AddPixelShader("skybox", L"..\\TD3D\\SkyboxPixelShader.cso", m_pDevice.Get());
+}
+
+void TDXRenderDevice::UpdateViewMatrix()
+{
+    //Calculate camera rotation matrix
+    DirectX::XMMATRIX camRotationMatrix = DirectX::XMMatrixRotationRollPitchYaw(this->rot.x, this->rot.y, this->rot.z);
+    //Calculate unit vector of cam target based off camera forward value transformed by cam rotation matrix
+    DirectX::XMVECTOR camTarget = XMVector3TransformCoord(this->DEFAULT_FORWARD_VECTOR, camRotationMatrix);
+    //Adjust cam target to be offset by the camera's current position
+    camTarget = DirectX::XMVectorAdd(camTarget, this->posVector);
+    //Calculate up direction based on current rotation
+    DirectX::XMVECTOR upDir = XMVector3TransformCoord(this->DEFAULT_UP_VECTOR, camRotationMatrix);
+    //Rebuild view matrix
+    this->m_ViewMatrix = DirectX::XMMatrixLookAtLH(this->posVector, camTarget, upDir);
 }
 
 HRESULT CreateRenderDevice(TDXRenderDevice** pDevice) {

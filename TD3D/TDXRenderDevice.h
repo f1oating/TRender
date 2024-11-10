@@ -31,6 +31,12 @@ public:
 	virtual void SetProjectionMatrix(float fieldOfView, float aspectRatio, float nearZ, float farZ) override;
 	virtual void SetViewMatrix(TVector4 eye, TVector4 at, TVector4 up) override;
 
+	virtual void SetViewPosition(float x, float y, float z) override;
+	virtual void AdjustPosition(float x, float y, float z) override;
+	virtual void SetRotation(float x, float y, float z) override;
+	virtual void AdjustRotation(float x, float y, float z) override;
+	virtual void SetLookAtPos(float x, float y, float z) override;
+
 	virtual void UpdatePTBuffer(TVertexPT* vertices, unsigned short numVertices, unsigned short* indices, unsigned short numIndices) override;
 
 	virtual void AddTexture(std::string name, std::string path) override;
@@ -47,6 +53,7 @@ public:
 
 	void CreateBuffers();
 	void AddShaders();
+	void UpdateViewMatrix();
 
 private:
 	Microsoft::WRL::ComPtr<ID3D11Device> m_pDevice;
@@ -69,6 +76,17 @@ private:
 	TDXShaderManager m_TDXShaderManager;
 	TDXTextureManager m_TDXTextureManager;
 	TDXFeatureController m_TDXFeatureController;
+
+	DirectX::XMVECTOR posVector;
+	DirectX::XMVECTOR rotVector;
+	DirectX::XMFLOAT3 pos;
+	DirectX::XMFLOAT3 rot;
+
+	const DirectX::XMVECTOR DEFAULT_FORWARD_VECTOR = DirectX::XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f);
+	const DirectX::XMVECTOR DEFAULT_UP_VECTOR = DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
+	const DirectX::XMVECTOR DEFAULT_BACKWARD_VECTOR = DirectX::XMVectorSet(0.0f, 0.0f, -1.0f, 0.0f);
+	const DirectX::XMVECTOR DEFAULT_LEFT_VECTOR = DirectX::XMVectorSet(-1.0f, 0.0f, 0.0f, 0.0f);
+	const DirectX::XMVECTOR DEFAULT_RIGHT_VECTOR = DirectX::XMVectorSet(1.0f, 0.0f, 0.0f, 0.0f);
 
 };
 
