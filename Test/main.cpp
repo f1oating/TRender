@@ -1,7 +1,46 @@
 #include <windows.h>
 #include "TRenderer.h"
+#include "TInput.h"
 
 TRenderDevice* renderDevice;
+
+void SimpleMoving(TInput* input)
+{
+    input->Update();
+
+    if (input->IsKeyDown('W')) {
+        renderDevice->AdjustPosition(0.0f, 0.0f, 0.005f);
+    }
+
+    if (input->IsKeyDown('S')) {
+        renderDevice->AdjustPosition(0.0f, 0.0f, -0.005f);
+    }
+
+    if (input->IsKeyDown('A')) {
+        renderDevice->AdjustPosition(-0.005f, 0.0f, 0.0f);
+    }
+
+    if (input->IsKeyDown('D')) {
+        renderDevice->AdjustPosition(0.005f, 0.0f, 0.0f);
+    }
+
+    long deltaX = input->GetDeltaX();
+    long deltaY = input->GetDeltaY();
+
+    if (deltaX > 0) {
+        renderDevice->AdjustRotation(0.0f, 0.01f, 0.0f);
+    }
+    else if (deltaX < 0) {
+        renderDevice->AdjustRotation(0.0f, -0.01f, 0.0f);
+    }
+
+    if (deltaY > 0) {
+        renderDevice->AdjustRotation(0.01f, 0.0f, 0.0f);
+    }
+    else if (deltaY < 0) {
+        renderDevice->AdjustRotation(-0.01f, 0.0f, 0.0f);
+    }
+}
 
 LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
     switch (uMsg) {
@@ -48,6 +87,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int nCmdShow) {
 
     // Create a renderer
     TRenderer renderer(hInstance);
+    TInput input(hwnd);
 
     // Create the rendering device
     HRESULT hr = renderer.CreateDevice("Direct3D");
@@ -106,8 +146,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int nCmdShow) {
     renderDevice->AddTexture("skybox", "skybox.jpg");
     renderDevice->UpdatePTBuffer(vertices, sizeof(vertices) / sizeof(TVertexPT), indices, sizeof(indices) / sizeof(unsigned short));
 
-    float x = 0.0001;
-
     // Main message loop
     MSG msg = {};
     while (msg.message != WM_QUIT) {
@@ -117,11 +155,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int nCmdShow) {
             DispatchMessage(&msg);
         }
         else {
-            renderDevice->BeginFrame(0.1f, 0.1f, 0.1f, 1.0f);
+            SimpleMoving(&input);
 
-            x += 0.000001;
-            renderDevice->AdjustPosition(x, 0.0f, 0.0f);
-            renderDevice->SetLookAtPos(1.0f, 1.0f, 0.0f);
+            renderDevice->BeginFrame(0.1f, 0.1f, 0.1f, 1.0f);
 
             renderDevice->SetRasterizerCulling(false);
             renderDevice->SetDepthStencilComparison(false);
