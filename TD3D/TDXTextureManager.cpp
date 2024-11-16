@@ -2,6 +2,12 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 #include <stdexcept>
+#include <vector>
+#include <string>
+
+std::vector<std::string> CUBE_MAP_SIDES = {
+    "right", "left", "top", "bottom", "front", "back"
+};
 
 TDXTextureManager::TDXTextureManager()
 {
@@ -79,6 +85,53 @@ void TDXTextureManager::AddTexture(std::string name, std::string path, ID3D11Dev
     m_TexturesMap[name] = pTextureView;
 }
 
+void TDXTextureManager::AddCubeMapTexture(std::string name, std::string path, std::string ext, ID3D11Device* device)
+{
+    int width, height, channels;
+    std::vector<unsigned char*> facesData;
+
+    for (std::string& filename : CUBE_MAP_SIDES) {
+        unsigned char* data = LoadCubeMapTextureData(path + "_" + filename + ext, width, height, channels);
+        if (!data) {
+            for (unsigned char* face : facesData) stbi_image_free(face);
+        }
+        facesData.push_back(data);
+    }
+
+    D3D11_TEXTURE2D_DESC textureDesc = {};
+    textureDesc.Width = width;
+    textureDesc.Height = height;
+    textureDesc.MipLevels = 1;
+    textureDesc.ArraySize = 6;
+    textureDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+    textureDesc.SampleDesc.Count = 1;
+    textureDesc.Usage = D3D11_USAGE_DEFAULT;
+    textureDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
+    textureDesc.MiscFlags = D3D11_RESOURCE_MISC_TEXTURECUBE;
+
+    D3D11_SUBRESOURCE_DATA subResourceData[6] = {};
+    for (int i = 0; i < 6; ++i) {
+        subResourceData[i].pSysMem = facesData[i];
+        subResourceData[i].SysMemPitch = width * 4;
+    }
+
+    ID3D11Texture2D* cubeTexture = nullptr;
+    HRESULT hr = device->CreateTexture2D(&textureDesc, subResourceData, &cubeTexture);
+
+    for (unsigned char* face : facesData) stbi_image_free(face);
+
+    D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
+    srvDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+    srvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURECUBE;
+    srvDesc.TextureCube.MipLevels = 1;
+    srvDesc.TextureCube.MostDetailedMip = 0;
+
+    ID3D11ShaderResourceView* pTextureView;
+    hr = device->CreateShaderResourceView(cubeTexture, &srvDesc, &pTextureView);
+
+    m_TexturesMap[name] = pTextureView;
+}
+
 void TDXTextureManager::BindTexture(std::string name, ID3D11DeviceContext* context)
 {
     context->PSSetShaderResources(0, 1, &m_TexturesMap[name]);
@@ -91,4 +144,10 @@ void TDXTextureManager::DeleteTexture(std::string name)
         delete m_TexturesMap[name];
         m_TexturesMap.erase(name);
     }
+}
+
+unsigned char* TDXTextureManager::LoadCubeMapTextureData(const std::string& filename, int& width, int& height, int& channels)
+{
+    stbi_set_flip_vertically_on_load(false);
+    return stbi_load(filename.c_str(), &width, &height, &channels, 4);
 }

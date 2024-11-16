@@ -203,6 +203,11 @@ void TDXRenderDevice::AddTexture(std::string name, std::string path)
     m_TDXTextureManager.AddTexture(name, path, m_pDevice.Get());
 }
 
+void TDXRenderDevice::AddCubeMapTexture(std::string name, std::string path, std::string ext)
+{
+    m_TDXTextureManager.AddCubeMapTexture(name, path, ext, m_pDevice.Get());
+}
+
 void TDXRenderDevice::BindTexture(std::string name)
 {
     m_TDXTextureManager.BindTexture(name, m_pDeviceContext.Get());

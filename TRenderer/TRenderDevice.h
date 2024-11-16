@@ -28,6 +28,7 @@ public:
 	virtual void UpdatePTBuffer(TVertexPT* vertices, unsigned short numVertices, unsigned short* indices, unsigned short numIndices) = 0;
 
 	virtual void AddTexture(std::string name, std::string path) = 0;
+	virtual void AddCubeMapTexture(std::string name, std::string path, std::string ext) = 0;
 	virtual void BindTexture(std::string name) = 0;
 
 	virtual void BindVertexShader(std::string name) = 0;

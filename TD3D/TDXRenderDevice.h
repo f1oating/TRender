@@ -40,6 +40,7 @@ public:
 	virtual void UpdatePTBuffer(TVertexPT* vertices, unsigned short numVertices, unsigned short* indices, unsigned short numIndices) override;
 
 	virtual void AddTexture(std::string name, std::string path) override;
+	virtual void AddCubeMapTexture(std::string name, std::string path, std::string ext) override;
 	virtual void BindTexture(std::string name) override;
 
 	virtual void BindVertexShader(std::string name) override;
