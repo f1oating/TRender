@@ -159,7 +159,7 @@ void TDXRenderDevice::SetLookAtPos(float x, float y, float z)
     this->SetRotation(pitch, yaw, 0.0f);
 }
 
-void TDXRenderDevice::UpdatePTBuffer(TVertexPT* vertices, unsigned short numVertices, unsigned short* indices, unsigned short numIndices)
+void TDXRenderDevice::UpdatePTBuffer(void* vertices, unsigned short numVertices, unsigned short* indices, unsigned short numIndices, unsigned short vertexSize)
 {
     if (m_pStaticVertexBufferPT) {
         m_pStaticVertexBufferPT->Release();
@@ -173,8 +173,8 @@ void TDXRenderDevice::UpdatePTBuffer(TVertexPT* vertices, unsigned short numVert
 
     D3D11_BUFFER_DESC staticVertexBufferPTDesc = {};
     staticVertexBufferPTDesc.Usage = D3D11_USAGE_DEFAULT;
-    staticVertexBufferPTDesc.ByteWidth = sizeof(TVertexPT) * numVertices;
-    staticVertexBufferPTDesc.StructureByteStride = sizeof(TVertexPT);
+    staticVertexBufferPTDesc.ByteWidth = vertexSize * numVertices;
+    staticVertexBufferPTDesc.StructureByteStride = vertexSize;
     staticVertexBufferPTDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
     staticVertexBufferPTDesc.CPUAccessFlags = 0;
     D3D11_SUBRESOURCE_DATA staticVertexBufferPTInitData = {};

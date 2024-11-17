@@ -25,7 +25,7 @@ public:
 	virtual void AdjustRotation(float x, float y, float z) = 0;
 	virtual void SetLookAtPos(float x, float y, float z) = 0;
 
-	virtual void UpdatePTBuffer(TVertexPT* vertices, unsigned short numVertices, unsigned short* indices, unsigned short numIndices) = 0;
+	virtual void UpdatePTBuffer(void* vertices, unsigned short numVertices, unsigned short* indices, unsigned short numIndices, unsigned short vertexSize) = 0;
 
 	virtual void AddTexture(std::string name, std::string path) = 0;
 	virtual void AddCubeMapTexture(std::string name, std::string path, std::string ext) = 0;

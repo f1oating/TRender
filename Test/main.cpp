@@ -144,7 +144,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int nCmdShow) {
     renderDevice->SetViewPosition(2.0f, 2.0f, -2.0f);
     renderDevice->AddTexture("crate", "Textures/crate.jpg");
     renderDevice->AddCubeMapTexture("skybox", "Textures/Skybox/Weltraum", ".png");
-    renderDevice->UpdatePTBuffer(vertices, sizeof(vertices) / sizeof(TVertexPT), indices, sizeof(indices) / sizeof(unsigned short));
+    renderDevice->UpdatePTBuffer(vertices, sizeof(vertices) / sizeof(TVertexPT), indices, sizeof(indices) / sizeof(unsigned short), sizeof(TVertexPT));
 
     // Main message loop
     MSG msg = {};

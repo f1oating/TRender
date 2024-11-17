@@ -37,7 +37,7 @@ public:
 	virtual void AdjustRotation(float x, float y, float z) override;
 	virtual void SetLookAtPos(float x, float y, float z) override;
 
-	virtual void UpdatePTBuffer(TVertexPT* vertices, unsigned short numVertices, unsigned short* indices, unsigned short numIndices) override;
+	virtual void UpdatePTBuffer(void* vertices, unsigned short numVertices, unsigned short* indices, unsigned short numIndices, unsigned short vertexSize) override;
 
 	virtual void AddTexture(std::string name, std::string path) override;
 	virtual void AddCubeMapTexture(std::string name, std::string path, std::string ext) override;

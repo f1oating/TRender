@@ -28,4 +28,10 @@ struct TVertexPT
 	TVector2 tex;
 };
 
+struct TVertexSkybox
+{
+	TVector3 pos;
+	TVector3 tex;
+};
+
 #endif
