@@ -190,6 +190,7 @@
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="TDXBufferManager.h" />
     <ClInclude Include="TDXFeatureController.h" />
     <ClInclude Include="T.h" />
     <ClInclude Include="TD3D.h" />
@@ -198,6 +199,7 @@
     <ClInclude Include="TDXTextureManager.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="TDXBufferManager.cpp" />
     <ClCompile Include="TDXFeatureController.cpp" />
     <ClCompile Include="TDXRenderDevice.cpp" />
     <ClCompile Include="TDXShaderManager.cpp" />

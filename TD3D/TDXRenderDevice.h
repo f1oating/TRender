@@ -5,6 +5,7 @@
 #include "TDXShaderManager.h"
 #include "TDXTextureManager.h"
 #include "TDXFeatureController.h"
+#include "TDXBufferManager.h"
 #include "TD3D.h"
 #include <d3d11.h>
 #include <DirectXMath.h>
@@ -27,7 +28,7 @@ public:
 	virtual void BeginFrame(float r, float g, float b, float a) override;
 	virtual void EndFrame() override;
 
-	virtual void DrawPT(unsigned short numIndices, unsigned short startIndexLocation, unsigned short baseVertexLocation) override;
+	virtual void Draw(unsigned short numIndices, unsigned short startIndexLocation, unsigned short baseVertexLocation) override;
 
 	virtual void SetProjectionValues(float fovDegrees, float aspectRatio, float nearZ, float farZ) override;
 
@@ -37,14 +38,20 @@ public:
 	virtual void AdjustRotation(float x, float y, float z) override;
 	virtual void SetLookAtPos(float x, float y, float z) override;
 
-	virtual void UpdatePTBuffer(void* vertices, unsigned short numVertices, unsigned short* indices, unsigned short numIndices, unsigned short vertexSize) override;
-
 	virtual void AddTexture(std::string name, std::string path) override;
 	virtual void AddCubeMapTexture(std::string name, std::string path, std::string ext) override;
 	virtual void BindTexture(std::string name) override;
 
 	virtual void BindVertexShader(std::string name) override;
 	virtual void BindPixelShader(std::string name) override;
+
+	virtual void CreateStaticVertexBuffer(std::string name, void* vertices, unsigned short numVertices, unsigned short vertexSize) override;
+	virtual void CreateStaticIndexBuffer(std::string name, unsigned short* indices, unsigned short numIndices) override;
+	virtual void UpdateStaticVertexBuffer(std::string name, void* vertices) override;
+	virtual void UpdateStaticIndexBuffer(std::string name, unsigned short* indices) override;
+	virtual void BindVertexBuffer(std::string vertexName, UINT stride, UINT offset) override;
+	virtual void BindIndexBuffer(std::string indexName) override;
+	virtual void DeleteBuffer(std::string name) override;
 
 	virtual void SetDepthStencilComparison(bool flag) override;
 	virtual void SetRasterizerCulling(bool flag) override;
@@ -66,14 +73,12 @@ private:
 
 	Microsoft::WRL::ComPtr <ID3D11Buffer> m_pViewProjectionBuffer;
 
-	Microsoft::WRL::ComPtr<ID3D11Buffer> m_pStaticVertexBufferPT;
-	Microsoft::WRL::ComPtr<ID3D11Buffer> m_pStaticIndexBufferPT;
-
 	ViewProjectionConstantBuffer m_ViewProjectionConstantBuffer;
 
 	TDXShaderManager m_TDXShaderManager;
 	TDXTextureManager m_TDXTextureManager;
 	TDXFeatureController m_TDXFeatureController;
+	TDXBufferManager m_TDXBufferManager;
 
 	TDXCamera m_Camera;
 

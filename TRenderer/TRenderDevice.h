@@ -15,7 +15,7 @@ public:
 	virtual void BeginFrame(float r, float g, float b, float a) = 0;
 	virtual void EndFrame() = 0;
 
-	virtual void DrawPT(unsigned short numIndices, unsigned short startIndexLocation, unsigned short baseVertexLocation) = 0;
+	virtual void Draw(unsigned short numIndices, unsigned short startIndexLocation, unsigned short baseVertexLocation) = 0;
 
 	virtual void SetProjectionValues(float fovDegrees, float aspectRatio, float nearZ, float farZ) = 0;
 
@@ -25,14 +25,20 @@ public:
 	virtual void AdjustRotation(float x, float y, float z) = 0;
 	virtual void SetLookAtPos(float x, float y, float z) = 0;
 
-	virtual void UpdatePTBuffer(void* vertices, unsigned short numVertices, unsigned short* indices, unsigned short numIndices, unsigned short vertexSize) = 0;
-
 	virtual void AddTexture(std::string name, std::string path) = 0;
 	virtual void AddCubeMapTexture(std::string name, std::string path, std::string ext) = 0;
 	virtual void BindTexture(std::string name) = 0;
 
 	virtual void BindVertexShader(std::string name) = 0;
 	virtual void BindPixelShader(std::string name) = 0;
+
+	virtual void CreateStaticVertexBuffer(std::string name, void* vertices, unsigned short numVertices, unsigned short vertexSize) = 0;
+	virtual void CreateStaticIndexBuffer(std::string name, unsigned short* indices, unsigned short numIndices) = 0;
+	virtual void UpdateStaticVertexBuffer(std::string name, void* vertices) = 0;
+	virtual void UpdateStaticIndexBuffer(std::string name, unsigned short* indices) = 0;
+	virtual void BindVertexBuffer(std::string vertexName, UINT stride, UINT offset) = 0;
+	virtual void BindIndexBuffer(std::string indexName) = 0;
+	virtual void DeleteBuffer(std::string name) = 0;
 
 	virtual void SetDepthStencilComparison(bool flag) = 0;
 	virtual void SetRasterizerCulling(bool flag) = 0;

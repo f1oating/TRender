@@ -81,14 +81,8 @@ void TDXRenderDevice::EndFrame() {
     m_pSwapChain->Present(1, 0);
 }
 
-void TDXRenderDevice::DrawPT(unsigned short numIndices, unsigned short startIndexLocation, unsigned short baseVertexLocation)
+void TDXRenderDevice::Draw(unsigned short numIndices, unsigned short startIndexLocation, unsigned short baseVertexLocation)
 {
-    const UINT stride = sizeof(TVertexPT);
-    const UINT offset = 0u;
-
-    m_pDeviceContext->IASetVertexBuffers(0, 1u, m_pStaticVertexBufferPT.GetAddressOf(), &stride, &offset);
-    m_pDeviceContext->IASetIndexBuffer(m_pStaticIndexBufferPT.Get(), DXGI_FORMAT_R16_UINT, 0u);
-
     m_pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
     m_pDeviceContext->DrawIndexed(numIndices, startIndexLocation, baseVertexLocation);
@@ -159,45 +153,6 @@ void TDXRenderDevice::SetLookAtPos(float x, float y, float z)
     this->SetRotation(pitch, yaw, 0.0f);
 }
 
-void TDXRenderDevice::UpdatePTBuffer(void* vertices, unsigned short numVertices, unsigned short* indices, unsigned short numIndices, unsigned short vertexSize)
-{
-    if (m_pStaticVertexBufferPT) {
-        m_pStaticVertexBufferPT->Release();
-        m_pStaticVertexBufferPT = nullptr;
-    }
-
-    if (m_pStaticIndexBufferPT) {
-        m_pStaticIndexBufferPT->Release();
-        m_pStaticIndexBufferPT = nullptr;
-    }
-
-    D3D11_BUFFER_DESC staticVertexBufferPTDesc = {};
-    staticVertexBufferPTDesc.Usage = D3D11_USAGE_DEFAULT;
-    staticVertexBufferPTDesc.ByteWidth = vertexSize * numVertices;
-    staticVertexBufferPTDesc.StructureByteStride = vertexSize;
-    staticVertexBufferPTDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-    staticVertexBufferPTDesc.CPUAccessFlags = 0;
-    D3D11_SUBRESOURCE_DATA staticVertexBufferPTInitData = {};
-    staticVertexBufferPTInitData.pSysMem = vertices;
-    HRESULT hr = m_pDevice->CreateBuffer(&staticVertexBufferPTDesc, &staticVertexBufferPTInitData, &m_pStaticVertexBufferPT);
-    if (FAILED(hr)) {
-        throw std::runtime_error("Failed to create static PT vertex buffer.");
-    }
-
-    D3D11_BUFFER_DESC staticIndexBufferPTDesc = {};
-    staticIndexBufferPTDesc.Usage = D3D11_USAGE_DEFAULT;
-    staticIndexBufferPTDesc.ByteWidth = sizeof(unsigned short) * numIndices;
-    staticVertexBufferPTDesc.StructureByteStride = sizeof(unsigned short);
-    staticIndexBufferPTDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
-    staticIndexBufferPTDesc.CPUAccessFlags = 0;
-    D3D11_SUBRESOURCE_DATA staticIndexBufferPTInitData = {};
-    staticIndexBufferPTInitData.pSysMem = indices;
-    hr = m_pDevice->CreateBuffer(&staticIndexBufferPTDesc, &staticIndexBufferPTInitData, &m_pStaticIndexBufferPT);
-    if (FAILED(hr)) {
-        throw std::runtime_error("Failed to create static PT index buffer.");
-    }
-}
-
 void TDXRenderDevice::AddTexture(std::string name, std::string path)
 {
     m_TDXTextureManager.AddTexture(name, path, m_pDevice.Get());
@@ -221,6 +176,41 @@ void TDXRenderDevice::BindVertexShader(std::string name)
 void TDXRenderDevice::BindPixelShader(std::string name)
 {
     m_TDXShaderManager.BindPixelShader(name, m_pDeviceContext.Get());
+}
+
+void TDXRenderDevice::CreateStaticVertexBuffer(std::string name, void* vertices, unsigned short numVertices, unsigned short vertexSize)
+{
+    m_TDXBufferManager.CreateStaticVertexBuffer(name, vertices, numVertices, vertexSize, m_pDevice.Get());
+}
+
+void TDXRenderDevice::CreateStaticIndexBuffer(std::string name, unsigned short* indices, unsigned short numIndices)
+{
+    m_TDXBufferManager.CreateStaticIndexBuffer(name, indices, numIndices, m_pDevice.Get());
+}
+
+void TDXRenderDevice::UpdateStaticVertexBuffer(std::string name, void* vertices)
+{
+    m_TDXBufferManager.UpdateStaticVertexBuffer(name, vertices, m_pDeviceContext.Get());
+}
+
+void TDXRenderDevice::UpdateStaticIndexBuffer(std::string name, unsigned short* indices)
+{
+    m_TDXBufferManager.UpdateStaticIndexBuffer(name, indices, m_pDeviceContext.Get());
+}
+
+void TDXRenderDevice::BindVertexBuffer(std::string vertexName, UINT stride, UINT offset)
+{
+    m_TDXBufferManager.BindVertexBuffer(vertexName, stride, offset, m_pDeviceContext.Get());
+}
+
+void TDXRenderDevice::BindIndexBuffer(std::string indexName)
+{
+    m_TDXBufferManager.BindIndexBuffer(indexName, m_pDeviceContext.Get());
+}
+
+void TDXRenderDevice::DeleteBuffer(std::string name)
+{
+    m_TDXBufferManager.DeleteBuffer(name);
 }
 
 void TDXRenderDevice::SetDepthStencilComparison(bool flag)

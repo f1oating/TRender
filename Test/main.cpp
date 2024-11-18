@@ -24,6 +24,14 @@ void SimpleMoving(TInput* input)
         renderDevice->AdjustPosition(0.005f, 0.0f, 0.0f);
     }
 
+    if (input->IsKeyDown('U')) {
+        renderDevice->AdjustPosition(0.0f, 0.005f, 0.0f);
+    }
+
+    if (input->IsKeyDown('B')) {
+        renderDevice->AdjustPosition(0.0f, -0.005f, 0.0f);
+    }
+
     long deltaX = input->GetDeltaX();
     long deltaY = input->GetDeltaY();
 
@@ -144,7 +152,11 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int nCmdShow) {
     renderDevice->SetViewPosition(2.0f, 2.0f, -2.0f);
     renderDevice->AddTexture("crate", "Textures/crate.jpg");
     renderDevice->AddCubeMapTexture("skybox", "Textures/Skybox/Weltraum", ".png");
-    renderDevice->UpdatePTBuffer(vertices, sizeof(vertices) / sizeof(TVertexPT), indices, sizeof(indices) / sizeof(unsigned short), sizeof(TVertexPT));
+    renderDevice->CreateStaticVertexBuffer("VertexBuffer", vertices, sizeof(vertices) / sizeof(TVertexPT), sizeof(TVertexPT));
+    renderDevice->CreateStaticIndexBuffer("IndexBuffer", indices, sizeof(indices) / sizeof(unsigned short));
+
+    renderDevice->BindVertexBuffer("VertexBuffer", sizeof(TVertexPT), 0);
+    renderDevice->BindIndexBuffer("IndexBuffer");
 
     // Main message loop
     MSG msg = {};
@@ -166,7 +178,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int nCmdShow) {
             renderDevice->BindPixelShader("skybox");
 
             renderDevice->BindTexture("skybox");
-            renderDevice->DrawPT(36, 0, 0);
+            renderDevice->Draw(36, 0, 0);
 
             renderDevice->SetRasterizerCulling(true);
             renderDevice->SetDepthStencilComparison(true);
@@ -175,7 +187,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int nCmdShow) {
             renderDevice->BindPixelShader("mesh");
 
             renderDevice->BindTexture("crate");
-            renderDevice->DrawPT(36, 0, 0);
+            renderDevice->Draw(36, 0, 0);
 
             renderDevice->EndFrame();
         }

@@ -44,6 +44,9 @@
     <ClInclude Include="TDXFeatureController.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="TDXBufferManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="TDXRenderDevice.cpp">
@@ -56,6 +59,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="TDXFeatureController.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="TDXBufferManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
