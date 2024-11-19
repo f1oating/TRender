@@ -7,10 +7,10 @@ cbuffer CBuf : register(b0)
 struct VSOut
 {
 	float4 pos : SV_Position;
-	float2 uv : TEXCOORD;
+	float3 direction : TEXCOORD;
 };
 
-VSOut main(float3 pos : POSITION, float2 uv : TEXCOORD)
+VSOut main(float3 pos : POSITION, float3 direction : TEXCOORD)
 {
 	VSOut vso;
 	matrix viewMatrixNoTranslation = viewMatrix;
@@ -18,6 +18,6 @@ VSOut main(float3 pos : POSITION, float2 uv : TEXCOORD)
 	viewMatrixNoTranslation._42 = 0.0f;
 	viewMatrixNoTranslation._43 = 0.0f;
 	vso.pos = mul(float4(pos, 1.0f), mul(viewMatrixNoTranslation, projectionMatrix));
-	vso.uv = uv;
+	vso.direction = direction;
 	return vso;
 }

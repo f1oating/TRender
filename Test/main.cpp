@@ -149,14 +149,62 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int nCmdShow) {
         20, 21, 22, 20, 22, 23
     };
 
+    TVertexSkybox verticesSkybox[] = {
+    {{-1.0f, -1.0f,  1.0f}, {-1.0f, -1.0f,  1.0f}},
+    {{ 1.0f, -1.0f,  1.0f}, { 1.0f, -1.0f,  1.0f}},
+    {{ 1.0f,  1.0f,  1.0f}, { 1.0f,  1.0f,  1.0f}},
+    {{-1.0f,  1.0f,  1.0f}, {-1.0f,  1.0f,  1.0f}},
+
+    // Back (-Z)
+    {{ 1.0f, -1.0f, -1.0f}, { 1.0f, -1.0f, -1.0f}},
+    {{-1.0f, -1.0f, -1.0f}, {-1.0f, -1.0f, -1.0f}},
+    {{-1.0f,  1.0f, -1.0f}, {-1.0f,  1.0f, -1.0f}},
+    {{ 1.0f,  1.0f, -1.0f}, { 1.0f,  1.0f, -1.0f}},
+
+    // Left (-X)
+    {{-1.0f, -1.0f, -1.0f}, {-1.0f, -1.0f, -1.0f}},
+    {{-1.0f, -1.0f,  1.0f}, {-1.0f, -1.0f,  1.0f}},
+    {{-1.0f,  1.0f,  1.0f}, {-1.0f,  1.0f,  1.0f}},
+    {{-1.0f,  1.0f, -1.0f}, {-1.0f,  1.0f, -1.0f}},
+
+    // Right (+X)
+    {{ 1.0f, -1.0f,  1.0f}, { 1.0f, -1.0f,  1.0f}},
+    {{ 1.0f, -1.0f, -1.0f}, { 1.0f, -1.0f, -1.0f}},
+    {{ 1.0f,  1.0f, -1.0f}, { 1.0f,  1.0f, -1.0f}},
+    {{ 1.0f,  1.0f,  1.0f}, { 1.0f,  1.0f,  1.0f}},
+
+    // Top (+Y)
+    {{-1.0f,  1.0f,  1.0f}, {-1.0f,  1.0f,  1.0f}},
+    {{ 1.0f,  1.0f,  1.0f}, { 1.0f,  1.0f,  1.0f}},
+    {{ 1.0f,  1.0f, -1.0f}, { 1.0f,  1.0f, -1.0f}},
+    {{-1.0f,  1.0f, -1.0f}, {-1.0f,  1.0f, -1.0f}},
+
+    // Bottom (-Y)
+    {{-1.0f, -1.0f, -1.0f}, {-1.0f, -1.0f, -1.0f}},
+    {{ 1.0f, -1.0f, -1.0f}, { 1.0f, -1.0f, -1.0f}},
+    {{ 1.0f, -1.0f,  1.0f}, { 1.0f, -1.0f,  1.0f}},
+    {{-1.0f, -1.0f,  1.0f}, {-1.0f, -1.0f,  1.0f}}
+    };
+
+    unsigned short indicesSkybox[] = {
+        0, 1, 2, 0, 2, 3,
+        4, 5, 6, 4, 6, 7,
+        8, 9, 10, 8, 10, 11,
+        12, 13, 14, 12, 14, 15,
+        16, 17, 18, 16, 18, 19,
+        20, 21, 22, 20, 22, 23
+    };
+
     renderDevice->SetViewPosition(2.0f, 2.0f, -2.0f);
+
     renderDevice->AddTexture("crate", "Textures/crate.jpg");
     renderDevice->AddCubeMapTexture("skybox", "Textures/Skybox/Weltraum", ".png");
-    renderDevice->CreateStaticVertexBuffer("VertexBuffer", vertices, sizeof(vertices) / sizeof(TVertexPT), sizeof(TVertexPT));
-    renderDevice->CreateStaticIndexBuffer("IndexBuffer", indices, sizeof(indices) / sizeof(unsigned short));
 
-    renderDevice->BindVertexBuffer("VertexBuffer", sizeof(TVertexPT), 0);
-    renderDevice->BindIndexBuffer("IndexBuffer");
+    renderDevice->CreateStaticVertexBuffer("VertexBufferMesh", vertices, sizeof(vertices) / sizeof(TVertexPT), sizeof(TVertexPT));
+    renderDevice->CreateStaticIndexBuffer("IndexBufferMesh", indices, sizeof(indices) / sizeof(unsigned short));
+
+    renderDevice->CreateStaticVertexBuffer("VertexBufferSkybox", verticesSkybox, sizeof(verticesSkybox) / sizeof(TVertexSkybox), sizeof(TVertexSkybox));
+    renderDevice->CreateStaticIndexBuffer("IndexBufferSkybox", indicesSkybox, sizeof(indicesSkybox) / sizeof(unsigned short));
 
     // Main message loop
     MSG msg = {};
@@ -178,6 +226,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int nCmdShow) {
             renderDevice->BindPixelShader("skybox");
 
             renderDevice->BindTexture("skybox");
+
+            renderDevice->BindVertexBuffer("VertexBufferSkybox", sizeof(TVertexSkybox), 0);
+            renderDevice->BindIndexBuffer("IndexBufferSkybox");
+
             renderDevice->Draw(36, 0, 0);
 
             renderDevice->SetRasterizerCulling(true);
@@ -187,6 +239,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int nCmdShow) {
             renderDevice->BindPixelShader("mesh");
 
             renderDevice->BindTexture("crate");
+
+            renderDevice->BindVertexBuffer("VertexBufferMesh", sizeof(TVertexPT), 0);
+            renderDevice->BindIndexBuffer("IndexBufferMesh");
+
             renderDevice->Draw(36, 0, 0);
 
             renderDevice->EndFrame();
