@@ -19,7 +19,7 @@ public:
 	virtual void Draw(unsigned short numIndices, unsigned short startIndexLocation, unsigned short baseVertexLocation) = 0;
 
 	virtual void SetProjectionValues(float fovDegrees, float aspectRatio, float nearZ, float farZ) = 0;
-	virtual void SetViewMatrix(Eigen::Matrix4d matrix) = 0;
+	virtual void SetViewMatrix(const Eigen::Matrix4d& matrix) = 0;
 
 	virtual void AddTexture(std::string name, std::string path) = 0;
 	virtual void AddCubeMapTexture(std::string name, std::string path, std::string ext) = 0;

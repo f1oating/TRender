@@ -31,7 +31,7 @@ public:
 	virtual void Draw(unsigned short numIndices, unsigned short startIndexLocation, unsigned short baseVertexLocation) override;
 
 	virtual void SetProjectionValues(float fovDegrees, float aspectRatio, float nearZ, float farZ) override;
-	virtual void SetViewMatrix(Eigen::Matrix4d matrix) override;
+	virtual void SetViewMatrix(const Eigen::Matrix4d& matrix) override;
 
 	virtual void AddTexture(std::string name, std::string path) override;
 	virtual void AddCubeMapTexture(std::string name, std::string path, std::string ext) override;

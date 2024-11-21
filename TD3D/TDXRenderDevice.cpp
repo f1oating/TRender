@@ -92,13 +92,13 @@ void TDXRenderDevice::SetProjectionValues(float fovDegrees, float aspectRatio, f
     m_ProjectionMatrix = DirectX::XMMatrixPerspectiveFovLH(fovRadians, aspectRatio, nearZ, farZ);
 }
 
-void TDXRenderDevice::SetViewMatrix(Eigen::Matrix4d eigenMatrix)
+void TDXRenderDevice::SetViewMatrix(const Eigen::Matrix4d& matrix)
 {
     m_ViewMatrix = DirectX::XMMATRIX(
-        eigenMatrix(0, 0), eigenMatrix(1, 0), eigenMatrix(2, 0), eigenMatrix(3, 0),
-        eigenMatrix(0, 1), eigenMatrix(1, 1), eigenMatrix(2, 1), eigenMatrix(3, 1),
-        eigenMatrix(0, 2), eigenMatrix(1, 2), eigenMatrix(2, 2), eigenMatrix(3, 2),
-        eigenMatrix(0, 3), eigenMatrix(1, 3), eigenMatrix(2, 3), eigenMatrix(3, 3)
+        static_cast<float>(matrix(0, 0)), static_cast<float>(matrix(1, 0)), static_cast<float>(matrix(2, 0)), static_cast<float>(matrix(3, 0)),
+        static_cast<float>(matrix(0, 1)), static_cast<float>(matrix(1, 1)), static_cast<float>(matrix(2, 1)), static_cast<float>(matrix(3, 1)),
+        static_cast<float>(matrix(0, 2)), static_cast<float>(matrix(1, 2)), static_cast<float>(matrix(2, 2)), static_cast<float>(matrix(3, 2)),
+        static_cast<float>(matrix(0, 3)), static_cast<float>(matrix(1, 3)), static_cast<float>(matrix(2, 3)), static_cast<float>(matrix(3, 3))
     );
 
 }

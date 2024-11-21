@@ -12,26 +12,32 @@ void SimpleMoving(TInput* input)
 
     if (input->IsKeyDown('W')) {
         camera.AdjustPosition(0.0f, 0.0f, 0.005f);
+        renderDevice->SetViewMatrix(camera.GetViewMatrix());
     }
 
     if (input->IsKeyDown('S')) {
         camera.AdjustPosition(0.0f, 0.0f, -0.005f);
+        renderDevice->SetViewMatrix(camera.GetViewMatrix());
     }
 
     if (input->IsKeyDown('A')) {
         camera.AdjustPosition(-0.005f, 0.0f, 0.0f);
+        renderDevice->SetViewMatrix(camera.GetViewMatrix());
     }
 
     if (input->IsKeyDown('D')) {
         camera.AdjustPosition(0.005f, 0.0f, 0.0f);
+        renderDevice->SetViewMatrix(camera.GetViewMatrix());
     }
 
     if (input->IsKeyDown('U')) {
         camera.AdjustPosition(0.0f, 0.005f, 0.0f);
+        renderDevice->SetViewMatrix(camera.GetViewMatrix());
     }
 
     if (input->IsKeyDown('B')) {
         camera.AdjustPosition(0.0f, -0.005f, 0.0f);
+        renderDevice->SetViewMatrix(camera.GetViewMatrix());
     }
 
     long deltaX = input->GetDeltaX();
@@ -39,19 +45,21 @@ void SimpleMoving(TInput* input)
 
     if (deltaX > 0) {
         camera.AdjustRotation(0.0f, 0.01f, 0.0f);
+        renderDevice->SetViewMatrix(camera.GetViewMatrix());
     }
     else if (deltaX < 0) {
         camera.AdjustRotation(0.0f, -0.01f, 0.0f);
+        renderDevice->SetViewMatrix(camera.GetViewMatrix());
     }
 
     if (deltaY > 0) {
         camera.AdjustRotation(0.01f, 0.0f, 0.0f);
+        renderDevice->SetViewMatrix(camera.GetViewMatrix());
     }
     else if (deltaY < 0) {
         camera.AdjustRotation(-0.01f, 0.0f, 0.0f);
+        renderDevice->SetViewMatrix(camera.GetViewMatrix());
     }
-
-    renderDevice->SetViewMatrix(camera.GetViewMatrix());
 }
 
 LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
