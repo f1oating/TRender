@@ -1,53 +1,57 @@
 #include <windows.h>
 #include "TRenderer.h"
 #include "TInput.h"
+#include "TestCamera.h"
 
 TRenderDevice* renderDevice;
+TestCamera camera;
 
 void SimpleMoving(TInput* input)
 {
     input->Update();
 
     if (input->IsKeyDown('W')) {
-        renderDevice->AdjustPosition(0.0f, 0.0f, 0.005f);
+        camera.AdjustPosition(0.0f, 0.0f, 0.005f);
     }
 
     if (input->IsKeyDown('S')) {
-        renderDevice->AdjustPosition(0.0f, 0.0f, -0.005f);
+        camera.AdjustPosition(0.0f, 0.0f, -0.005f);
     }
 
     if (input->IsKeyDown('A')) {
-        renderDevice->AdjustPosition(-0.005f, 0.0f, 0.0f);
+        camera.AdjustPosition(-0.005f, 0.0f, 0.0f);
     }
 
     if (input->IsKeyDown('D')) {
-        renderDevice->AdjustPosition(0.005f, 0.0f, 0.0f);
+        camera.AdjustPosition(0.005f, 0.0f, 0.0f);
     }
 
     if (input->IsKeyDown('U')) {
-        renderDevice->AdjustPosition(0.0f, 0.005f, 0.0f);
+        camera.AdjustPosition(0.0f, 0.005f, 0.0f);
     }
 
     if (input->IsKeyDown('B')) {
-        renderDevice->AdjustPosition(0.0f, -0.005f, 0.0f);
+        camera.AdjustPosition(0.0f, -0.005f, 0.0f);
     }
 
     long deltaX = input->GetDeltaX();
     long deltaY = input->GetDeltaY();
 
     if (deltaX > 0) {
-        renderDevice->AdjustRotation(0.0f, 0.01f, 0.0f);
+        camera.AdjustRotation(0.0f, 0.01f, 0.0f);
     }
     else if (deltaX < 0) {
-        renderDevice->AdjustRotation(0.0f, -0.01f, 0.0f);
+        camera.AdjustRotation(0.0f, -0.01f, 0.0f);
     }
 
     if (deltaY > 0) {
-        renderDevice->AdjustRotation(0.01f, 0.0f, 0.0f);
+        camera.AdjustRotation(0.01f, 0.0f, 0.0f);
     }
     else if (deltaY < 0) {
-        renderDevice->AdjustRotation(-0.01f, 0.0f, 0.0f);
+        camera.AdjustRotation(-0.01f, 0.0f, 0.0f);
     }
+
+    renderDevice->SetViewMatrix(camera.GetViewMatrix());
 }
 
 LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
@@ -195,7 +199,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int nCmdShow) {
         20, 21, 22, 20, 22, 23
     };
 
-    renderDevice->SetViewPosition(2.0f, 2.0f, -2.0f);
+    camera.SetPosition(2.0f, 2.0f, -2.0f);
 
     renderDevice->AddTexture("crate", "Textures/crate.jpg");
     renderDevice->AddCubeMapTexture("skybox", "Textures/Skybox/Weltraum", ".png");

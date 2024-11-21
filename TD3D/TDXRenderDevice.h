@@ -31,12 +31,7 @@ public:
 	virtual void Draw(unsigned short numIndices, unsigned short startIndexLocation, unsigned short baseVertexLocation) override;
 
 	virtual void SetProjectionValues(float fovDegrees, float aspectRatio, float nearZ, float farZ) override;
-
-	virtual void SetViewPosition(float x, float y, float z) override;
-	virtual void AdjustPosition(float x, float y, float z) override;
-	virtual void SetRotation(float x, float y, float z) override;
-	virtual void AdjustRotation(float x, float y, float z) override;
-	virtual void SetLookAtPos(float x, float y, float z) override;
+	virtual void SetViewMatrix(Eigen::Matrix4d matrix) override;
 
 	virtual void AddTexture(std::string name, std::string path) override;
 	virtual void AddCubeMapTexture(std::string name, std::string path, std::string ext) override;
@@ -61,7 +56,6 @@ public:
 
 	void CreateBuffers();
 	void AddShaders();
-	void UpdateViewMatrix();
 
 private:
 	Microsoft::WRL::ComPtr<ID3D11Device> m_pDevice;
@@ -71,6 +65,9 @@ private:
 	Microsoft::WRL::ComPtr<ID3D11DepthStencilView> m_pDepthStencilView;
 	Microsoft::WRL::ComPtr<ID3D11Texture2D> m_pDepthStencilBuffer;
 
+	DirectX::XMMATRIX m_ViewMatrix;
+	DirectX::XMMATRIX m_ProjectionMatrix;
+
 	Microsoft::WRL::ComPtr <ID3D11Buffer> m_pViewProjectionBuffer;
 
 	ViewProjectionConstantBuffer m_ViewProjectionConstantBuffer;
@@ -79,8 +76,6 @@ private:
 	TDXTextureManager m_TDXTextureManager;
 	TDXFeatureController m_TDXFeatureController;
 	TDXBufferManager m_TDXBufferManager;
-
-	TDXCamera m_Camera;
 
 };
 
