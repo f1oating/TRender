@@ -1,7 +1,11 @@
-cbuffer CBuf : register(b0)
+cbuffer ProjectionBuffer : register(b0)
+{
+	matrix projectionMatrix;
+};
+
+cbuffer ViewBuffer : register(b1)
 {
 	matrix viewMatrix;
-	matrix projectionMatrix;
 };
 
 struct VSOut

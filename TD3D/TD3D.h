@@ -2,6 +2,12 @@
 #define TD3D_H
 
 #include <d3d11.h>
+#include <DirectXMath.h>
+
+struct MatrixCBS
+{
+    DirectX::XMMATRIX matrix;
+};
 
 D3D11_INPUT_ELEMENT_DESC MESH_INPUT_LAYOUT[] =
 {

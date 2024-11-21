@@ -11,12 +11,6 @@
 #include <DirectXMath.h>
 #include <wrl/client.h>
 
-struct ViewProjectionConstantBuffer
-{
-	DirectX::XMMATRIX view;
-	DirectX::XMMATRIX projection;
-};
-
 class TDXRenderDevice : public TRenderDevice
 {
 public:
@@ -68,9 +62,11 @@ private:
 	DirectX::XMMATRIX m_ViewMatrix;
 	DirectX::XMMATRIX m_ProjectionMatrix;
 
-	Microsoft::WRL::ComPtr <ID3D11Buffer> m_pViewProjectionBuffer;
+	Microsoft::WRL::ComPtr <ID3D11Buffer> m_pViewMatrixConstantBuffer;
+	Microsoft::WRL::ComPtr <ID3D11Buffer> m_pProjectionMatrixConstantBuffer;
 
-	ViewProjectionConstantBuffer m_ViewProjectionConstantBuffer;
+	MatrixCBS m_ViewMatrixCBS;
+	MatrixCBS m_ProjectionMatrixCBS;
 
 	TDXShaderManager m_TDXShaderManager;
 	TDXTextureManager m_TDXTextureManager;
