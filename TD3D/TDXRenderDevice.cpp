@@ -27,6 +27,8 @@ TDXRenderDevice::~TDXRenderDevice()
 
 bool TDXRenderDevice::Initizialize(HWND hwnd, int width, int height)
 {
+    hwnd = hwnd;
+
     DXGI_SWAP_CHAIN_DESC swapChainDesc = {};
     swapChainDesc.BufferCount = 1;
     swapChainDesc.BufferDesc.Width = width;
@@ -54,9 +56,8 @@ bool TDXRenderDevice::Initizialize(HWND hwnd, int width, int height)
         throw std::runtime_error("Failed to create Direct3D device and swap chain.");
     }
 
-    InitDirectWrite(hwnd);
     CreateBuffers();
-    OnResize(width, height, hwnd);
+    OnResize(width, height);
     AddShaders();
 
     m_TDXTextureManager.CreateSampler(m_pDevice.Get(), m_pDeviceContext.Get());
@@ -81,28 +82,6 @@ void TDXRenderDevice::Draw(unsigned short numIndices, unsigned short startIndexL
     m_pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
     m_pDeviceContext->DrawIndexed(numIndices, startIndexLocation, baseVertexLocation);
-}
-
-void TDXRenderDevice::RenderText(const wchar_t* text, float x, float y, float width, float height)
-{
-    m_pRenderTargetText->BeginDraw();
-
-    ID2D1SolidColorBrush* pBrush;
-    m_pRenderTargetText->CreateSolidColorBrush(D2D1::ColorF(D2D1::ColorF::White), &pBrush);
-
-    D2D1_RECT_F layoutRect = D2D1::RectF(x, y, x + width, y + height);
-
-    m_pRenderTargetText->DrawText(
-        text,
-        wcslen(text),
-        m_pTextFormat.Get(),
-        &layoutRect,
-        pBrush
-    );
-
-    m_pRenderTargetText->EndDraw();
-
-    pBrush->Release();
 }
 
 void TDXRenderDevice::SetProjectionValues(float fovDegrees, float aspectRatio, float nearZ, float farZ)
@@ -200,25 +179,15 @@ void TDXRenderDevice::SetRasterizerCulling(bool flag)
     m_TDXFeatureController.ChangeRasterizerCulling(flag, m_pDevice.Get(), m_pDeviceContext.Get());
 }
 
-bool TDXRenderDevice::OnResize(int width, int height, HWND hwnd)
+bool TDXRenderDevice::OnResize(int width, int height)
 {
     m_pRenderTargetView.Reset();
     m_pDepthStencilBuffer.Reset();
     m_pDepthStencilView.Reset();
-    m_pRenderTargetText.Reset();
-
-    RECT rc;
-    GetClientRect(hwnd, &rc);
-    D2D1_SIZE_U size = D2D1::SizeU(rc.right - rc.left, rc.bottom - rc.top);
-    HRESULT hr = m_pD2DFactory->CreateHwndRenderTarget(
-        D2D1::RenderTargetProperties(),
-        D2D1::HwndRenderTargetProperties(hwnd, size),
-        m_pRenderTargetText.GetAddressOf()
-    );
 
     SetProjectionValues(90.0f, static_cast<float>(width) / static_cast<float>(height), 0.1f, 1000.0f);
 
-    hr = m_pSwapChain->ResizeBuffers(1, width, height, DXGI_FORMAT_R8G8B8A8_UNORM, 0);
+    HRESULT hr = m_pSwapChain->ResizeBuffers(1, width, height, DXGI_FORMAT_R8G8B8A8_UNORM, 0);
     if (FAILED(hr)) {
         throw std::runtime_error("Failed to resize back buffer.");
     }
@@ -272,35 +241,6 @@ bool TDXRenderDevice::OnResize(int width, int height, HWND hwnd)
 bool TDXRenderDevice::IsRunning()
 {
     return m_IsRunning;
-}
-
-void TDXRenderDevice::InitDirectWrite(HWND hwnd)
-{
-    HRESULT hr = D2D1CreateFactory(D2D1_FACTORY_TYPE_SINGLE_THREADED, m_pD2DFactory.GetAddressOf());
-
-    hr = DWriteCreateFactory(DWRITE_FACTORY_TYPE_SHARED, __uuidof(IDWriteFactory), reinterpret_cast<IUnknown**>(m_pDWriteFactory.GetAddressOf()));
-
-    m_pDWriteFactory->CreateTextFormat(
-        L"Arial",
-        nullptr,
-        DWRITE_FONT_WEIGHT_REGULAR,
-        DWRITE_FONT_STYLE_NORMAL,
-        DWRITE_FONT_STRETCH_NORMAL,
-        32.0f,
-        L"en-us",
-        m_pTextFormat.GetAddressOf()
-    );
-
-    RECT rc;
-    GetClientRect(hwnd, &rc);
-
-    D2D1_SIZE_U size = D2D1::SizeU(rc.right - rc.left, rc.bottom - rc.top);
-
-    m_pD2DFactory->CreateHwndRenderTarget(
-        D2D1::RenderTargetProperties(),
-        D2D1::HwndRenderTargetProperties(hwnd, size),
-        m_pRenderTargetText.GetAddressOf()
-    );
 }
 
 void TDXRenderDevice::CreateBuffers()
