@@ -10,6 +10,8 @@
 #include <d3d11.h>
 #include <DirectXMath.h>
 #include <wrl/client.h>
+#include <DirectXTK/SpriteBatch.h>
+#include <DirectXTK/SpriteFont.h>
 
 class TDXRenderDevice : public TRenderDevice
 {
@@ -23,6 +25,7 @@ public:
 	virtual void EndFrame() override;
 
 	virtual void Draw(unsigned short numIndices, unsigned short startIndexLocation, unsigned short baseVertexLocation) override;
+	virtual void RenderText(const wchar_t* text, float x, float y) override;
 
 	virtual void SetProjectionValues(float fovDegrees, float aspectRatio, float nearZ, float farZ) override;
 	virtual void SetViewMatrix(const Eigen::Matrix4d& matrix) override;
@@ -69,6 +72,9 @@ private:
 	TDXTextureManager m_TDXTextureManager;
 	TDXFeatureController m_TDXFeatureController;
 	TDXBufferManager m_TDXBufferManager;
+
+	std::unique_ptr<DirectX::SpriteBatch> m_pSpriteBatch;
+	std::unique_ptr<DirectX::SpriteFont> m_pSpriteFont;
 
 };
 

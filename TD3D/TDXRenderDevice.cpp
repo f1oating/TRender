@@ -10,6 +10,8 @@ TDXRenderDevice::TDXRenderDevice() :
 	m_pRenderTargetView(nullptr),
 	m_pDepthStencilView(nullptr),
 	m_pDepthStencilBuffer(nullptr),
+    m_pSpriteBatch(nullptr),
+    m_pSpriteFont(nullptr),
     m_ViewMatrixCBS(),
     m_ProjectionMatrixCBS(),
     m_TDXShaderManager(),
@@ -60,6 +62,9 @@ bool TDXRenderDevice::Initizialize(HWND hwnd, int width, int height)
     OnResize(width, height);
     AddShaders();
 
+    m_pSpriteBatch = std::make_unique<DirectX::SpriteBatch>(m_pDeviceContext.Get());
+    m_pSpriteFont = std::make_unique<DirectX::SpriteFont>(m_pDevice.Get(), L"Fonts\\comic_sans_ms_16.spritefont");
+
     m_TDXTextureManager.CreateSampler(m_pDevice.Get(), m_pDeviceContext.Get());
 
     m_IsRunning = true;
@@ -82,6 +87,16 @@ void TDXRenderDevice::Draw(unsigned short numIndices, unsigned short startIndexL
     m_pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
     m_pDeviceContext->DrawIndexed(numIndices, startIndexLocation, baseVertexLocation);
+}
+
+void TDXRenderDevice::RenderText(const wchar_t* text, float x, float y)
+{
+    m_pSpriteBatch->Begin();
+    m_pSpriteFont->DrawString(m_pSpriteBatch.get(), text, DirectX::XMFLOAT2(x, y));
+    m_pSpriteBatch->End();
+
+    m_TDXBufferManager.BindConstantBuffer(PROJECTION_MATRIX_CONSTANT_BUFFER, 0, m_pDeviceContext.Get());
+    m_TDXBufferManager.BindConstantBuffer(VIEW_MATRIX_CONSTANT_BUFFER, 1, m_pDeviceContext.Get());
 }
 
 void TDXRenderDevice::SetProjectionValues(float fovDegrees, float aspectRatio, float nearZ, float farZ)

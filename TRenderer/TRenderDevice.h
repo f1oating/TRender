@@ -17,6 +17,7 @@ public:
 	virtual void EndFrame() = 0;
 
 	virtual void Draw(unsigned short numIndices, unsigned short startIndexLocation, unsigned short baseVertexLocation) = 0;
+	virtual void RenderText(const wchar_t* text, float x, float y) = 0;
 
 	virtual void SetProjectionValues(float fovDegrees, float aspectRatio, float nearZ, float farZ) = 0;
 	virtual void SetViewMatrix(const Eigen::Matrix4d& matrix) = 0;

@@ -1,4 +1,6 @@
 #include <windows.h>
+#include <iostream>
+#include <chrono>
 #include "TRenderer.h"
 #include "TInput.h"
 #include "TestCamera.h"
@@ -218,6 +220,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int nCmdShow) {
     renderDevice->CreateStaticVertexBuffer("VertexBufferSkybox", verticesSkybox, sizeof(verticesSkybox) / sizeof(TVertexSkybox), sizeof(TVertexSkybox));
     renderDevice->CreateStaticIndexBuffer("IndexBufferSkybox", indicesSkybox, sizeof(indicesSkybox) / sizeof(unsigned short));
 
+    auto start = std::chrono::high_resolution_clock::now();
+    int frameCount = 0;
+    std::wstring fpsText;
+
     // Main message loop
     MSG msg = {};
     while (msg.message != WM_QUIT) {
@@ -256,6 +262,22 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int nCmdShow) {
             renderDevice->BindIndexBuffer("IndexBufferMesh");
 
             renderDevice->Draw(36, 0, 0);
+
+            auto now = std::chrono::high_resolution_clock::now();
+            std::chrono::duration<float> elapsed = std::chrono::duration_cast<std::chrono::duration<float>>(now - start);
+
+            frameCount++;
+
+            if (elapsed.count() >= 1.0f) {
+                float fps = frameCount / elapsed.count();
+
+                fpsText = L"FPS: " + std::to_wstring(fps);
+
+                start = now;
+                frameCount = 0;
+            }
+
+            renderDevice->RenderText(fpsText.c_str(), 0, 0);
 
             renderDevice->EndFrame();
         }
