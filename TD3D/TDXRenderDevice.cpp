@@ -89,6 +89,17 @@ void TDXRenderDevice::Draw(unsigned short numIndices, unsigned short startIndexL
     m_pDeviceContext->DrawIndexed(numIndices, startIndexLocation, baseVertexLocation);
 }
 
+void TDXRenderDevice::DrawSprite(unsigned short numVertices, unsigned short startVertexLocation)
+{
+    m_pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+    SetRasterizerCulling(false);
+
+    m_pDeviceContext->Draw(numVertices, startVertexLocation);
+
+    SetRasterizerCulling(true);
+}
+
 void TDXRenderDevice::RenderText(const wchar_t* text, float x, float y)
 {
     m_pSpriteBatch->Begin();
@@ -276,6 +287,10 @@ void TDXRenderDevice::AddShaders()
     m_TDXShaderManager.AddVertexShader("skybox", L"..\\TD3D\\SkyboxVertexShader.cso",
         SKYBOX_INPUT_LAYOUT, sizeof(SKYBOX_INPUT_LAYOUT) / sizeof(D3D11_INPUT_ELEMENT_DESC), m_pDevice.Get());
     m_TDXShaderManager.AddPixelShader("skybox", L"..\\TD3D\\SkyboxPixelShader.cso", m_pDevice.Get());
+
+    m_TDXShaderManager.AddVertexShader("sprite", L"..\\TD3D\\SpriteVertexShader.cso",
+        SPRITE_INPUT_LAYOUT, sizeof(SPRITE_INPUT_LAYOUT) / sizeof(D3D11_INPUT_ELEMENT_DESC), m_pDevice.Get());
+    m_TDXShaderManager.AddPixelShader("sprite", L"..\\TD3D\\SpritePixelShader.cso", m_pDevice.Get());
 }
 
 HRESULT CreateRenderDevice(TDXRenderDevice** pDevice) {

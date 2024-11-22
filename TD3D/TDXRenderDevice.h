@@ -25,6 +25,7 @@ public:
 	virtual void EndFrame() override;
 
 	virtual void Draw(unsigned short numIndices, unsigned short startIndexLocation, unsigned short baseVertexLocation) override;
+	virtual void DrawSprite(unsigned short numVertices, unsigned short startVertexLocation) override;
 	virtual void RenderText(const wchar_t* text, float x, float y) override;
 
 	virtual void SetProjectionValues(float fovDegrees, float aspectRatio, float nearZ, float farZ) override;

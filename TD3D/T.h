@@ -22,6 +22,12 @@ struct TVector2
 	float y;
 };
 
+struct TVertexSprite
+{
+	TVector2 pos;
+	TVector2 tex;
+};
+
 struct TVertexPT
 {
 	TVector3 pos;

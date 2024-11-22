@@ -209,6 +209,16 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int nCmdShow) {
         20, 21, 22, 20, 22, 23
     };
 
+    TVertexSprite verticesSprite[] = {
+        { { 1.0f, 0.90f }, { 1.0f, 1.0f } },
+        { { 1.0f, 1.0f }, { 1.0f, 0.0f } },
+        { { 0.3f, 1.0f }, { 0.0f, 0.0f } },
+
+        { { 0.3f, 0.9f }, { 0.0f, 1.0f } },
+        { { 1.0f, 0.9f }, { 1.0f, 1.0f } },
+        { { 0.3f, 1.0f }, { 0.0f, 0.0f } }
+    };
+
     camera.SetPosition(2.0f, 2.0f, -2.0f);
 
     renderDevice->AddTexture("crate", "Textures/crate.jpg");
@@ -219,6 +229,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int nCmdShow) {
 
     renderDevice->CreateStaticVertexBuffer("VertexBufferSkybox", verticesSkybox, sizeof(verticesSkybox) / sizeof(TVertexSkybox), sizeof(TVertexSkybox));
     renderDevice->CreateStaticIndexBuffer("IndexBufferSkybox", indicesSkybox, sizeof(indicesSkybox) / sizeof(unsigned short));
+
+    renderDevice->CreateStaticVertexBuffer("VertexBufferSprite", verticesSprite, sizeof(verticesSprite) / sizeof(TVertexSprite), sizeof(TVertexSprite));
 
     auto start = std::chrono::high_resolution_clock::now();
     int frameCount = 0;
@@ -278,6 +290,14 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int nCmdShow) {
             }
 
             renderDevice->RenderText(fpsText.c_str(), 0, 0);
+
+            renderDevice->BindVertexShader("sprite");
+            renderDevice->BindPixelShader("sprite");
+
+            renderDevice->BindTexture("crate");
+            renderDevice->BindVertexBuffer("VertexBufferSprite", sizeof(TVertexSprite), 0);
+
+            renderDevice->DrawSprite(6, 0);
 
             renderDevice->EndFrame();
         }
