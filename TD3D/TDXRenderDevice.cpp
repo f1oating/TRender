@@ -10,8 +10,6 @@ TDXRenderDevice::TDXRenderDevice() :
 	m_pRenderTargetView(nullptr),
 	m_pDepthStencilView(nullptr),
 	m_pDepthStencilBuffer(nullptr),
-    m_pViewMatrixConstantBuffer(nullptr),
-    m_pProjectionMatrixConstantBuffer(nullptr),
     m_ViewMatrixCBS(),
     m_ProjectionMatrixCBS(),
     m_TDXShaderManager(),
@@ -91,10 +89,7 @@ void TDXRenderDevice::SetProjectionValues(float fovDegrees, float aspectRatio, f
 
     m_ProjectionMatrixCBS = { DirectX::XMMatrixTranspose(m_ProjectionMatrix) };
 
-    D3D11_MAPPED_SUBRESOURCE mappedResource;
-    m_pDeviceContext->Map(m_pProjectionMatrixConstantBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
-    memcpy(mappedResource.pData, &m_ProjectionMatrixCBS, sizeof(MatrixCBS));
-    m_pDeviceContext->Unmap(m_pProjectionMatrixConstantBuffer.Get(), 0);
+    m_TDXBufferManager.UpdateDynamicConstantBuffer(PROJECTION_MATRIX_CONSTANT_BUFFER, &m_ProjectionMatrixCBS, sizeof(MatrixCBS), m_pDeviceContext.Get());
 }
 
 void TDXRenderDevice::SetViewMatrix(const Eigen::Matrix4d& matrix)
@@ -108,10 +103,7 @@ void TDXRenderDevice::SetViewMatrix(const Eigen::Matrix4d& matrix)
 
     m_ViewMatrixCBS = { DirectX::XMMatrixTranspose(m_ViewMatrix) };
 
-    D3D11_MAPPED_SUBRESOURCE mappedResource;
-    m_pDeviceContext->Map(m_pViewMatrixConstantBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
-    memcpy(mappedResource.pData, &m_ViewMatrixCBS, sizeof(MatrixCBS));
-    m_pDeviceContext->Unmap(m_pViewMatrixConstantBuffer.Get(), 0);
+    m_TDXBufferManager.UpdateDynamicConstantBuffer(VIEW_MATRIX_CONSTANT_BUFFER, &m_ViewMatrixCBS, sizeof(MatrixCBS), m_pDeviceContext.Get());
 }
 
 void TDXRenderDevice::AddTexture(std::string name, std::string path)
@@ -251,29 +243,11 @@ bool TDXRenderDevice::IsRunning()
 
 void TDXRenderDevice::CreateBuffers()
 {
-    D3D11_BUFFER_DESC projectionMatrixBD = {};
-    projectionMatrixBD.Usage = D3D11_USAGE_DYNAMIC;
-    projectionMatrixBD.ByteWidth = sizeof(MatrixCBS);
-    projectionMatrixBD.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-    projectionMatrixBD.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-    HRESULT hr = m_pDevice->CreateBuffer(&projectionMatrixBD, nullptr, &m_pProjectionMatrixConstantBuffer);
-    if (FAILED(hr)) {
-        throw std::runtime_error("Failed to create Projection Matrix Buffer.");
-    }
+    m_TDXBufferManager.CreateDynamicConstantBuffer(PROJECTION_MATRIX_CONSTANT_BUFFER, sizeof(MatrixCBS), m_pDevice.Get());
+    m_TDXBufferManager.BindConstantBuffer(PROJECTION_MATRIX_CONSTANT_BUFFER, 0, m_pDeviceContext.Get());
 
-    m_pDeviceContext->VSSetConstantBuffers(0, 1, m_pProjectionMatrixConstantBuffer.GetAddressOf());
-
-    D3D11_BUFFER_DESC viewMatrixBD = {};
-    viewMatrixBD.Usage = D3D11_USAGE_DYNAMIC;
-    viewMatrixBD.ByteWidth = sizeof(MatrixCBS);
-    viewMatrixBD.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-    viewMatrixBD.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-    hr = m_pDevice->CreateBuffer(&viewMatrixBD, nullptr, &m_pViewMatrixConstantBuffer);
-    if (FAILED(hr)) {
-        throw std::runtime_error("Failed to create View Matrix Buffer.");
-    }
-
-    m_pDeviceContext->VSSetConstantBuffers(1, 1, m_pViewMatrixConstantBuffer.GetAddressOf());
+    m_TDXBufferManager.CreateDynamicConstantBuffer(VIEW_MATRIX_CONSTANT_BUFFER, sizeof(MatrixCBS), m_pDevice.Get());
+    m_TDXBufferManager.BindConstantBuffer(VIEW_MATRIX_CONSTANT_BUFFER, 1, m_pDeviceContext.Get());
 }
 
 void TDXRenderDevice::AddShaders()

@@ -1,6 +1,6 @@
 <mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:132.0) Gecko/20100101 Firefox/132.0" version="24.8.6">
   <diagram name="Страница — 1" id="iS9kPeVT_qTxmNW6HSiJ">
-    <mxGraphModel dx="2234" dy="782" grid="1" gridSize="13" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="827" pageHeight="1169" background="none" math="0" shadow="0">
+    <mxGraphModel dx="2849" dy="1117" grid="1" gridSize="13" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="827" pageHeight="1169" background="none" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -83,16 +83,16 @@
           <mxGeometry y="177" width="559" height="96" as="geometry" />
         </mxCell>
         <mxCell id="zGQ5QOaMirLtcjMx9zrs-1" value="TDXBufferManager" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
-          <mxGeometry x="702" y="1040" width="520" height="390" as="geometry" />
+          <mxGeometry x="702" y="1040" width="520" height="494" as="geometry" />
         </mxCell>
-        <mxCell id="zGQ5QOaMirLtcjMx9zrs-2" value="~TDXBufferManager();&lt;br&gt;&lt;br&gt;void CreateStaticVertexBuffer(std::string name, void* vertices, unsigned short numVertices, unsigned short vertexSize, ID3D11Device* device);&lt;br&gt;&lt;br&gt;void CreateStaticIndexBuffer(std::string name, unsigned short* indices, unsigned short numIndices, ID3D11Device* device);&lt;br&gt;&lt;br&gt;void UpdateStaticVertexBuffer(std::string name, void* vertices, ID3D11DeviceContext* context);&lt;br&gt;&lt;br&gt;void UpdateStaticIndexBuffer(std::string name, unsigned short* indices, ID3D11DeviceContext* context);&lt;br&gt;&lt;br&gt;void BindVertexBuffer(std::string vertexName, UINT stride, UINT offset, ID3D11DeviceContext* context);&lt;br&gt;void BindIndexBuffer(std::string indexName, ID3D11DeviceContext* context);&lt;br&gt;&lt;br&gt;void DeleteBuffer(std::string name);" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" parent="zGQ5QOaMirLtcjMx9zrs-1" vertex="1">
-          <mxGeometry y="26" width="520" height="299" as="geometry" />
+        <mxCell id="zGQ5QOaMirLtcjMx9zrs-2" value="~TDXBufferManager();&lt;br&gt;&lt;br&gt;void CreateStaticVertexBuffer(std::string name, void* vertices, unsigned short numVertices, unsigned short vertexSize, ID3D11Device* device);&lt;br&gt;&lt;br&gt;&lt;div&gt;void CreateStaticIndexBuffer(std::string name, unsigned short* indices, unsigned short numIndices, ID3D11Device* device);&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;void CreateDynamicConstantBuffer(std::string name, unsigned short structSize, ID3D11Device* device);&lt;br&gt;&lt;/div&gt;&lt;br&gt;void UpdateStaticVertexBuffer(std::string name, void* vertices, ID3D11DeviceContext* context);&lt;br&gt;&lt;br&gt;&lt;div&gt;void UpdateStaticIndexBuffer(std::string name, unsigned short* indices, ID3D11DeviceContext* context);&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;void UpdateDynamicConstantBuffer(std::string name, void* constantBufferStruct, unsigned short structSize, ID3D11DeviceContext* context);&lt;br&gt;&lt;/div&gt;&lt;br&gt;void BindVertexBuffer(std::string vertexName, UINT stride, UINT offset, ID3D11DeviceContext* context);&lt;br&gt;&lt;div&gt;void BindIndexBuffer(std::string indexName, ID3D11DeviceContext* context);&lt;/div&gt;&lt;div&gt;void BindConstantBuffer(std::string constantName, unsigned short slot, ID3D11DeviceContext* context);&lt;br&gt;&lt;/div&gt;&lt;br&gt;void DeleteBuffer(std::string name);" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" parent="zGQ5QOaMirLtcjMx9zrs-1" vertex="1">
+          <mxGeometry y="26" width="520" height="403" as="geometry" />
         </mxCell>
         <mxCell id="zGQ5QOaMirLtcjMx9zrs-3" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;strokeColor=inherit;" parent="zGQ5QOaMirLtcjMx9zrs-1" vertex="1">
-          <mxGeometry y="325" width="520" height="8" as="geometry" />
+          <mxGeometry y="429" width="520" height="8" as="geometry" />
         </mxCell>
         <mxCell id="zGQ5QOaMirLtcjMx9zrs-4" value="&lt;div&gt;std::unordered_map&amp;lt;std::string, ID3D11Buffer*&amp;gt; m_BuffersMap;&lt;/div&gt;" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" parent="zGQ5QOaMirLtcjMx9zrs-1" vertex="1">
-          <mxGeometry y="333" width="520" height="57" as="geometry" />
+          <mxGeometry y="437" width="520" height="57" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>

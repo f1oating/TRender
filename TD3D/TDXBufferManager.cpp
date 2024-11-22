@@ -51,6 +51,23 @@ void TDXBufferManager::CreateStaticIndexBuffer(std::string name, unsigned short*
     m_BuffersMap[name] = buffer;
 }
 
+void TDXBufferManager::CreateDynamicConstantBuffer(std::string name, unsigned short structSize, ID3D11Device* device)
+{
+    ID3D11Buffer* buffer;
+
+    D3D11_BUFFER_DESC bd = {};
+    bd.Usage = D3D11_USAGE_DYNAMIC;
+    bd.ByteWidth = structSize;
+    bd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+    bd.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+    HRESULT hr = device->CreateBuffer(&bd, nullptr, &buffer);
+    if (FAILED(hr)) {
+        throw std::runtime_error("Failed to create Constant Buffer " + name);
+    }
+
+    m_BuffersMap[name] = buffer;
+}
+
 void TDXBufferManager::UpdateStaticVertexBuffer(std::string name, void* vertices, ID3D11DeviceContext* context)
 {
     context->UpdateSubresource(m_BuffersMap[name], 0, nullptr, vertices, 0, 0);
@@ -61,6 +78,14 @@ void TDXBufferManager::UpdateStaticIndexBuffer(std::string name, unsigned short*
     context->UpdateSubresource(m_BuffersMap[name], 0, nullptr, indices, 0, 0);
 }
 
+void TDXBufferManager::UpdateDynamicConstantBuffer(std::string name, void* constantBufferStruct, unsigned short structSize, ID3D11DeviceContext* context)
+{
+    D3D11_MAPPED_SUBRESOURCE mappedResource;
+    context->Map(m_BuffersMap[name], 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
+    memcpy(mappedResource.pData, constantBufferStruct, structSize);
+    context->Unmap(m_BuffersMap[name], 0);
+}
+
 void TDXBufferManager::BindVertexBuffer(std::string vertexName, UINT stride, UINT offset, ID3D11DeviceContext* context)
 {
     context->IASetVertexBuffers(0, 1u, &m_BuffersMap[vertexName], &stride, &offset);
@@ -69,6 +94,11 @@ void TDXBufferManager::BindVertexBuffer(std::string vertexName, UINT stride, UIN
 void TDXBufferManager::BindIndexBuffer(std::string indexName, ID3D11DeviceContext* context)
 {
     context->IASetIndexBuffer(m_BuffersMap[indexName], DXGI_FORMAT_R16_UINT, 0u);
+}
+
+void TDXBufferManager::BindConstantBuffer(std::string constantName, unsigned short slot, ID3D11DeviceContext* context)
+{
+    context->VSSetConstantBuffers(slot, 1, &m_BuffersMap[constantName]);
 }
 
 void TDXBufferManager::DeleteBuffer(std::string name)

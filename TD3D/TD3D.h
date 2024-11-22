@@ -3,6 +3,10 @@
 
 #include <d3d11.h>
 #include <DirectXMath.h>
+#include <string>
+
+std::string PROJECTION_MATRIX_CONSTANT_BUFFER = "PROJECTION_MATRIX_CONSTANT_BUFFER";
+std::string VIEW_MATRIX_CONSTANT_BUFFER = "VIEW_MATRIX_CONSTANT_BUFFER";
 
 struct MatrixCBS
 {

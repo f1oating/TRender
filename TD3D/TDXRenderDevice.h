@@ -62,9 +62,6 @@ private:
 	DirectX::XMMATRIX m_ViewMatrix;
 	DirectX::XMMATRIX m_ProjectionMatrix;
 
-	Microsoft::WRL::ComPtr <ID3D11Buffer> m_pViewMatrixConstantBuffer;
-	Microsoft::WRL::ComPtr <ID3D11Buffer> m_pProjectionMatrixConstantBuffer;
-
 	MatrixCBS m_ViewMatrixCBS;
 	MatrixCBS m_ProjectionMatrixCBS;
 
