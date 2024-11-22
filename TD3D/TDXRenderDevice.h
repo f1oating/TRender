@@ -10,6 +10,8 @@
 #include <d3d11.h>
 #include <DirectXMath.h>
 #include <wrl/client.h>
+#include <d2d1.h>
+#include <dwrite.h>
 
 class TDXRenderDevice : public TRenderDevice
 {
@@ -23,6 +25,7 @@ public:
 	virtual void EndFrame() override;
 
 	virtual void Draw(unsigned short numIndices, unsigned short startIndexLocation, unsigned short baseVertexLocation) override;
+	virtual void RenderText(const wchar_t* text, float x, float y, float width, float height) override;
 
 	virtual void SetProjectionValues(float fovDegrees, float aspectRatio, float nearZ, float farZ) override;
 	virtual void SetViewMatrix(const Eigen::Matrix4d& matrix) override;
@@ -45,13 +48,19 @@ public:
 	virtual void SetDepthStencilComparison(bool flag) override;
 	virtual void SetRasterizerCulling(bool flag) override;
 
-	virtual bool OnResize(int width, int height) override;
+	virtual bool OnResize(int width, int height, HWND hwnd) override;
 	virtual bool IsRunning() override;
 
+	void InitDirectWrite(HWND hwnd);
 	void CreateBuffers();
 	void AddShaders();
 
 private:
+	Microsoft::WRL::ComPtr<ID2D1Factory> m_pD2DFactory;
+	Microsoft::WRL::ComPtr<IDWriteFactory> m_pDWriteFactory;
+	Microsoft::WRL::ComPtr<IDWriteTextFormat> m_pTextFormat;
+	Microsoft::WRL::ComPtr<ID2D1HwndRenderTarget> m_pRenderTargetText;
+
 	Microsoft::WRL::ComPtr<ID3D11Device> m_pDevice;
 	Microsoft::WRL::ComPtr<ID3D11DeviceContext> m_pDeviceContext;
 	Microsoft::WRL::ComPtr<IDXGISwapChain> m_pSwapChain;

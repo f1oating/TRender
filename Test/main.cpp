@@ -68,7 +68,7 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
         PostQuitMessage(0);
         return 0;
     case WM_SIZE:
-        if (renderDevice) renderDevice->OnResize(LOWORD(lParam), HIWORD(lParam));
+        if (renderDevice) renderDevice->OnResize(LOWORD(lParam), HIWORD(lParam), hwnd);
     case WM_PAINT:
         break;
     }
@@ -256,6 +256,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int nCmdShow) {
             renderDevice->BindIndexBuffer("IndexBufferMesh");
 
             renderDevice->Draw(36, 0, 0);
+
+            renderDevice->RenderText(L"FPS: 300", 0, 0, 400, 300);
 
             renderDevice->EndFrame();
         }
