@@ -54,6 +54,7 @@ public:
 
 	virtual void SetDepthStencilComparison(bool flag) override;
 	virtual void SetRasterizerCulling(bool flag) override;
+	virtual void SetBlendState(bool flag) override;
 
 	virtual bool OnResize(int width, int height) override;
 	virtual bool IsRunning() override;

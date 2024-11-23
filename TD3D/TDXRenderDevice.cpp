@@ -227,6 +227,11 @@ void TDXRenderDevice::SetRasterizerCulling(bool flag)
     m_TDXFeatureController.ChangeRasterizerCulling(flag, m_pDevice.Get(), m_pDeviceContext.Get());
 }
 
+void TDXRenderDevice::SetBlendState(bool flag)
+{
+    m_TDXFeatureController.ChangeBlendState(flag, m_pDevice.Get(), m_pDeviceContext.Get());
+}
+
 bool TDXRenderDevice::OnResize(int width, int height)
 {
     m_pRenderTargetView.Reset();

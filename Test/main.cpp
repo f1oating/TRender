@@ -311,7 +311,11 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int nCmdShow) {
 
             renderDevice->BindVertexBuffer("VertexBufferSpriteColor", sizeof(TVertexSpriteColor), 0);
 
+            renderDevice->SetBlendState(true);
+
             renderDevice->DrawSprite(3, 0);
+
+            renderDevice->SetBlendState(false);
 
             renderDevice->EndFrame();
         }

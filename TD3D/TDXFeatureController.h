@@ -8,6 +8,7 @@ class TDXFeatureController
 public:
 	void ChangeDepthStencilComparison(bool flag, ID3D11Device* device, ID3D11DeviceContext* deviceContext);
 	void ChangeRasterizerCulling(bool flag, ID3D11Device* device, ID3D11DeviceContext* deviceContext);
+	void ChangeBlendState(bool flag, ID3D11Device* device, ID3D11DeviceContext* deviceContext);
 };
 
 #endif
