@@ -307,21 +307,21 @@ void TDXRenderDevice::CreateBuffers()
 
 void TDXRenderDevice::AddShaders()
 {
-    m_TDXShaderManager.AddVertexShader(MESH_SHADER, L"..\\TD3D\\MeshVertexShader.cso",
+    m_TDXShaderManager.AddVertexShader(MESH_SHADER, L"..\\TD3D\\CSO\\MeshVertexShader.cso",
         MESH_INPUT_LAYOUT, sizeof(MESH_INPUT_LAYOUT) / sizeof(D3D11_INPUT_ELEMENT_DESC), m_pDevice.Get());
-    m_TDXShaderManager.AddPixelShader(MESH_SHADER, L"..\\TD3D\\MeshPixelShader.cso", m_pDevice.Get());
+    m_TDXShaderManager.AddPixelShader(MESH_SHADER, L"..\\TD3D\\CSO\\MeshPixelShader.cso", m_pDevice.Get());
 
-    m_TDXShaderManager.AddVertexShader(SKYBOX_SHADER, L"..\\TD3D\\SkyboxVertexShader.cso",
+    m_TDXShaderManager.AddVertexShader(SKYBOX_SHADER, L"..\\TD3D\\CSO\\SkyboxVertexShader.cso",
         SKYBOX_INPUT_LAYOUT, sizeof(SKYBOX_INPUT_LAYOUT) / sizeof(D3D11_INPUT_ELEMENT_DESC), m_pDevice.Get());
-    m_TDXShaderManager.AddPixelShader(SKYBOX_SHADER, L"..\\TD3D\\SkyboxPixelShader.cso", m_pDevice.Get());
+    m_TDXShaderManager.AddPixelShader(SKYBOX_SHADER, L"..\\TD3D\\CSO\\SkyboxPixelShader.cso", m_pDevice.Get());
 
-    m_TDXShaderManager.AddVertexShader(SPRITE_SHADER_TEXTURE, L"..\\TD3D\\SpriteTextureVertexShader.cso",
+    m_TDXShaderManager.AddVertexShader(SPRITE_SHADER_TEXTURE, L"..\\TD3D\\CSO\\SpriteTextureVertexShader.cso",
         SPRITE_TEXTURE_INPUT_LAYOUT, sizeof(SPRITE_TEXTURE_INPUT_LAYOUT) / sizeof(D3D11_INPUT_ELEMENT_DESC), m_pDevice.Get());
-    m_TDXShaderManager.AddPixelShader(SPRITE_SHADER_TEXTURE, L"..\\TD3D\\SpriteTexturePixelShader.cso", m_pDevice.Get());
+    m_TDXShaderManager.AddPixelShader(SPRITE_SHADER_TEXTURE, L"..\\TD3D\\CSO\\SpriteTexturePixelShader.cso", m_pDevice.Get());
 
-    m_TDXShaderManager.AddVertexShader(SPRITE_SHADER_COLOR, L"..\\TD3D\\SpriteColorVertexShader.cso",
+    m_TDXShaderManager.AddVertexShader(SPRITE_SHADER_COLOR, L"..\\TD3D\\CSO\\SpriteColorVertexShader.cso",
         SPRITE_COLOR_INPUT_LAYOUT, sizeof(SPRITE_COLOR_INPUT_LAYOUT) / sizeof(D3D11_INPUT_ELEMENT_DESC), m_pDevice.Get());
-    m_TDXShaderManager.AddPixelShader(SPRITE_SHADER_COLOR, L"..\\TD3D\\SpriteColorPixelShader.cso", m_pDevice.Get());
+    m_TDXShaderManager.AddPixelShader(SPRITE_SHADER_COLOR, L"..\\TD3D\\CSO\\SpriteColorPixelShader.cso", m_pDevice.Get());
 }
 
 HRESULT CreateRenderDevice(TDXRenderDevice** pDevice) {
