@@ -252,8 +252,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int nCmdShow) {
             renderDevice->SetRasterizerCulling(false);
             renderDevice->SetDepthStencilComparison(false);
 
-            renderDevice->BindVertexShader("skybox");
-            renderDevice->BindPixelShader("skybox");
+            renderDevice->BindVertexShader(SKYBOX_SHADER);
+            renderDevice->BindPixelShader(SKYBOX_SHADER);
 
             renderDevice->BindTexture("skybox");
 
@@ -265,8 +265,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int nCmdShow) {
             renderDevice->SetRasterizerCulling(true);
             renderDevice->SetDepthStencilComparison(true);
 
-            renderDevice->BindVertexShader("mesh");
-            renderDevice->BindPixelShader("mesh");
+            renderDevice->BindVertexShader(MESH_SHADER);
+            renderDevice->BindPixelShader(MESH_SHADER);
 
             renderDevice->BindTexture("crate");
 
@@ -291,8 +291,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int nCmdShow) {
 
             renderDevice->RenderText(fpsText.c_str(), 0, 0);
 
-            renderDevice->BindVertexShader("sprite");
-            renderDevice->BindPixelShader("sprite");
+            renderDevice->BindVertexShader(SPRITE_SHADER_TEXTURE);
+            renderDevice->BindPixelShader(SPRITE_SHADER_TEXTURE);
 
             renderDevice->BindTexture("crate");
             renderDevice->BindVertexBuffer("VertexBufferSprite", sizeof(TVertexSprite), 0);

@@ -65,7 +65,8 @@ bool TDXRenderDevice::Initizialize(HWND hwnd, int width, int height)
     m_pSpriteBatch = std::make_unique<DirectX::SpriteBatch>(m_pDeviceContext.Get());
     m_pSpriteFont = std::make_unique<DirectX::SpriteFont>(m_pDevice.Get(), L"Fonts\\comic_sans_ms_16.spritefont");
 
-    m_TDXTextureManager.CreateSampler(m_pDevice.Get(), m_pDeviceContext.Get());
+    m_TDXTextureManager.CreateSampler("default", m_pDevice.Get(), m_pDeviceContext.Get());
+    m_TDXTextureManager.BindSampler("default", m_pDeviceContext.Get());
 
     m_IsRunning = true;
 
@@ -108,6 +109,7 @@ void TDXRenderDevice::RenderText(const wchar_t* text, float x, float y)
 
     m_TDXBufferManager.BindConstantBuffer(PROJECTION_MATRIX_CONSTANT_BUFFER, 0, m_pDeviceContext.Get());
     m_TDXBufferManager.BindConstantBuffer(VIEW_MATRIX_CONSTANT_BUFFER, 1, m_pDeviceContext.Get());
+    m_TDXTextureManager.BindSampler("default", m_pDeviceContext.Get());
 }
 
 void TDXRenderDevice::SetProjectionValues(float fovDegrees, float aspectRatio, float nearZ, float farZ)
@@ -280,17 +282,17 @@ void TDXRenderDevice::CreateBuffers()
 
 void TDXRenderDevice::AddShaders()
 {
-    m_TDXShaderManager.AddVertexShader("mesh", L"..\\TD3D\\VertexShader.cso",
+    m_TDXShaderManager.AddVertexShader(MESH_SHADER, L"..\\TD3D\\MeshVertexShader.cso",
         MESH_INPUT_LAYOUT, sizeof(MESH_INPUT_LAYOUT) / sizeof(D3D11_INPUT_ELEMENT_DESC), m_pDevice.Get());
-    m_TDXShaderManager.AddPixelShader("mesh", L"..\\TD3D\\PixelShader.cso", m_pDevice.Get());
+    m_TDXShaderManager.AddPixelShader(MESH_SHADER, L"..\\TD3D\\MeshPixelShader.cso", m_pDevice.Get());
 
-    m_TDXShaderManager.AddVertexShader("skybox", L"..\\TD3D\\SkyboxVertexShader.cso",
+    m_TDXShaderManager.AddVertexShader(SKYBOX_SHADER, L"..\\TD3D\\SkyboxVertexShader.cso",
         SKYBOX_INPUT_LAYOUT, sizeof(SKYBOX_INPUT_LAYOUT) / sizeof(D3D11_INPUT_ELEMENT_DESC), m_pDevice.Get());
-    m_TDXShaderManager.AddPixelShader("skybox", L"..\\TD3D\\SkyboxPixelShader.cso", m_pDevice.Get());
+    m_TDXShaderManager.AddPixelShader(SKYBOX_SHADER, L"..\\TD3D\\SkyboxPixelShader.cso", m_pDevice.Get());
 
-    m_TDXShaderManager.AddVertexShader("sprite", L"..\\TD3D\\SpriteVertexShader.cso",
+    m_TDXShaderManager.AddVertexShader(SPRITE_SHADER_TEXTURE, L"..\\TD3D\\SpriteTextureVertexShader.cso",
         SPRITE_INPUT_LAYOUT, sizeof(SPRITE_INPUT_LAYOUT) / sizeof(D3D11_INPUT_ELEMENT_DESC), m_pDevice.Get());
-    m_TDXShaderManager.AddPixelShader("sprite", L"..\\TD3D\\SpritePixelShader.cso", m_pDevice.Get());
+    m_TDXShaderManager.AddPixelShader(SPRITE_SHADER_TEXTURE, L"..\\TD3D\\SpriteTexturePixelShader.cso", m_pDevice.Get());
 }
 
 HRESULT CreateRenderDevice(TDXRenderDevice** pDevice) {

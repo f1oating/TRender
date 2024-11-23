@@ -21,10 +21,16 @@ TDXTextureManager::~TDXTextureManager()
         pair.second->Release();
     }
 
+    for (const std::pair<std::string, ID3D11SamplerState*> pair : m_SamplersMap)
+    {
+        pair.second->Release();
+    }
+
     m_TexturesMap.clear();
+    m_SamplersMap.clear();
 }
 
-void TDXTextureManager::CreateSampler(ID3D11Device* device, ID3D11DeviceContext* context)
+void TDXTextureManager::CreateSampler(std::string name, ID3D11Device* device, ID3D11DeviceContext* context)
 {
     ID3D11SamplerState* pSamplerState;
 
@@ -43,7 +49,7 @@ void TDXTextureManager::CreateSampler(ID3D11Device* device, ID3D11DeviceContext*
         return;
     }
 
-    context->PSSetSamplers(0, 1, &pSamplerState);
+    m_SamplersMap[name] = pSamplerState;
 }
 
 void TDXTextureManager::AddTexture(std::string name, std::string path, ID3D11Device* device)
@@ -135,6 +141,12 @@ void TDXTextureManager::AddCubeMapTexture(std::string name, std::string path, st
 void TDXTextureManager::BindTexture(std::string name, ID3D11DeviceContext* context)
 {
     context->PSSetShaderResources(0, 1, &m_TexturesMap[name]);
+}
+
+void TDXTextureManager::BindSampler(std::string name, ID3D11DeviceContext* context)
+{
+    context->PSSetSamplers(0, 1, &m_SamplersMap[name]);
+
 }
 
 void TDXTextureManager::DeleteTexture(std::string name)
