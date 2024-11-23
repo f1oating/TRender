@@ -126,7 +126,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int nCmdShow) {
 
     renderDevice->Initizialize(hwnd, 800, 600);
 
-    TVertexPT vertices[] = {
+    TVertexMesh vertices[] = {
     {{-1.0f, -1.0f,  1.0f}, {0.0f, 1.0f}},
     {{ 1.0f, -1.0f,  1.0f}, {1.0f, 1.0f}},
     {{ 1.0f,  1.0f,  1.0f}, {1.0f, 0.0f}},
@@ -234,7 +234,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int nCmdShow) {
     renderDevice->AddTexture("crate", "Textures/crate.jpg");
     renderDevice->AddCubeMapTexture("skybox", "Textures/Skybox/Weltraum", ".png");
 
-    renderDevice->CreateStaticVertexBuffer("VertexBufferMesh", vertices, sizeof(vertices) / sizeof(TVertexPT), sizeof(TVertexPT));
+    renderDevice->CreateStaticVertexBuffer("VertexBufferMesh", vertices, sizeof(vertices) / sizeof(TVertexMesh), sizeof(TVertexMesh));
     renderDevice->CreateStaticIndexBuffer("IndexBufferMesh", indices, sizeof(indices) / sizeof(unsigned short));
 
     renderDevice->CreateStaticVertexBuffer("VertexBufferSkybox", verticesSkybox, sizeof(verticesSkybox) / sizeof(TVertexSkybox), sizeof(TVertexSkybox));
@@ -281,7 +281,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int nCmdShow) {
 
             renderDevice->BindTexture("crate");
 
-            renderDevice->BindVertexBuffer("VertexBufferMesh", sizeof(TVertexPT), 0);
+            renderDevice->BindVertexBuffer("VertexBufferMesh", sizeof(TVertexMesh), 0);
             renderDevice->BindIndexBuffer("IndexBufferMesh");
 
             renderDevice->Draw(36, 0, 0);

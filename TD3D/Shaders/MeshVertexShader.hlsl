@@ -14,7 +14,7 @@ struct VSOut
 	float2 uv : TEXCOORD;
 };
 
-VSOut main(float3 pos : POSITION, float2 uv : TEXCOORD)
+VSOut main(float3 pos : POSITION, float2 uv : TEXCOORD, float3 normal : NORMAL, float3 tangent : TANGENT)
 {
 	VSOut vso;
 	vso.pos = mul(float4(pos, 1.0f), mul(viewMatrix, projectionMatrix));

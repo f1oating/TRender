@@ -41,10 +41,12 @@ struct TVertexSpriteColor
 	TVector4 color;
 };
 
-struct TVertexPT
+struct TVertexMesh
 {
 	TVector3 pos;
 	TVector2 tex;
+	TVector3 normal;
+	TVector3 tangent;
 };
 
 struct TVertexSkybox
