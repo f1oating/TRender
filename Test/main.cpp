@@ -209,7 +209,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int nCmdShow) {
         20, 21, 22, 20, 22, 23
     };
 
-    TVertexSprite verticesSprite[] = {
+    TVertexSpriteTexture verticesSpriteTexture[] = {
         { { 1.0f, 0.90f }, { 1.0f, 1.0f } },
         { { 1.0f, 1.0f }, { 1.0f, 0.0f } },
         { { 0.3f, 1.0f }, { 0.0f, 0.0f } },
@@ -217,6 +217,12 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int nCmdShow) {
         { { 0.3f, 0.9f }, { 0.0f, 1.0f } },
         { { 1.0f, 0.9f }, { 1.0f, 1.0f } },
         { { 0.3f, 1.0f }, { 0.0f, 0.0f } }
+    };
+
+    TVertexSpriteColor verticesSpriteColor[] = {
+        { { 0.0f, 0.0f }, { 1.0f, 1.0f, 1.0f, 0.2f } },
+        { { 0.0f, 0.5f }, { 1.0f, 1.0f, 1.0f, 0.2f } },
+        { { 0.5f, 0.0f }, { 1.0f, 1.0f, 1.0f, 0.2f } },
     };
 
     camera.SetPosition(2.0f, 2.0f, -2.0f);
@@ -230,7 +236,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int nCmdShow) {
     renderDevice->CreateStaticVertexBuffer("VertexBufferSkybox", verticesSkybox, sizeof(verticesSkybox) / sizeof(TVertexSkybox), sizeof(TVertexSkybox));
     renderDevice->CreateStaticIndexBuffer("IndexBufferSkybox", indicesSkybox, sizeof(indicesSkybox) / sizeof(unsigned short));
 
-    renderDevice->CreateStaticVertexBuffer("VertexBufferSprite", verticesSprite, sizeof(verticesSprite) / sizeof(TVertexSprite), sizeof(TVertexSprite));
+    renderDevice->CreateStaticVertexBuffer("VertexBufferSprite", verticesSpriteTexture, sizeof(verticesSpriteTexture) / sizeof(TVertexSpriteTexture), sizeof(TVertexSpriteTexture));
+    renderDevice->CreateDynamicVertexBuffer("VertexBufferSpriteColor", verticesSpriteColor, sizeof(verticesSpriteColor) / sizeof(TVertexSpriteColor), sizeof(TVertexSpriteColor));
 
     auto start = std::chrono::high_resolution_clock::now();
     int frameCount = 0;
@@ -295,9 +302,16 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int nCmdShow) {
             renderDevice->BindPixelShader(SPRITE_SHADER_TEXTURE);
 
             renderDevice->BindTexture("crate");
-            renderDevice->BindVertexBuffer("VertexBufferSprite", sizeof(TVertexSprite), 0);
+            renderDevice->BindVertexBuffer("VertexBufferSprite", sizeof(TVertexSpriteTexture), 0);
 
             renderDevice->DrawSprite(6, 0);
+
+            renderDevice->BindVertexShader(SPRITE_SHADER_COLOR);
+            renderDevice->BindPixelShader(SPRITE_SHADER_COLOR);
+
+            renderDevice->BindVertexBuffer("VertexBufferSpriteColor", sizeof(TVertexSpriteColor), 0);
+
+            renderDevice->DrawSprite(3, 0);
 
             renderDevice->EndFrame();
         }

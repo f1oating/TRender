@@ -5,6 +5,7 @@
 
 constexpr const char* SKYBOX_SHADER = "SKYBOX";
 constexpr const char* SPRITE_SHADER_TEXTURE = "SPRITE_TEXTURE";
+constexpr const char* SPRITE_SHADER_COLOR = "SPRITE_COLOR";
 constexpr const char* MESH_SHADER = "MESH";
 
 struct TVector4
@@ -28,10 +29,16 @@ struct TVector2
 	float y;
 };
 
-struct TVertexSprite
+struct TVertexSpriteTexture
 {
 	TVector2 pos;
 	TVector2 tex;
+};
+
+struct TVertexSpriteColor
+{
+	TVector2 pos;
+	TVector4 color;
 };
 
 struct TVertexPT
