@@ -15,17 +15,17 @@ void TDXBufferManager::CreateStaticVertexBuffer(std::string name, void* vertices
 {
     ID3D11Buffer* buffer;
 
-    D3D11_BUFFER_DESC staticVertexBufferPTDesc = {};
-    staticVertexBufferPTDesc.Usage = D3D11_USAGE_DEFAULT;
-    staticVertexBufferPTDesc.ByteWidth = vertexSize * numVertices;
-    staticVertexBufferPTDesc.StructureByteStride = vertexSize;
-    staticVertexBufferPTDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-    staticVertexBufferPTDesc.CPUAccessFlags = 0;
-    D3D11_SUBRESOURCE_DATA staticVertexBufferPTInitData = {};
-    staticVertexBufferPTInitData.pSysMem = vertices;
-    HRESULT hr = device->CreateBuffer(&staticVertexBufferPTDesc, &staticVertexBufferPTInitData, &buffer);
+    D3D11_BUFFER_DESC staticVertexBufferDesc = {};
+    staticVertexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
+    staticVertexBufferDesc.ByteWidth = vertexSize * numVertices;
+    staticVertexBufferDesc.StructureByteStride = vertexSize;
+    staticVertexBufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+    staticVertexBufferDesc.CPUAccessFlags = 0;
+    D3D11_SUBRESOURCE_DATA staticVertexBufferInitData = {};
+    staticVertexBufferInitData.pSysMem = vertices;
+    HRESULT hr = device->CreateBuffer(&staticVertexBufferDesc, &staticVertexBufferInitData, &buffer);
     if (FAILED(hr)) {
-        throw std::runtime_error("Failed to create static PT vertex buffer.");
+        throw std::runtime_error("Failed to create static vertex buffer.");
     }
 
     m_BuffersMap[name] = buffer;
@@ -35,17 +35,17 @@ void TDXBufferManager::CreateStaticIndexBuffer(std::string name, unsigned short*
 {
     ID3D11Buffer* buffer;
 
-    D3D11_BUFFER_DESC staticIndexBufferPTDesc = {};
-    staticIndexBufferPTDesc.Usage = D3D11_USAGE_DEFAULT;
-    staticIndexBufferPTDesc.ByteWidth = sizeof(unsigned short) * numIndices;
-    staticIndexBufferPTDesc.StructureByteStride = sizeof(unsigned short);
-    staticIndexBufferPTDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
-    staticIndexBufferPTDesc.CPUAccessFlags = 0;
-    D3D11_SUBRESOURCE_DATA staticIndexBufferPTInitData = {};
-    staticIndexBufferPTInitData.pSysMem = indices;
-    HRESULT hr = device->CreateBuffer(&staticIndexBufferPTDesc, &staticIndexBufferPTInitData, &buffer);
+    D3D11_BUFFER_DESC staticIndexBufferDesc = {};
+    staticIndexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
+    staticIndexBufferDesc.ByteWidth = sizeof(unsigned short) * numIndices;
+    staticIndexBufferDesc.StructureByteStride = sizeof(unsigned short);
+    staticIndexBufferDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
+    staticIndexBufferDesc.CPUAccessFlags = 0;
+    D3D11_SUBRESOURCE_DATA staticIndexBufferInitData = {};
+    staticIndexBufferInitData.pSysMem = indices;
+    HRESULT hr = device->CreateBuffer(&staticIndexBufferDesc, &staticIndexBufferInitData, &buffer);
     if (FAILED(hr)) {
-        throw std::runtime_error("Failed to create static PT index buffer.");
+        throw std::runtime_error("Failed to create static index buffer.");
     }
 
     m_BuffersMap[name] = buffer;
@@ -68,6 +68,46 @@ void TDXBufferManager::CreateDynamicConstantBuffer(std::string name, unsigned sh
     m_BuffersMap[name] = buffer;
 }
 
+void TDXBufferManager::CreateDynamicVertexBuffer(std::string name, void* vertices, unsigned short numVertices, unsigned short vertexSize, ID3D11Device* device)
+{
+    ID3D11Buffer* buffer;
+
+    D3D11_BUFFER_DESC dynamicVertexBufferDesc = {};
+    dynamicVertexBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
+    dynamicVertexBufferDesc.ByteWidth = vertexSize * numVertices;
+    dynamicVertexBufferDesc.StructureByteStride = vertexSize;
+    dynamicVertexBufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+    dynamicVertexBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+    D3D11_SUBRESOURCE_DATA dynamicVertexBufferInitData = {};
+    dynamicVertexBufferInitData.pSysMem = vertices;
+    HRESULT hr = device->CreateBuffer(&dynamicVertexBufferDesc, &dynamicVertexBufferInitData, &buffer);
+    if (FAILED(hr)) {
+        throw std::runtime_error("Failed to create dynamic vertex buffer.");
+    }
+
+    m_BuffersMap[name] = buffer;
+}
+
+void TDXBufferManager::CreateDynamicIndexBuffer(std::string name, unsigned short* indices, unsigned short numIndices, ID3D11Device* device)
+{
+    ID3D11Buffer* buffer;
+
+    D3D11_BUFFER_DESC dynamicIndexBufferDesc = {};
+    dynamicIndexBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
+    dynamicIndexBufferDesc.ByteWidth = sizeof(unsigned short) * numIndices;
+    dynamicIndexBufferDesc.StructureByteStride = sizeof(unsigned short);
+    dynamicIndexBufferDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
+    dynamicIndexBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+    D3D11_SUBRESOURCE_DATA dynamicIndexBufferInitData = {};
+    dynamicIndexBufferInitData.pSysMem = indices;
+    HRESULT hr = device->CreateBuffer(&dynamicIndexBufferDesc, &dynamicIndexBufferInitData, &buffer);
+    if (FAILED(hr)) {
+        throw std::runtime_error("Failed to create dynamic index buffer.");
+    }
+
+    m_BuffersMap[name] = buffer;
+}
+
 void TDXBufferManager::UpdateStaticVertexBuffer(std::string name, void* vertices, ID3D11DeviceContext* context)
 {
     context->UpdateSubresource(m_BuffersMap[name], 0, nullptr, vertices, 0, 0);
@@ -84,6 +124,26 @@ void TDXBufferManager::UpdateDynamicConstantBuffer(std::string name, void* const
     context->Map(m_BuffersMap[name], 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
     memcpy(mappedResource.pData, constantBufferStruct, structSize);
     context->Unmap(m_BuffersMap[name], 0);
+}
+
+void TDXBufferManager::UpdateDynamicVertexBuffer(std::string name, void* vertices, unsigned short numVertices, unsigned short vertexSize, ID3D11DeviceContext* context)
+{
+    D3D11_MAPPED_SUBRESOURCE mappedResource = {};
+    HRESULT hr = context->Map(m_BuffersMap[name], 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
+    if (SUCCEEDED(hr)) {
+        memcpy(mappedResource.pData, vertices, vertexSize * numVertices);
+        context->Unmap(m_BuffersMap[name], 0);
+    }
+}
+
+void TDXBufferManager::UpdateDynamicIndexBuffer(std::string name, unsigned short* indices, unsigned short numIndices, ID3D11DeviceContext* context)
+{
+    D3D11_MAPPED_SUBRESOURCE mappedResource = {};
+    HRESULT hr = context->Map(m_BuffersMap[name], 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
+    if (SUCCEEDED(hr)) {
+        memcpy(mappedResource.pData, indices, sizeof(unsigned short) * numIndices);
+        context->Unmap(m_BuffersMap[name], 0);
+    }
 }
 
 void TDXBufferManager::BindVertexBuffer(std::string vertexName, UINT stride, UINT offset, ID3D11DeviceContext* context)

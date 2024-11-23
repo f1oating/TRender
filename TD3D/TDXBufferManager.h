@@ -16,11 +16,19 @@ public:
 
 	void CreateDynamicConstantBuffer(std::string name, unsigned short structSize, ID3D11Device* device);
 
+	void CreateDynamicVertexBuffer(std::string name, void* vertices, unsigned short numVertices, unsigned short vertexSize, ID3D11Device* device);
+
+	void CreateDynamicIndexBuffer(std::string name, unsigned short* indices, unsigned short numIndices, ID3D11Device* device);
+
 	void UpdateStaticVertexBuffer(std::string name, void* vertices, ID3D11DeviceContext* context);
 
 	void UpdateStaticIndexBuffer(std::string name, unsigned short* indices, ID3D11DeviceContext* context);
 
 	void UpdateDynamicConstantBuffer(std::string name, void* constantBufferStruct, unsigned short structSize, ID3D11DeviceContext* context);
+
+	void UpdateDynamicVertexBuffer(std::string name, void* vertices, unsigned short numVertices, unsigned short vertexSize, ID3D11DeviceContext* context);
+
+	void UpdateDynamicIndexBuffer(std::string name, unsigned short* indices, unsigned short numIndices, ID3D11DeviceContext* context);
 
 	void BindVertexBuffer(std::string vertexName, UINT stride, UINT offset, ID3D11DeviceContext* context);
 	void BindIndexBuffer(std::string indexName, ID3D11DeviceContext* context);

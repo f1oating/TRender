@@ -32,8 +32,14 @@ public:
 
 	virtual void CreateStaticVertexBuffer(std::string name, void* vertices, unsigned short numVertices, unsigned short vertexSize) = 0;
 	virtual void CreateStaticIndexBuffer(std::string name, unsigned short* indices, unsigned short numIndices) = 0;
+	virtual void CreateDynamicVertexBuffer(std::string name, void* vertices, unsigned short numVertices, unsigned short vertexSize) = 0;
+	virtual void CreateDynamicIndexBuffer(std::string name, unsigned short* indices, unsigned short numIndices) = 0;
+
 	virtual void UpdateStaticVertexBuffer(std::string name, void* vertices) = 0;
 	virtual void UpdateStaticIndexBuffer(std::string name, unsigned short* indices) = 0;
+	virtual void UpdateDynamicVertexBuffer(std::string name, void* vertices, unsigned short numVertices, unsigned short vertexSize) = 0;
+	virtual void UpdateDynamicIndexBuffer(std::string name, unsigned short* indices, unsigned short numIndices) = 0;
+
 	virtual void BindVertexBuffer(std::string vertexName, UINT stride, UINT offset) = 0;
 	virtual void BindIndexBuffer(std::string indexName) = 0;
 	virtual void DeleteBuffer(std::string name) = 0;
