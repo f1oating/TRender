@@ -4,63 +4,65 @@
 #include "TRenderer.h"
 #include "TInput.h"
 #include "TestCamera.h"
+#include "TestTimer.h"
 
 TRenderDevice* renderDevice;
 TestCamera camera;
+TestTimer timer;
+TestTimer fpsTimer;
+int frameCount = 0;
+std::wstring fpsText;
 
 void SimpleMoving(TInput* input)
 {
     input->Update();
+    
+    if (timer.GetMilisecondsElapsed() >= 10.0)
+    {
 
-    if (input->IsKeyDown('W')) {
-        camera.AdjustPosition(0.0f, 0.0f, 0.005f);
-        renderDevice->SetViewMatrix(camera.GetViewMatrix());
-    }
+        timer.Restart();
 
-    if (input->IsKeyDown('S')) {
-        camera.AdjustPosition(0.0f, 0.0f, -0.005f);
-        renderDevice->SetViewMatrix(camera.GetViewMatrix());
-    }
+        if (input->IsKeyDown('W')) {
+            camera.MoveForward(0.05f);
+            renderDevice->SetViewMatrix(camera.GetViewMatrix());
+        }
 
-    if (input->IsKeyDown('A')) {
-        camera.AdjustPosition(-0.005f, 0.0f, 0.0f);
-        renderDevice->SetViewMatrix(camera.GetViewMatrix());
-    }
+        if (input->IsKeyDown('S')) {
+            camera.MoveBackward(0.05f);
+            renderDevice->SetViewMatrix(camera.GetViewMatrix());
+        }
 
-    if (input->IsKeyDown('D')) {
-        camera.AdjustPosition(0.005f, 0.0f, 0.0f);
-        renderDevice->SetViewMatrix(camera.GetViewMatrix());
-    }
+        if (input->IsKeyDown('A')) {
+            camera.MoveLeft(0.05f);
+            renderDevice->SetViewMatrix(camera.GetViewMatrix());
+        }
 
-    if (input->IsKeyDown('U')) {
-        camera.AdjustPosition(0.0f, 0.005f, 0.0f);
-        renderDevice->SetViewMatrix(camera.GetViewMatrix());
-    }
+        if (input->IsKeyDown('D')) {
+            camera.MoveRight(0.05f);
+            renderDevice->SetViewMatrix(camera.GetViewMatrix());
+        }
 
-    if (input->IsKeyDown('B')) {
-        camera.AdjustPosition(0.0f, -0.005f, 0.0f);
-        renderDevice->SetViewMatrix(camera.GetViewMatrix());
-    }
+        long deltaX = input->GetDeltaX();
+        long deltaY = input->GetDeltaY();
 
-    long deltaX = input->GetDeltaX();
-    long deltaY = input->GetDeltaY();
+        if (deltaX > 0) {
+            camera.AdjustRotation(0.0f, 0.05f, 0.0f);
+            renderDevice->SetViewMatrix(camera.GetViewMatrix());
+        }
+        else if (deltaX < 0) {
+            camera.AdjustRotation(0.0f, -0.05f, 0.0f);
+            renderDevice->SetViewMatrix(camera.GetViewMatrix());
+        }
 
-    if (deltaX > 0) {
-        camera.AdjustRotation(0.0f, 0.01f, 0.0f);
-        renderDevice->SetViewMatrix(camera.GetViewMatrix());
-    }
-    else if (deltaX < 0) {
-        camera.AdjustRotation(0.0f, -0.01f, 0.0f);
-        renderDevice->SetViewMatrix(camera.GetViewMatrix());
-    }
+        if (deltaY > 0) {
+            camera.AdjustRotation(0.05f, 0.0f, 0.0f);
+            renderDevice->SetViewMatrix(camera.GetViewMatrix());
+        }
+        else if (deltaY < 0) {
+            camera.AdjustRotation(-0.05f, 0.0f, 0.0f);
+            renderDevice->SetViewMatrix(camera.GetViewMatrix());
+        }
 
-    if (deltaY > 0) {
-        camera.AdjustRotation(0.01f, 0.0f, 0.0f);
-        renderDevice->SetViewMatrix(camera.GetViewMatrix());
-    }
-    else if (deltaY < 0) {
-        camera.AdjustRotation(-0.01f, 0.0f, 0.0f);
-        renderDevice->SetViewMatrix(camera.GetViewMatrix());
     }
 }
 
@@ -110,6 +112,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int nCmdShow) {
     // Create a renderer
     TRenderer renderer(hInstance);
     TInput input(hwnd);
+    timer.Start();
+    fpsTimer.Start();
 
     // Create the rendering device
     HRESULT hr = renderer.CreateDevice("Direct3D");
@@ -282,17 +286,14 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int nCmdShow) {
 
             renderDevice->Draw(36, 0, 0);
 
-            auto now = std::chrono::high_resolution_clock::now();
-            std::chrono::duration<float> elapsed = std::chrono::duration_cast<std::chrono::duration<float>>(now - start);
-
             frameCount++;
 
-            if (elapsed.count() >= 1.0f) {
-                float fps = frameCount / elapsed.count();
+            if (fpsTimer.GetMilisecondsElapsed() >= 1000.0f) {
+                float fps = frameCount / (fpsTimer.GetMilisecondsElapsed() / 1000.0f);
 
                 fpsText = L"FPS: " + std::to_wstring(fps);
 
-                start = now;
+                fpsTimer.Restart();
                 frameCount = 0;
             }
 

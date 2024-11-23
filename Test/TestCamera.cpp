@@ -69,6 +69,30 @@ void TestCamera::AdjustPosition(double x, double y, double z)
     UpdateViewMatrix();
 }
 
+void TestCamera::MoveForward(double distance)
+{
+    pos += vec_forward * distance;
+    UpdateViewMatrix();
+}
+
+void TestCamera::MoveBackward(double distance)
+{
+    pos += vec_backward * distance;
+    UpdateViewMatrix();
+}
+
+void TestCamera::MoveRight(double distance)
+{
+    pos += vec_right * distance;
+    UpdateViewMatrix();
+}
+
+void TestCamera::MoveLeft(double distance)
+{
+    pos += vec_left * distance;
+    UpdateViewMatrix();
+}
+
 void TestCamera::SetRotation(const Eigen::Vector3d& rot)
 {
     this->rot = rot;

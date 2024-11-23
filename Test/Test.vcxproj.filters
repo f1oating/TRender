@@ -21,9 +21,15 @@
     <ClCompile Include="TestCamera.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="TestTimer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="TestCamera.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="TestTimer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

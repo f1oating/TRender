@@ -22,6 +22,11 @@ public:
     void AdjustPosition(const Eigen::Vector3d& pos);
     void AdjustPosition(double x, double y, double z);
 
+    void MoveForward(double distance);
+    void MoveBackward(double distance);
+    void MoveRight(double distance);
+    void MoveLeft(double distance);
+
     void SetRotation(const Eigen::Vector3d& rot);
     void SetRotation(double pitch, double yaw, double roll);
     void AdjustRotation(const Eigen::Vector3d& rot);
