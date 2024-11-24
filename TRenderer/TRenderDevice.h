@@ -16,8 +16,8 @@ public:
 	virtual void BeginFrame(float r, float g, float b, float a) = 0;
 	virtual void EndFrame() = 0;
 
-	virtual void Draw(unsigned short numIndices, unsigned short startIndexLocation, unsigned short baseVertexLocation) = 0;
-	virtual void DrawSprite(unsigned short numVertices, unsigned short startVertexLocation) = 0;
+	virtual void Draw(unsigned int numIndices, unsigned int startIndexLocation, unsigned int baseVertexLocation) = 0;
+	virtual void DrawSprite(unsigned int numVertices, unsigned int startVertexLocation) = 0;
 	virtual void RenderText(const wchar_t* text, float x, float y) = 0;
 
 	virtual void SetProjectionValues(float fovDegrees, float aspectRatio, float nearZ, float farZ) = 0;
@@ -30,15 +30,15 @@ public:
 	virtual void BindVertexShader(std::string name) = 0;
 	virtual void BindPixelShader(std::string name) = 0;
 
-	virtual void CreateStaticVertexBuffer(std::string name, void* vertices, unsigned short numVertices, unsigned short vertexSize) = 0;
-	virtual void CreateStaticIndexBuffer(std::string name, unsigned short* indices, unsigned short numIndices) = 0;
-	virtual void CreateDynamicVertexBuffer(std::string name, void* vertices, unsigned short numVertices, unsigned short vertexSize) = 0;
-	virtual void CreateDynamicIndexBuffer(std::string name, unsigned short* indices, unsigned short numIndices) = 0;
+	virtual void CreateStaticVertexBuffer(std::string name, void* vertices, unsigned int numVertices, unsigned short vertexSize) = 0;
+	virtual void CreateStaticIndexBuffer(std::string name, unsigned int* indices, unsigned int numIndices) = 0;
+	virtual void CreateDynamicVertexBuffer(std::string name, void* vertices, unsigned int numVertices, unsigned short vertexSize) = 0;
+	virtual void CreateDynamicIndexBuffer(std::string name, unsigned int* indices, unsigned int numIndices) = 0;
 
 	virtual void UpdateStaticVertexBuffer(std::string name, void* vertices) = 0;
-	virtual void UpdateStaticIndexBuffer(std::string name, unsigned short* indices) = 0;
-	virtual void UpdateDynamicVertexBuffer(std::string name, void* vertices, unsigned short numVertices, unsigned short vertexSize) = 0;
-	virtual void UpdateDynamicIndexBuffer(std::string name, unsigned short* indices, unsigned short numIndices) = 0;
+	virtual void UpdateStaticIndexBuffer(std::string name, unsigned int* indices) = 0;
+	virtual void UpdateDynamicVertexBuffer(std::string name, void* vertices, unsigned int numVertices, unsigned short vertexSize) = 0;
+	virtual void UpdateDynamicIndexBuffer(std::string name, unsigned int* indices, unsigned int numIndices) = 0;
 
 	virtual void BindVertexBuffer(std::string vertexName, UINT stride, UINT offset) = 0;
 	virtual void BindIndexBuffer(std::string indexName) = 0;

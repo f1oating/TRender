@@ -11,7 +11,7 @@ TDXBufferManager::~TDXBufferManager()
     m_BuffersMap.clear();
 }
 
-void TDXBufferManager::CreateStaticVertexBuffer(std::string name, void* vertices, unsigned short numVertices, unsigned short vertexSize, ID3D11Device* device)
+void TDXBufferManager::CreateStaticVertexBuffer(std::string name, void* vertices, unsigned int numVertices, unsigned short vertexSize, ID3D11Device* device)
 {
     ID3D11Buffer* buffer;
 
@@ -31,14 +31,14 @@ void TDXBufferManager::CreateStaticVertexBuffer(std::string name, void* vertices
     m_BuffersMap[name] = buffer;
 }
 
-void TDXBufferManager::CreateStaticIndexBuffer(std::string name, unsigned short* indices, unsigned short numIndices, ID3D11Device* device)
+void TDXBufferManager::CreateStaticIndexBuffer(std::string name, unsigned int* indices, unsigned int numIndices, ID3D11Device* device)
 {
     ID3D11Buffer* buffer;
 
     D3D11_BUFFER_DESC staticIndexBufferDesc = {};
     staticIndexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
-    staticIndexBufferDesc.ByteWidth = sizeof(unsigned short) * numIndices;
-    staticIndexBufferDesc.StructureByteStride = sizeof(unsigned short);
+    staticIndexBufferDesc.ByteWidth = sizeof(unsigned int) * numIndices;
+    staticIndexBufferDesc.StructureByteStride = sizeof(unsigned int);
     staticIndexBufferDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
     staticIndexBufferDesc.CPUAccessFlags = 0;
     D3D11_SUBRESOURCE_DATA staticIndexBufferInitData = {};
@@ -51,7 +51,7 @@ void TDXBufferManager::CreateStaticIndexBuffer(std::string name, unsigned short*
     m_BuffersMap[name] = buffer;
 }
 
-void TDXBufferManager::CreateDynamicConstantBuffer(std::string name, unsigned short structSize, ID3D11Device* device)
+void TDXBufferManager::CreateDynamicConstantBuffer(std::string name, unsigned int structSize, ID3D11Device* device)
 {
     ID3D11Buffer* buffer;
 
@@ -68,7 +68,7 @@ void TDXBufferManager::CreateDynamicConstantBuffer(std::string name, unsigned sh
     m_BuffersMap[name] = buffer;
 }
 
-void TDXBufferManager::CreateDynamicVertexBuffer(std::string name, void* vertices, unsigned short numVertices, unsigned short vertexSize, ID3D11Device* device)
+void TDXBufferManager::CreateDynamicVertexBuffer(std::string name, void* vertices, unsigned int numVertices, unsigned short vertexSize, ID3D11Device* device)
 {
     ID3D11Buffer* buffer;
 
@@ -88,14 +88,14 @@ void TDXBufferManager::CreateDynamicVertexBuffer(std::string name, void* vertice
     m_BuffersMap[name] = buffer;
 }
 
-void TDXBufferManager::CreateDynamicIndexBuffer(std::string name, unsigned short* indices, unsigned short numIndices, ID3D11Device* device)
+void TDXBufferManager::CreateDynamicIndexBuffer(std::string name, unsigned int* indices, unsigned int numIndices, ID3D11Device* device)
 {
     ID3D11Buffer* buffer;
 
     D3D11_BUFFER_DESC dynamicIndexBufferDesc = {};
     dynamicIndexBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
-    dynamicIndexBufferDesc.ByteWidth = sizeof(unsigned short) * numIndices;
-    dynamicIndexBufferDesc.StructureByteStride = sizeof(unsigned short);
+    dynamicIndexBufferDesc.ByteWidth = sizeof(unsigned int) * numIndices;
+    dynamicIndexBufferDesc.StructureByteStride = sizeof(unsigned int);
     dynamicIndexBufferDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
     dynamicIndexBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
     D3D11_SUBRESOURCE_DATA dynamicIndexBufferInitData = {};
@@ -113,7 +113,7 @@ void TDXBufferManager::UpdateStaticVertexBuffer(std::string name, void* vertices
     context->UpdateSubresource(m_BuffersMap[name], 0, nullptr, vertices, 0, 0);
 }
 
-void TDXBufferManager::UpdateStaticIndexBuffer(std::string name, unsigned short* indices, ID3D11DeviceContext* context)
+void TDXBufferManager::UpdateStaticIndexBuffer(std::string name, unsigned int* indices, ID3D11DeviceContext* context)
 {
     context->UpdateSubresource(m_BuffersMap[name], 0, nullptr, indices, 0, 0);
 }
@@ -126,7 +126,7 @@ void TDXBufferManager::UpdateDynamicConstantBuffer(std::string name, void* const
     context->Unmap(m_BuffersMap[name], 0);
 }
 
-void TDXBufferManager::UpdateDynamicVertexBuffer(std::string name, void* vertices, unsigned short numVertices, unsigned short vertexSize, ID3D11DeviceContext* context)
+void TDXBufferManager::UpdateDynamicVertexBuffer(std::string name, void* vertices, unsigned int numVertices, unsigned short vertexSize, ID3D11DeviceContext* context)
 {
     D3D11_MAPPED_SUBRESOURCE mappedResource = {};
     HRESULT hr = context->Map(m_BuffersMap[name], 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
@@ -136,12 +136,12 @@ void TDXBufferManager::UpdateDynamicVertexBuffer(std::string name, void* vertice
     }
 }
 
-void TDXBufferManager::UpdateDynamicIndexBuffer(std::string name, unsigned short* indices, unsigned short numIndices, ID3D11DeviceContext* context)
+void TDXBufferManager::UpdateDynamicIndexBuffer(std::string name, unsigned int* indices, unsigned int numIndices, ID3D11DeviceContext* context)
 {
     D3D11_MAPPED_SUBRESOURCE mappedResource = {};
     HRESULT hr = context->Map(m_BuffersMap[name], 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
     if (SUCCEEDED(hr)) {
-        memcpy(mappedResource.pData, indices, sizeof(unsigned short) * numIndices);
+        memcpy(mappedResource.pData, indices, sizeof(unsigned int) * numIndices);
         context->Unmap(m_BuffersMap[name], 0);
     }
 }
@@ -153,7 +153,7 @@ void TDXBufferManager::BindVertexBuffer(std::string vertexName, UINT stride, UIN
 
 void TDXBufferManager::BindIndexBuffer(std::string indexName, ID3D11DeviceContext* context)
 {
-    context->IASetIndexBuffer(m_BuffersMap[indexName], DXGI_FORMAT_R16_UINT, 0u);
+    context->IASetIndexBuffer(m_BuffersMap[indexName], DXGI_FORMAT_R32_UINT, 0u);
 }
 
 void TDXBufferManager::BindConstantBuffer(std::string constantName, unsigned short slot, ID3D11DeviceContext* context)

@@ -83,14 +83,14 @@ void TDXRenderDevice::EndFrame() {
     m_pSwapChain->Present(1, 0);
 }
 
-void TDXRenderDevice::Draw(unsigned short numIndices, unsigned short startIndexLocation, unsigned short baseVertexLocation)
+void TDXRenderDevice::Draw(unsigned int numIndices, unsigned int startIndexLocation, unsigned int baseVertexLocation)
 {
     m_pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
     m_pDeviceContext->DrawIndexed(numIndices, startIndexLocation, baseVertexLocation);
 }
 
-void TDXRenderDevice::DrawSprite(unsigned short numVertices, unsigned short startVertexLocation)
+void TDXRenderDevice::DrawSprite(unsigned int numVertices, unsigned int startVertexLocation)
 {
     m_pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
@@ -161,22 +161,22 @@ void TDXRenderDevice::BindPixelShader(std::string name)
     m_TDXShaderManager.BindPixelShader(name, m_pDeviceContext.Get());
 }
 
-void TDXRenderDevice::CreateStaticVertexBuffer(std::string name, void* vertices, unsigned short numVertices, unsigned short vertexSize)
+void TDXRenderDevice::CreateStaticVertexBuffer(std::string name, void* vertices, unsigned int numVertices, unsigned short vertexSize)
 {
     m_TDXBufferManager.CreateStaticVertexBuffer(name, vertices, numVertices, vertexSize, m_pDevice.Get());
 }
 
-void TDXRenderDevice::CreateStaticIndexBuffer(std::string name, unsigned short* indices, unsigned short numIndices)
+void TDXRenderDevice::CreateStaticIndexBuffer(std::string name, unsigned int* indices, unsigned int numIndices)
 {
     m_TDXBufferManager.CreateStaticIndexBuffer(name, indices, numIndices, m_pDevice.Get());
 }
 
-void TDXRenderDevice::CreateDynamicVertexBuffer(std::string name, void* vertices, unsigned short numVertices, unsigned short vertexSize)
+void TDXRenderDevice::CreateDynamicVertexBuffer(std::string name, void* vertices, unsigned int numVertices, unsigned short vertexSize)
 {
     m_TDXBufferManager.CreateDynamicVertexBuffer(name, vertices, numVertices, vertexSize, m_pDevice.Get());
 }
 
-void TDXRenderDevice::CreateDynamicIndexBuffer(std::string name, unsigned short* indices, unsigned short numIndices)
+void TDXRenderDevice::CreateDynamicIndexBuffer(std::string name, unsigned int* indices, unsigned int numIndices)
 {
     m_TDXBufferManager.CreateDynamicIndexBuffer(name, indices, numIndices, m_pDevice.Get());
 }
@@ -186,17 +186,17 @@ void TDXRenderDevice::UpdateStaticVertexBuffer(std::string name, void* vertices)
     m_TDXBufferManager.UpdateStaticVertexBuffer(name, vertices, m_pDeviceContext.Get());
 }
 
-void TDXRenderDevice::UpdateStaticIndexBuffer(std::string name, unsigned short* indices)
+void TDXRenderDevice::UpdateStaticIndexBuffer(std::string name, unsigned int* indices)
 {
     m_TDXBufferManager.UpdateStaticIndexBuffer(name, indices, m_pDeviceContext.Get());
 }
 
-void TDXRenderDevice::UpdateDynamicVertexBuffer(std::string name, void* vertices, unsigned short numVertices, unsigned short vertexSize)
+void TDXRenderDevice::UpdateDynamicVertexBuffer(std::string name, void* vertices, unsigned int numVertices, unsigned short vertexSize)
 {
     m_TDXBufferManager.UpdateDynamicVertexBuffer(name, vertices, numVertices, vertexSize, m_pDeviceContext.Get());
 }
 
-void TDXRenderDevice::UpdateDynamicIndexBuffer(std::string name, unsigned short* indices, unsigned short numIndices)
+void TDXRenderDevice::UpdateDynamicIndexBuffer(std::string name, unsigned int* indices, unsigned int numIndices)
 {
     m_TDXBufferManager.UpdateDynamicIndexBuffer(name, indices, numIndices, m_pDeviceContext.Get());
 }

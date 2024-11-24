@@ -1,3 +1,5 @@
+#define NOMINMAX
+
 #include <windows.h>
 #include <iostream>
 #include <chrono>
@@ -5,6 +7,10 @@
 #include "TInput.h"
 #include "TestCamera.h"
 #include "TestTimer.h"
+#include <assimp/Importer.hpp>
+#include <assimp/scene.h>
+#include <assimp/postprocess.h>
+#include <vector>
 
 TRenderDevice* renderDevice;
 TestCamera camera;
@@ -12,6 +18,53 @@ TestTimer timer;
 TestTimer fpsTimer;
 int frameCount = 0;
 std::wstring fpsText;
+
+bool ImportModel(const std::string& filePath, TVertexMesh*& vertices, unsigned int*& indices, unsigned int& numVertices, unsigned int& numIndices)
+{
+    Assimp::Importer importer;
+
+    const aiScene* scene = importer.ReadFile(filePath, aiProcess_Triangulate | aiProcess_CalcTangentSpace | aiProcess_JoinIdenticalVertices);
+    if (!scene || !scene->HasMeshes()) {
+        return false;
+    }
+
+    aiMesh* mesh = scene->mMeshes[0];
+
+    numVertices = mesh->mNumVertices;
+    numIndices = mesh->mNumFaces * 3;
+
+    vertices = new TVertexMesh[numVertices];
+    indices = new unsigned int[numIndices];
+
+    for (unsigned int i = 0; i < numVertices; ++i) {
+        vertices[i].pos = { mesh->mVertices[i].x, mesh->mVertices[i].y, mesh->mVertices[i].z };
+        vertices[i].normal = { mesh->mNormals[i].x, mesh->mNormals[i].y, mesh->mNormals[i].z };
+
+        if (mesh->HasTangentsAndBitangents()) {
+            vertices[i].tangent = { mesh->mTangents[i].x, mesh->mTangents[i].y, mesh->mTangents[i].z };
+        }
+        else {
+            vertices[i].tangent = { 0.0f, 0.0f, 0.0f };
+        }
+
+        if (mesh->HasTextureCoords(0)) {
+            vertices[i].tex = { mesh->mTextureCoords[0][i].x, mesh->mTextureCoords[0][i].y };
+        }
+        else {
+            vertices[i].tex = { 0.0f, 0.0f };
+        }
+    }
+
+    unsigned int index = 0;
+    for (unsigned int i = 0; i < mesh->mNumFaces; ++i) {
+        aiFace& face = mesh->mFaces[i];
+        for (unsigned int j = 0; j < face.mNumIndices; ++j) {
+            indices[index++] = face.mIndices[j];
+        }
+    }
+
+    return true;
+}
 
 void SimpleMoving(TInput* input)
 {
@@ -126,46 +179,12 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int nCmdShow) {
 
     renderDevice->Initizialize(hwnd, 800, 600);
 
-    TVertexMesh vertices[] = {
-    {{-1.0f, -1.0f,  1.0f}, {0.0f, 1.0f}},
-    {{ 1.0f, -1.0f,  1.0f}, {1.0f, 1.0f}},
-    {{ 1.0f,  1.0f,  1.0f}, {1.0f, 0.0f}},
-    {{-1.0f,  1.0f,  1.0f}, {0.0f, 0.0f}},
+    TVertexMesh* vertices = nullptr;
+    unsigned int* indices = nullptr;
+    unsigned int numVertices = 0;
+    unsigned int numIndices = 0;
 
-    {{ 1.0f, -1.0f, -1.0f}, {0.0f, 1.0f}},
-    {{-1.0f, -1.0f, -1.0f}, {1.0f, 1.0f}},
-    {{-1.0f,  1.0f, -1.0f}, {1.0f, 0.0f}},
-    {{ 1.0f,  1.0f, -1.0f}, {0.0f, 0.0f}},
-
-    {{-1.0f, -1.0f, -1.0f}, {0.0f, 1.0f}},
-    {{-1.0f, -1.0f,  1.0f}, {1.0f, 1.0f}},
-    {{-1.0f,  1.0f,  1.0f}, {1.0f, 0.0f}},
-    {{-1.0f,  1.0f, -1.0f}, {0.0f, 0.0f}},
-
-    {{ 1.0f, -1.0f,  1.0f}, {0.0f, 1.0f}},
-    {{ 1.0f, -1.0f, -1.0f}, {1.0f, 1.0f}},
-    {{ 1.0f,  1.0f, -1.0f}, {1.0f, 0.0f}},
-    {{ 1.0f,  1.0f,  1.0f}, {0.0f, 0.0f}},
-
-    {{-1.0f,  1.0f,  1.0f}, {0.0f, 1.0f}},
-    {{ 1.0f,  1.0f,  1.0f}, {1.0f, 1.0f}},
-    {{ 1.0f,  1.0f, -1.0f}, {1.0f, 0.0f}},
-    {{-1.0f,  1.0f, -1.0f}, {0.0f, 0.0f}},
-
-    {{-1.0f, -1.0f, -1.0f}, {0.0f, 1.0f}},
-    {{ 1.0f, -1.0f, -1.0f}, {1.0f, 1.0f}},
-    {{ 1.0f, -1.0f,  1.0f}, {1.0f, 0.0f}},
-    {{-1.0f, -1.0f,  1.0f}, {0.0f, 0.0f}}
-    };
-
-    unsigned short indices[] = {
-        0, 1, 2, 0, 2, 3,
-        4, 5, 6, 4, 6, 7,
-        8, 9, 10, 8, 10, 11,
-        12, 13, 14, 12, 14, 15,
-        16, 17, 18, 16, 18, 19,
-        20, 21, 22, 20, 22, 23
-    };
+    ImportModel("Models/model.fbx", vertices, indices, numVertices, numIndices);
 
     TVertexSkybox verticesSkybox[] = {
     {{-1.0f, -1.0f,  1.0f}, {-1.0f, -1.0f,  1.0f}},
@@ -204,7 +223,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int nCmdShow) {
     {{-1.0f, -1.0f,  1.0f}, {-1.0f, -1.0f,  1.0f}}
     };
 
-    unsigned short indicesSkybox[] = {
+    unsigned int indicesSkybox[] = {
         0, 1, 2, 0, 2, 3,
         4, 5, 6, 4, 6, 7,
         8, 9, 10, 8, 10, 11,
@@ -234,11 +253,11 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int nCmdShow) {
     renderDevice->AddTexture("crate", "Textures/crate.jpg");
     renderDevice->AddCubeMapTexture("skybox", "Textures/Skybox/Weltraum", ".png");
 
-    renderDevice->CreateStaticVertexBuffer("VertexBufferMesh", vertices, sizeof(vertices) / sizeof(TVertexMesh), sizeof(TVertexMesh));
-    renderDevice->CreateStaticIndexBuffer("IndexBufferMesh", indices, sizeof(indices) / sizeof(unsigned short));
+    renderDevice->CreateStaticVertexBuffer("VertexBufferMesh", vertices, numVertices, sizeof(TVertexMesh));
+    renderDevice->CreateStaticIndexBuffer("IndexBufferMesh", indices, numIndices);
 
     renderDevice->CreateStaticVertexBuffer("VertexBufferSkybox", verticesSkybox, sizeof(verticesSkybox) / sizeof(TVertexSkybox), sizeof(TVertexSkybox));
-    renderDevice->CreateStaticIndexBuffer("IndexBufferSkybox", indicesSkybox, sizeof(indicesSkybox) / sizeof(unsigned short));
+    renderDevice->CreateStaticIndexBuffer("IndexBufferSkybox", indicesSkybox, sizeof(indicesSkybox) / sizeof(unsigned int));
 
     renderDevice->CreateStaticVertexBuffer("VertexBufferSprite", verticesSpriteTexture, sizeof(verticesSpriteTexture) / sizeof(TVertexSpriteTexture), sizeof(TVertexSpriteTexture));
     renderDevice->CreateDynamicVertexBuffer("VertexBufferSpriteColor", verticesSpriteColor, sizeof(verticesSpriteColor) / sizeof(TVertexSpriteColor), sizeof(TVertexSpriteColor));
@@ -284,7 +303,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int nCmdShow) {
             renderDevice->BindVertexBuffer("VertexBufferMesh", sizeof(TVertexMesh), 0);
             renderDevice->BindIndexBuffer("IndexBufferMesh");
 
-            renderDevice->Draw(36, 0, 0);
+            renderDevice->Draw(numIndices, 0, 0);
 
             frameCount++;
 
