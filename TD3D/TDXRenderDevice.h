@@ -29,7 +29,8 @@ public:
 	virtual void RenderText(const wchar_t* text, float x, float y) override;
 
 	virtual void SetProjectionValues(float fovDegrees, float aspectRatio, float nearZ, float farZ) override;
-	virtual void SetViewMatrix(const Eigen::Matrix4d& matrix) override;
+	virtual void SetViewMatrix(const Eigen::Matrix4f& matrix) override;
+	virtual void SetWorldMatrix(const Eigen::Matrix4f& matrix) override;
 
 	virtual void AddTexture(std::string name, std::string path) override;
 	virtual void AddCubeMapTexture(std::string name, std::string path, std::string ext) override;
@@ -72,9 +73,11 @@ private:
 
 	DirectX::XMMATRIX m_ViewMatrix;
 	DirectX::XMMATRIX m_ProjectionMatrix;
+	DirectX::XMMATRIX m_WorldMatrix;
 
 	MatrixCBS m_ViewMatrixCBS;
 	MatrixCBS m_ProjectionMatrixCBS;
+	MatrixCBS m_WorldMatrixCBS;
 
 	TDXShaderManager m_TDXShaderManager;
 	TDXTextureManager m_TDXTextureManager;

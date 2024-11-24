@@ -8,6 +8,11 @@ cbuffer ViewBuffer : register(b1)
 	matrix viewMatrix;
 };
 
+cbuffer WorldBuffer : register(b2)
+{
+	matrix worldMatrix;
+};
+
 struct VSOut
 {
 	float4 pos : SV_Position;
@@ -17,7 +22,7 @@ struct VSOut
 VSOut main(float3 pos : POSITION, float2 uv : TEXCOORD, float3 normal : NORMAL, float3 tangent : TANGENT)
 {
 	VSOut vso;
-	vso.pos = mul(float4(pos, 1.0f), mul(viewMatrix, projectionMatrix));
+	vso.pos = mul(float4(pos, 1.0f), mul(mul(viewMatrix, projectionMatrix), worldMatrix));
 	vso.uv = uv;
 	return vso;
 }

@@ -13,6 +13,7 @@ TDXRenderDevice::TDXRenderDevice() :
     m_pSpriteBatch(nullptr),
     m_pSpriteFont(nullptr),
     m_ViewMatrixCBS(),
+    m_WorldMatrixCBS(),
     m_ProjectionMatrixCBS(),
     m_TDXShaderManager(),
     m_TDXTextureManager(),
@@ -21,6 +22,7 @@ TDXRenderDevice::TDXRenderDevice() :
 {
     m_ViewMatrix = DirectX::XMMatrixIdentity();
     m_ProjectionMatrix = DirectX::XMMatrixIdentity();
+    m_WorldMatrix = DirectX::XMMatrixIdentity();
 }
 
 TDXRenderDevice::~TDXRenderDevice()
@@ -109,6 +111,7 @@ void TDXRenderDevice::RenderText(const wchar_t* text, float x, float y)
 
     m_TDXBufferManager.BindConstantBuffer(PROJECTION_MATRIX_CONSTANT_BUFFER, 0, m_pDeviceContext.Get());
     m_TDXBufferManager.BindConstantBuffer(VIEW_MATRIX_CONSTANT_BUFFER, 1, m_pDeviceContext.Get());
+    m_TDXBufferManager.BindConstantBuffer(WORLD_MATRIX_CONSTANT_BUFFER, 2, m_pDeviceContext.Get());
     m_TDXTextureManager.BindSampler("default", m_pDeviceContext.Get());
 }
 
@@ -122,18 +125,32 @@ void TDXRenderDevice::SetProjectionValues(float fovDegrees, float aspectRatio, f
     m_TDXBufferManager.UpdateDynamicConstantBuffer(PROJECTION_MATRIX_CONSTANT_BUFFER, &m_ProjectionMatrixCBS, sizeof(MatrixCBS), m_pDeviceContext.Get());
 }
 
-void TDXRenderDevice::SetViewMatrix(const Eigen::Matrix4d& matrix)
+void TDXRenderDevice::SetViewMatrix(const Eigen::Matrix4f& matrix)
 {
     m_ViewMatrix = DirectX::XMMATRIX(
-        static_cast<float>(matrix(0, 0)), static_cast<float>(matrix(1, 0)), static_cast<float>(matrix(2, 0)), static_cast<float>(matrix(3, 0)),
-        static_cast<float>(matrix(0, 1)), static_cast<float>(matrix(1, 1)), static_cast<float>(matrix(2, 1)), static_cast<float>(matrix(3, 1)),
-        static_cast<float>(matrix(0, 2)), static_cast<float>(matrix(1, 2)), static_cast<float>(matrix(2, 2)), static_cast<float>(matrix(3, 2)),
-        static_cast<float>(matrix(0, 3)), static_cast<float>(matrix(1, 3)), static_cast<float>(matrix(2, 3)), static_cast<float>(matrix(3, 3))
+        (matrix(0, 0)), (matrix(1, 0)), (matrix(2, 0)), (matrix(3, 0)),
+        (matrix(0, 1)), (matrix(1, 1)), (matrix(2, 1)), (matrix(3, 1)),
+        (matrix(0, 2)), (matrix(1, 2)), (matrix(2, 2)), (matrix(3, 2)),
+        (matrix(0, 3)), (matrix(1, 3)), (matrix(2, 3)), (matrix(3, 3))
     );
 
     m_ViewMatrixCBS = { DirectX::XMMatrixTranspose(m_ViewMatrix) };
 
     m_TDXBufferManager.UpdateDynamicConstantBuffer(VIEW_MATRIX_CONSTANT_BUFFER, &m_ViewMatrixCBS, sizeof(MatrixCBS), m_pDeviceContext.Get());
+}
+
+void TDXRenderDevice::SetWorldMatrix(const Eigen::Matrix4f& matrix)
+{
+    m_WorldMatrix = DirectX::XMMATRIX(
+        (matrix(0, 0)), (matrix(1, 0)), (matrix(2, 0)), (matrix(3, 0)),
+        (matrix(0, 1)), (matrix(1, 1)), (matrix(2, 1)), (matrix(3, 1)),
+        (matrix(0, 2)), (matrix(1, 2)), (matrix(2, 2)), (matrix(3, 2)),
+        (matrix(0, 3)), (matrix(1, 3)), (matrix(2, 3)), (matrix(3, 3))
+    );
+
+    m_WorldMatrixCBS = { DirectX::XMMatrixTranspose(m_WorldMatrix) };
+
+    m_TDXBufferManager.UpdateDynamicConstantBuffer(WORLD_MATRIX_CONSTANT_BUFFER, &m_WorldMatrixCBS, sizeof(MatrixCBS), m_pDeviceContext.Get());
 }
 
 void TDXRenderDevice::AddTexture(std::string name, std::string path)
@@ -303,6 +320,10 @@ void TDXRenderDevice::CreateBuffers()
 
     m_TDXBufferManager.CreateDynamicConstantBuffer(VIEW_MATRIX_CONSTANT_BUFFER, sizeof(MatrixCBS), m_pDevice.Get());
     m_TDXBufferManager.BindConstantBuffer(VIEW_MATRIX_CONSTANT_BUFFER, 1, m_pDeviceContext.Get());
+
+    m_TDXBufferManager.CreateDynamicConstantBuffer(WORLD_MATRIX_CONSTANT_BUFFER, sizeof(MatrixCBS), m_pDevice.Get());
+    m_TDXBufferManager.BindConstantBuffer(WORLD_MATRIX_CONSTANT_BUFFER, 2, m_pDeviceContext.Get());
+    SetWorldMatrix(Eigen::Matrix4f::Identity());
 }
 
 void TDXRenderDevice::AddShaders()

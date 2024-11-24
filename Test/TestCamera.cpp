@@ -2,8 +2,8 @@
 
 TestCamera::TestCamera()
     : pos(0.0, 0.0, 0.0), rot(0.0, 0.0, 0.0),
-    viewMatrix(Eigen::Matrix4d::Identity()),
-    projectionMatrix(Eigen::Matrix4d::Identity()),
+    viewMatrix(Eigen::Matrix4f::Identity()),
+    projectionMatrix(Eigen::Matrix4f::Identity()),
     vec_forward(DEFAULT_FORWARD_VECTOR),
     vec_left(DEFAULT_LEFT_VECTOR),
     vec_right(DEFAULT_RIGHT_VECTOR),
@@ -14,8 +14,8 @@ TestCamera::TestCamera()
 
 void TestCamera::SetProjectionValues(float fovDegrees, float aspectRatio, float nearZ, float farZ)
 {
-    double fovRadians = (fovDegrees / 360.0) * 2 * PI;
-    double tanHalfFov = tan(fovRadians / 2.0);
+    float fovRadians = (fovDegrees / 360.0) * 2 * PI;
+    float tanHalfFov = tan(fovRadians / 2.0);
 
     projectionMatrix.setZero();
     projectionMatrix(0, 0) = 1.0 / (aspectRatio * tanHalfFov);
@@ -25,149 +25,149 @@ void TestCamera::SetProjectionValues(float fovDegrees, float aspectRatio, float 
     projectionMatrix(2, 3) = 1.0;
 }
 
-const Eigen::Matrix4d& TestCamera::GetViewMatrix() const
+const Eigen::Matrix4f& TestCamera::GetViewMatrix() const
 {
     return viewMatrix;
 }
 
-const Eigen::Matrix4d& TestCamera::GetProjectionMatrix() const
+const Eigen::Matrix4f& TestCamera::GetProjectionMatrix() const
 {
     return projectionMatrix;
 }
 
-const Eigen::Vector3d& TestCamera::GetPosition() const
+const Eigen::Vector3f& TestCamera::GetPosition() const
 {
     return pos;
 }
 
-const Eigen::Vector3d& TestCamera::GetRotation() const
+const Eigen::Vector3f& TestCamera::GetRotation() const
 {
     return rot;
 }
 
-void TestCamera::SetPosition(const Eigen::Vector3d& pos)
+void TestCamera::SetPosition(const Eigen::Vector3f& pos)
 {
     this->pos = pos;
     UpdateViewMatrix();
 }
 
-void TestCamera::SetPosition(double x, double y, double z)
+void TestCamera::SetPosition(float x, float y, float z)
 {
     pos = { x, y, z };
     UpdateViewMatrix();
 }
 
-void TestCamera::AdjustPosition(const Eigen::Vector3d& offset)
+void TestCamera::AdjustPosition(const Eigen::Vector3f& offset)
 {
     pos += offset;
     UpdateViewMatrix();
 }
 
-void TestCamera::AdjustPosition(double x, double y, double z)
+void TestCamera::AdjustPosition(float x, float y, float z)
 {
-    pos += Eigen::Vector3d{ x, y, z };
+    pos += Eigen::Vector3f{ x, y, z };
     UpdateViewMatrix();
 }
 
-void TestCamera::MoveForward(double distance)
+void TestCamera::MoveForward(float distance)
 {
     pos += vec_forward * distance;
     UpdateViewMatrix();
 }
 
-void TestCamera::MoveBackward(double distance)
+void TestCamera::MoveBackward(float distance)
 {
     pos += vec_backward * distance;
     UpdateViewMatrix();
 }
 
-void TestCamera::MoveRight(double distance)
+void TestCamera::MoveRight(float distance)
 {
     pos += vec_right * distance;
     UpdateViewMatrix();
 }
 
-void TestCamera::MoveLeft(double distance)
+void TestCamera::MoveLeft(float distance)
 {
     pos += vec_left * distance;
     UpdateViewMatrix();
 }
 
-void TestCamera::SetRotation(const Eigen::Vector3d& rot)
+void TestCamera::SetRotation(const Eigen::Vector3f& rot)
 {
     this->rot = rot;
     UpdateViewMatrix();
 }
 
-void TestCamera::SetRotation(double x, double y, double z)
+void TestCamera::SetRotation(float x, float y, float z)
 {
     rot = { x, y, z };
     UpdateViewMatrix();
 }
 
-void TestCamera::AdjustRotation(const Eigen::Vector3d& offset)
+void TestCamera::AdjustRotation(const Eigen::Vector3f& offset)
 {
     rot += offset;
     UpdateViewMatrix();
 }
 
-void TestCamera::AdjustRotation(double x, double y, double z)
+void TestCamera::AdjustRotation(float x, float y, float z)
 {
-    rot += Eigen::Vector3d{ x, y, z };
+    rot += Eigen::Vector3f{ x, y, z };
     UpdateViewMatrix();
 }
 
-void TestCamera::SetLookAtPos(const Eigen::Vector3d& lookAtPos)
+void TestCamera::SetLookAtPos(const Eigen::Vector3f& lookAtPos)
 {
     if (pos == lookAtPos)
         return;
 
-    Eigen::Vector3d direction = lookAtPos - pos;
+    Eigen::Vector3f direction = lookAtPos - pos;
     direction.normalize();
 
-    double pitch = atan2(direction.y(), sqrt(direction.x() * direction.x() + direction.z() * direction.z()));
-    double yaw = atan2(direction.x(), direction.z());
+    float pitch = atan2(direction.y(), sqrt(direction.x() * direction.x() + direction.z() * direction.z()));
+    float yaw = atan2(direction.x(), direction.z());
     SetRotation(pitch, yaw, 0.0);
 }
 
-const Eigen::Vector3d& TestCamera::GetForwardVector()
+const Eigen::Vector3f& TestCamera::GetForwardVector()
 {
     return vec_forward;
 }
 
-const Eigen::Vector3d& TestCamera::GetRightVector()
+const Eigen::Vector3f& TestCamera::GetRightVector()
 {
     return vec_right;
 }
 
-const Eigen::Vector3d& TestCamera::GetBackwardVector()
+const Eigen::Vector3f& TestCamera::GetBackwardVector()
 {
     return vec_backward;
 }
 
-const Eigen::Vector3d& TestCamera::GetLeftVector()
+const Eigen::Vector3f& TestCamera::GetLeftVector()
 {
     return vec_left;
 }
 
 void TestCamera::UpdateViewMatrix()
 {
-    Eigen::Matrix3d rotationMatrix;
-    rotationMatrix = Eigen::AngleAxisd(rot.y(), Eigen::Vector3d::UnitY()) *
-        Eigen::AngleAxisd(rot.x(), Eigen::Vector3d::UnitX()) *
-        Eigen::AngleAxisd(rot.z(), Eigen::Vector3d::UnitZ());
+    Eigen::Matrix3f rotationMatrix;
+    rotationMatrix = Eigen::AngleAxisf(rot.y(), Eigen::Vector3f::UnitY()) *
+        Eigen::AngleAxisf(rot.x(), Eigen::Vector3f::UnitX()) *
+        Eigen::AngleAxisf(rot.z(), Eigen::Vector3f::UnitZ());
 
-    Eigen::Vector3d forward = rotationMatrix * DEFAULT_FORWARD_VECTOR;
-    Eigen::Vector3d up = rotationMatrix * DEFAULT_UP_VECTOR;
+    Eigen::Vector3f forward = rotationMatrix * DEFAULT_FORWARD_VECTOR;
+    Eigen::Vector3f up = rotationMatrix * DEFAULT_UP_VECTOR;
 
     vec_forward = forward;
     vec_backward = -forward;
     vec_left = rotationMatrix * DEFAULT_LEFT_VECTOR;
     vec_right = rotationMatrix * DEFAULT_RIGHT_VECTOR;
 
-    Eigen::Vector3d target = pos + forward;
+    Eigen::Vector3f target = pos + forward;
 
-    Eigen::Matrix4d view;
+    Eigen::Matrix4f view;
     view.setIdentity();
     view.block<3, 3>(0, 0) = rotationMatrix.transpose();
     view.block<3, 1>(0, 3) = -rotationMatrix.transpose() * pos;

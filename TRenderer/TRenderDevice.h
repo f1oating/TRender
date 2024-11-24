@@ -21,7 +21,8 @@ public:
 	virtual void RenderText(const wchar_t* text, float x, float y) = 0;
 
 	virtual void SetProjectionValues(float fovDegrees, float aspectRatio, float nearZ, float farZ) = 0;
-	virtual void SetViewMatrix(const Eigen::Matrix4d& matrix) = 0;
+	virtual void SetViewMatrix(const Eigen::Matrix4f& matrix) = 0;
+	virtual void SetWorldMatrix(const Eigen::Matrix4f& matrix) = 0;
 
 	virtual void AddTexture(std::string name, std::string path) = 0;
 	virtual void AddCubeMapTexture(std::string name, std::string path, std::string ext) = 0;
