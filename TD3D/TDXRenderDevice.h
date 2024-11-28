@@ -24,10 +24,11 @@ public:
 	virtual void BeginFrame(float r, float g, float b, float a) override;
 	virtual void EndFrame() override;
 
-	virtual void BeginDefferedGeomtryPass() override;
-	virtual void BeginForwardGeomtryPass() override;
+	virtual void BeginDefferedRendering() override;
+	virtual void EndDefferedRendering() override;
 
-	virtual void BeginLightingPass() override;
+	virtual void BeginForwardRendering() override;
+	virtual void EndForwardRendering() override;
 
 	virtual void Draw(unsigned int numIndices, unsigned int startIndexLocation, unsigned int baseVertexLocation) override;
 	virtual void DrawSprite(unsigned int numVertices, unsigned int startVertexLocation) override;

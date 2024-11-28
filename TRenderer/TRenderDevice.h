@@ -16,10 +16,11 @@ public:
 	virtual void BeginFrame(float r, float g, float b, float a) = 0;
 	virtual void EndFrame() = 0;
 
-	virtual void BeginDefferedGeomtryPass() = 0;
-	virtual void BeginForwardGeomtryPass() = 0;
+	virtual void BeginDefferedRendering() = 0;
+	virtual void EndDefferedRendering() = 0;
 
-	virtual void BeginLightingPass() = 0;
+	virtual void BeginForwardRendering() = 0;
+	virtual void EndForwardRendering() = 0;
 
 	virtual void Draw(unsigned int numIndices, unsigned int startIndexLocation, unsigned int baseVertexLocation) = 0;
 	virtual void DrawSprite(unsigned int numVertices, unsigned int startVertexLocation) = 0;

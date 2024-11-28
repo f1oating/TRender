@@ -88,17 +88,12 @@ void TDXRenderDevice::EndFrame() {
     m_pSwapChain->Present(1, 0);
 }
 
-void TDXRenderDevice::BeginDefferedGeomtryPass()
+void TDXRenderDevice::BeginDefferedRendering()
 {
     m_pDeviceContext->OMSetRenderTargets(3, m_pGBufferRTV[0].GetAddressOf(), m_pDepthStencilView.Get());
 }
 
-void TDXRenderDevice::BeginForwardGeomtryPass()
-{
-    m_pDeviceContext->OMSetRenderTargets(1, m_pRenderTargetView.GetAddressOf(), m_pDepthStencilView.Get());
-}
-
-void TDXRenderDevice::BeginLightingPass()
+void TDXRenderDevice::EndDefferedRendering()
 {
     m_pDeviceContext->OMSetRenderTargets(1, m_pRenderTargetView.GetAddressOf(), nullptr);
     m_pDeviceContext->PSSetShaderResources(0, 3, m_pGBufferSRV[0].GetAddressOf());
@@ -111,6 +106,16 @@ void TDXRenderDevice::BeginLightingPass()
 
     ID3D11ShaderResourceView* nullSRV[3] = { nullptr, nullptr, nullptr };
     m_pDeviceContext->PSSetShaderResources(0, 3, nullSRV);
+}
+
+void TDXRenderDevice::BeginForwardRendering()
+{
+    m_pDeviceContext->OMSetRenderTargets(1, m_pRenderTargetView.GetAddressOf(), m_pDepthStencilView.Get());
+}
+
+void TDXRenderDevice::EndForwardRendering()
+{
+
 }
 
 void TDXRenderDevice::Draw(unsigned int numIndices, unsigned int startIndexLocation, unsigned int baseVertexLocation)
@@ -403,9 +408,9 @@ void TDXRenderDevice::CreateBuffers()
 
 void TDXRenderDevice::AddShaders()
 {
-    m_TDXShaderManager.AddVertexShader(MESH_SHADER, L"..\\TD3D\\CSO\\MeshVertexShader.cso",
-        MESH_INPUT_LAYOUT, sizeof(MESH_INPUT_LAYOUT) / sizeof(D3D11_INPUT_ELEMENT_DESC), m_pDevice.Get());
-    m_TDXShaderManager.AddPixelShader(MESH_SHADER, L"..\\TD3D\\CSO\\MeshPixelShader.cso", m_pDevice.Get());
+    m_TDXShaderManager.AddVertexShader(GEOMETRY_SHADER, L"..\\TD3D\\CSO\\GeometryVertexShader.cso",
+        GEOMETRY_INPUT_LAYOUT, sizeof(GEOMETRY_INPUT_LAYOUT) / sizeof(D3D11_INPUT_ELEMENT_DESC), m_pDevice.Get());
+    m_TDXShaderManager.AddPixelShader(GEOMETRY_SHADER, L"..\\TD3D\\CSO\\GeometryPixelShader.cso", m_pDevice.Get());
 
     m_TDXShaderManager.AddVertexShader(SKYBOX_SHADER, L"..\\TD3D\\CSO\\SkyboxVertexShader.cso",
         SKYBOX_INPUT_LAYOUT, sizeof(SKYBOX_INPUT_LAYOUT) / sizeof(D3D11_INPUT_ELEMENT_DESC), m_pDevice.Get());

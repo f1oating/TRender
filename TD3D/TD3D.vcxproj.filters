@@ -20,8 +20,8 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="Shaders\MeshPixelShader.hlsl" />
-    <FxCompile Include="Shaders\MeshVertexShader.hlsl" />
+    <FxCompile Include="Shaders\GeometryPixelShader.hlsl" />
+    <FxCompile Include="Shaders\GeometryVertexShader.hlsl" />
     <FxCompile Include="Shaders\SkyboxVertexShader.hlsl" />
     <FxCompile Include="Shaders\SkyboxPixelShader.hlsl" />
     <FxCompile Include="Shaders\SpriteTextureVertexShader.hlsl" />

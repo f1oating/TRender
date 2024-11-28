@@ -295,10 +295,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int nCmdShow) {
             renderDevice->SetRasterizerCulling(true);
             renderDevice->SetDepthStencilComparison(true);
 
-            renderDevice->BeginDefferedGeomtryPass();
+            renderDevice->BeginDefferedRendering();
 
-            renderDevice->BindVertexShader(MESH_SHADER);
-            renderDevice->BindPixelShader(MESH_SHADER);
+            renderDevice->BindVertexShader(GEOMETRY_SHADER);
+            renderDevice->BindPixelShader(GEOMETRY_SHADER);
 
             renderDevice->BindTexture("crate");
 
@@ -307,9 +307,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int nCmdShow) {
 
             renderDevice->Draw(numIndices, 0, 0);
 
-            renderDevice->BeginLightingPass();
+            renderDevice->EndDefferedRendering();
 
-            renderDevice->BeginForwardGeomtryPass();
+            renderDevice->BeginForwardRendering();
 
             frameCount++;
 
@@ -342,6 +342,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int nCmdShow) {
             renderDevice->DrawSprite(3, 0);
 
             renderDevice->SetBlendState(false);
+
+            renderDevice->EndForwardRendering();
 
             renderDevice->EndFrame();
         }

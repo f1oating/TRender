@@ -6,7 +6,7 @@
 constexpr const char* SKYBOX_SHADER = "SKYBOX";
 constexpr const char* SPRITE_SHADER_TEXTURE = "SPRITE_TEXTURE";
 constexpr const char* SPRITE_SHADER_COLOR = "SPRITE_COLOR";
-constexpr const char* MESH_SHADER = "MESH";
+constexpr const char* GEOMETRY_SHADER = "GEOMETRY_SHADER";
 constexpr const char* LIGHT_SHADER = "LIGHT";
 
 struct TVector4
