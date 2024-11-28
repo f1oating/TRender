@@ -255,6 +255,39 @@ bool TDXRenderDevice::OnResize(int width, int height)
     m_pDepthStencilBuffer.Reset();
     m_pDepthStencilView.Reset();
 
+    for (int i = 0; i < 3; ++i) {
+        m_pGBuffer[i].Reset();
+        m_pGBufferRTV[i].Reset();
+        m_pGBufferSRV[i].Reset();
+    }
+
+    D3D11_TEXTURE2D_DESC gBufferDesc = {};
+    gBufferDesc.Width = width;
+    gBufferDesc.Height = height;
+    gBufferDesc.MipLevels = 1;
+    gBufferDesc.ArraySize = 1;
+    gBufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+    gBufferDesc.SampleDesc.Count = 1;
+    gBufferDesc.Usage = D3D11_USAGE_DEFAULT;
+    gBufferDesc.BindFlags = D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE;
+
+    for (int i = 0; i < 3; ++i) {
+        HRESULT hr = m_pDevice->CreateTexture2D(&gBufferDesc, nullptr, &m_pGBuffer[i]);
+        if (FAILED(hr)) {
+            throw std::runtime_error("Failed to create G-Buffer texture.");
+        }
+
+        hr = m_pDevice->CreateRenderTargetView(m_pGBuffer[i].Get(), nullptr, &m_pGBufferRTV[i]);
+        if (FAILED(hr)) {
+            throw std::runtime_error("Failed to create G-Buffer RTV.");
+        }
+
+        hr = m_pDevice->CreateShaderResourceView(m_pGBuffer[i].Get(), nullptr, &m_pGBufferSRV[i]);
+        if (FAILED(hr)) {
+            throw std::runtime_error("Failed to create G-Buffer SRV.");
+        }
+    }
+
     SetProjectionValues(90.0f, static_cast<float>(width) / static_cast<float>(height), 0.1f, 1000.0f);
 
     HRESULT hr = m_pSwapChain->ResizeBuffers(1, width, height, DXGI_FORMAT_R8G8B8A8_UNORM, 0);
@@ -324,6 +357,20 @@ void TDXRenderDevice::CreateBuffers()
     m_TDXBufferManager.CreateDynamicConstantBuffer(WORLD_MATRIX_CONSTANT_BUFFER, sizeof(MatrixCBS), m_pDevice.Get());
     m_TDXBufferManager.BindConstantBuffer(WORLD_MATRIX_CONSTANT_BUFFER, 2, m_pDeviceContext.Get());
     SetWorldMatrix(Eigen::Matrix4f::Identity());
+
+    TVertexScreenQuad fullscreenQuadVertices[] =
+    {
+        { {-1.0f,  1.0f, 0.0f}, {0.0f, 0.0f} },
+        { {1.0f,  1.0f, 0.0f}, {1.0f, 0.0f} },
+        { {-1.0f, -1.0f, 0.0f}, {0.0f, 1.0f} },
+
+        { {-1.0f, -1.0f, 0.0f}, {0.0f, 1.0f} },
+        { {1.0f,  1.0f, 0.0f}, {1.0f, 0.0f} },
+        { {1.0f, -1.0f, 0.0f}, {1.0f, 1.0f} }
+    };
+
+    m_TDXBufferManager.CreateStaticVertexBuffer(SREEN_QUAD_STATIC_BUFFER, fullscreenQuadVertices, sizeof(fullscreenQuadVertices) / sizeof(TVertexScreenQuad),
+        sizeof(TVertexScreenQuad), m_pDevice.Get());
 }
 
 void TDXRenderDevice::AddShaders()

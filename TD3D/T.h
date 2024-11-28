@@ -29,6 +29,12 @@ struct TVector2
 	float y;
 };
 
+struct TVertexScreenQuad
+{
+	TVector3 pos;
+	TVector2 tex;
+};
+
 struct TVertexSpriteTexture
 {
 	TVector2 pos;
