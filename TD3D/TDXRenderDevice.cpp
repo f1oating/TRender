@@ -98,6 +98,21 @@ void TDXRenderDevice::BeginForwardGeomtryPass()
     m_pDeviceContext->OMSetRenderTargets(1, m_pRenderTargetView.GetAddressOf(), m_pDepthStencilView.Get());
 }
 
+void TDXRenderDevice::BeginLightingPass()
+{
+    m_pDeviceContext->OMSetRenderTargets(1, m_pRenderTargetView.GetAddressOf(), nullptr);
+    m_pDeviceContext->PSSetShaderResources(0, 3, m_pGBufferSRV[0].GetAddressOf());
+
+    BindVertexShader(LIGHT_SHADER);
+    BindPixelShader(LIGHT_SHADER);
+
+    BindVertexBuffer(SREEN_QUAD_STATIC_BUFFER, sizeof(TVertexScreenQuad), 0);
+    m_pDeviceContext->Draw(6, 0);
+
+    ID3D11ShaderResourceView* nullSRV[3] = { nullptr, nullptr, nullptr };
+    m_pDeviceContext->PSSetShaderResources(0, 3, nullSRV);
+}
+
 void TDXRenderDevice::Draw(unsigned int numIndices, unsigned int startIndexLocation, unsigned int baseVertexLocation)
 {
     m_pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
@@ -403,6 +418,10 @@ void TDXRenderDevice::AddShaders()
     m_TDXShaderManager.AddVertexShader(SPRITE_SHADER_COLOR, L"..\\TD3D\\CSO\\SpriteColorVertexShader.cso",
         SPRITE_COLOR_INPUT_LAYOUT, sizeof(SPRITE_COLOR_INPUT_LAYOUT) / sizeof(D3D11_INPUT_ELEMENT_DESC), m_pDevice.Get());
     m_TDXShaderManager.AddPixelShader(SPRITE_SHADER_COLOR, L"..\\TD3D\\CSO\\SpriteColorPixelShader.cso", m_pDevice.Get());
+
+    m_TDXShaderManager.AddVertexShader(LIGHT_SHADER, L"..\\TD3D\\CSO\\LightVertexShader.cso",
+        SCREEN_QUAD_INPUT_LAYOUT, sizeof(SCREEN_QUAD_INPUT_LAYOUT) / sizeof(D3D11_INPUT_ELEMENT_DESC), m_pDevice.Get());
+    m_TDXShaderManager.AddPixelShader(LIGHT_SHADER, L"..\\TD3D\\CSO\\LightPixelShader.cso", m_pDevice.Get());
 }
 
 HRESULT CreateRenderDevice(TDXRenderDevice** pDevice) {

@@ -295,6 +295,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int nCmdShow) {
             renderDevice->SetRasterizerCulling(true);
             renderDevice->SetDepthStencilComparison(true);
 
+            renderDevice->BeginDefferedGeomtryPass();
+
             renderDevice->BindVertexShader(MESH_SHADER);
             renderDevice->BindPixelShader(MESH_SHADER);
 
@@ -304,6 +306,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int nCmdShow) {
             renderDevice->BindIndexBuffer("IndexBufferMesh");
 
             renderDevice->Draw(numIndices, 0, 0);
+
+            renderDevice->BeginLightingPass();
+
+            renderDevice->BeginForwardGeomtryPass();
 
             frameCount++;
 

@@ -19,6 +19,8 @@ public:
 	virtual void BeginDefferedGeomtryPass() = 0;
 	virtual void BeginForwardGeomtryPass() = 0;
 
+	virtual void BeginLightingPass() = 0;
+
 	virtual void Draw(unsigned int numIndices, unsigned int startIndexLocation, unsigned int baseVertexLocation) = 0;
 	virtual void DrawSprite(unsigned int numVertices, unsigned int startVertexLocation) = 0;
 	virtual void RenderText(const wchar_t* text, float x, float y) = 0;

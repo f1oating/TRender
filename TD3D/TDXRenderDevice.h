@@ -27,6 +27,8 @@ public:
 	virtual void BeginDefferedGeomtryPass() override;
 	virtual void BeginForwardGeomtryPass() override;
 
+	virtual void BeginLightingPass() override;
+
 	virtual void Draw(unsigned int numIndices, unsigned int startIndexLocation, unsigned int baseVertexLocation) override;
 	virtual void DrawSprite(unsigned int numVertices, unsigned int startVertexLocation) override;
 	virtual void RenderText(const wchar_t* text, float x, float y) override;

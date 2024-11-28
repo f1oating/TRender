@@ -28,6 +28,8 @@
     <FxCompile Include="Shaders\SpriteTexturePixelShader.hlsl" />
     <FxCompile Include="Shaders\SpriteColorVertexShader.hlsl" />
     <FxCompile Include="Shaders\SpriteColorPixelShader.hlsl" />
+    <FxCompile Include="Shaders\LightVertexShader.hlsl" />
+    <FxCompile Include="Shaders\LightPixelShader.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="T.h">

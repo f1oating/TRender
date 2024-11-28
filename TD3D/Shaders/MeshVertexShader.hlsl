@@ -1,28 +1,47 @@
 cbuffer ProjectionBuffer : register(b0)
 {
-	matrix projectionMatrix;
+    matrix projectionMatrix;
 };
 
 cbuffer ViewBuffer : register(b1)
 {
-	matrix viewMatrix;
+    matrix viewMatrix;
 };
 
 cbuffer WorldBuffer : register(b2)
 {
-	matrix worldMatrix;
+    matrix worldMatrix;
 };
 
-struct VSOut
+struct VSInput
 {
-	float4 pos : SV_Position;
-	float2 uv : TEXCOORD;
+    float3 Position : POSITION;
+    float2 TexCoord : TEXCOORD;
+    float3 Normal : NORMAL;
+    float3 Tangent : TANGENT;
 };
 
-VSOut main(float3 pos : POSITION, float2 uv : TEXCOORD, float3 normal : NORMAL, float3 tangent : TANGENT)
+struct VSOutput
 {
-	VSOut vso;
-	vso.pos = mul(float4(pos, 1.0f), mul(mul(viewMatrix, projectionMatrix), worldMatrix));
-	vso.uv = uv;
-	return vso;
+    float4 Position : SV_Position;
+    float2 TexCoord : TEXCOORD;
+    float3 WorldPos : WORLD_POS;
+    float3 Normal : NORMAL;
+    float3 Tangent : TANGENT;
+};
+
+VSOutput main(VSInput input)
+{
+    VSOutput output;
+
+    float4 worldPos = mul(float4(input.Position, 1.0f), worldMatrix);
+    float4 viewPos = mul(worldPos, viewMatrix);
+    output.Position = mul(viewPos, projectionMatrix);
+
+    output.WorldPos = worldPos.xyz;
+    output.Normal = mul((float3x3)worldMatrix, input.Normal);
+    output.Tangent = mul((float3x3)worldMatrix, input.Tangent);
+    output.TexCoord = input.TexCoord;
+
+    return output;
 }
