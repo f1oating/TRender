@@ -279,6 +279,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int nCmdShow) {
 
             renderDevice->BeginFrame(0.1f, 0.1f, 0.1f, 1.0f);
 
+            renderDevice->BeginDefferedRendering();
+
             renderDevice->SetRasterizerCulling(false);
             renderDevice->SetDepthStencilComparison(false);
 
@@ -294,8 +296,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int nCmdShow) {
 
             renderDevice->SetRasterizerCulling(true);
             renderDevice->SetDepthStencilComparison(true);
-
-            renderDevice->BeginDefferedRendering();
 
             renderDevice->BindVertexShader(GEOMETRY_SHADER);
             renderDevice->BindPixelShader(GEOMETRY_SHADER);
