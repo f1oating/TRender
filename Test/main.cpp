@@ -250,6 +250,13 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int nCmdShow) {
 
     camera.SetPosition(2.0f, 2.0f, -2.0f);
 
+    Light dirLight = {};
+    dirLight.Type = 0;
+    dirLight.Direction = { -0.5f, -1.0f, -0.3f };
+    dirLight.Color = { 1.0f, 1.0f, 1.0f };
+    dirLight.Intensity = 1.0f;
+    renderDevice->AddLight(dirLight);
+
     renderDevice->AddTexture("crate", "Textures/crate.jpg");
     renderDevice->AddCubeMapTexture("skybox", "Textures/Skybox/Weltraum", ".png");
 

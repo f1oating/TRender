@@ -55,6 +55,10 @@ public:
 	virtual void SetRasterizerCulling(bool flag) = 0;
 	virtual void SetBlendState(bool flag) = 0;
 
+	virtual unsigned short AddLight(Light light) = 0;
+	virtual void RemoveLight(int index) = 0;
+	virtual void FlushLights() = 0;
+
 	virtual bool OnResize(int width, int height) = 0;
 	virtual bool IsRunning() = 0;
 

@@ -62,4 +62,15 @@ struct TVertexSkybox
 	TVector3 tex;
 };
 
+struct Light
+{
+	int Type;
+	TVector3 Position;
+	TVector3 Direction;
+	TVector3 Color;
+	float Intensity;
+	float Range;
+	float SpotAngle;
+};
+
 #endif

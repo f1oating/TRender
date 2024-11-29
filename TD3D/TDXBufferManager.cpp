@@ -156,9 +156,14 @@ void TDXBufferManager::BindIndexBuffer(std::string indexName, ID3D11DeviceContex
     context->IASetIndexBuffer(m_BuffersMap[indexName], DXGI_FORMAT_R32_UINT, 0u);
 }
 
-void TDXBufferManager::BindConstantBuffer(std::string constantName, unsigned short slot, ID3D11DeviceContext* context)
+void TDXBufferManager::VBindConstantBuffer(std::string constantName, unsigned short slot, ID3D11DeviceContext* context)
 {
     context->VSSetConstantBuffers(slot, 1, &m_BuffersMap[constantName]);
+}
+
+void TDXBufferManager::PBindConstantBuffer(std::string constantName, unsigned short slot, ID3D11DeviceContext* context)
+{
+    context->PSSetConstantBuffers(slot, 1, &m_BuffersMap[constantName]);
 }
 
 void TDXBufferManager::DeleteBuffer(std::string name)

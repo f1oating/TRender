@@ -32,7 +32,8 @@ public:
 
 	void BindVertexBuffer(std::string vertexName, UINT stride, UINT offset, ID3D11DeviceContext* context);
 	void BindIndexBuffer(std::string indexName, ID3D11DeviceContext* context);
-	void BindConstantBuffer(std::string constantName, unsigned short slot, ID3D11DeviceContext* context);
+	void VBindConstantBuffer(std::string constantName, unsigned short slot, ID3D11DeviceContext* context);
+	void PBindConstantBuffer(std::string constantName, unsigned short slot, ID3D11DeviceContext* context);
 
 	void DeleteBuffer(std::string name);
 

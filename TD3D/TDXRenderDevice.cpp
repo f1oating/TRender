@@ -97,6 +97,7 @@ void TDXRenderDevice::EndDefferedRendering()
 {
     m_pDeviceContext->OMSetRenderTargets(1, m_pRenderTargetView.GetAddressOf(), nullptr);
     m_pDeviceContext->PSSetShaderResources(0, 3, m_pGBufferSRV[0].GetAddressOf());
+    m_pDeviceContext->PSSetShaderResources(3, 1, m_pLightsShaderResource.GetAddressOf());
 
     BindVertexShader(LIGHT_SHADER);
     BindPixelShader(LIGHT_SHADER);
@@ -104,8 +105,8 @@ void TDXRenderDevice::EndDefferedRendering()
     BindVertexBuffer(SREEN_QUAD_STATIC_BUFFER, sizeof(TVertexScreenQuad), 0);
     m_pDeviceContext->Draw(6, 0);
 
-    ID3D11ShaderResourceView* nullSRV[3] = { nullptr, nullptr, nullptr };
-    m_pDeviceContext->PSSetShaderResources(0, 3, nullSRV);
+    ID3D11ShaderResourceView* nullSRV[4] = { nullptr, nullptr, nullptr, nullptr };
+    m_pDeviceContext->PSSetShaderResources(0, 4, nullSRV);
 }
 
 void TDXRenderDevice::BeginForwardRendering()
@@ -142,9 +143,9 @@ void TDXRenderDevice::RenderText(const wchar_t* text, float x, float y)
     m_pSpriteFont->DrawString(m_pSpriteBatch.get(), text, DirectX::XMFLOAT2(x, y));
     m_pSpriteBatch->End();
 
-    m_TDXBufferManager.BindConstantBuffer(PROJECTION_MATRIX_CONSTANT_BUFFER, 0, m_pDeviceContext.Get());
-    m_TDXBufferManager.BindConstantBuffer(VIEW_MATRIX_CONSTANT_BUFFER, 1, m_pDeviceContext.Get());
-    m_TDXBufferManager.BindConstantBuffer(WORLD_MATRIX_CONSTANT_BUFFER, 2, m_pDeviceContext.Get());
+    m_TDXBufferManager.VBindConstantBuffer(PROJECTION_MATRIX_CONSTANT_BUFFER, 0, m_pDeviceContext.Get());
+    m_TDXBufferManager.VBindConstantBuffer(VIEW_MATRIX_CONSTANT_BUFFER, 1, m_pDeviceContext.Get());
+    m_TDXBufferManager.VBindConstantBuffer(WORLD_MATRIX_CONSTANT_BUFFER, 2, m_pDeviceContext.Get());
     m_TDXTextureManager.BindSampler("default", m_pDeviceContext.Get());
 }
 
@@ -282,6 +283,23 @@ void TDXRenderDevice::SetBlendState(bool flag)
     m_TDXFeatureController.ChangeBlendState(flag, m_pDevice.Get(), m_pDeviceContext.Get());
 }
 
+unsigned short TDXRenderDevice::AddLight(Light light)
+{
+    m_Lights.push_back(light);
+    UpdateLights();
+    return m_Lights.size() - 1;
+}
+
+void TDXRenderDevice::RemoveLight(int index)
+{
+    m_Lights.erase(m_Lights.begin() + index);
+}
+
+void TDXRenderDevice::FlushLights()
+{
+    m_Lights.clear();
+}
+
 bool TDXRenderDevice::OnResize(int width, int height)
 {
     m_pRenderTargetView.Reset();
@@ -382,14 +400,17 @@ bool TDXRenderDevice::IsRunning()
 void TDXRenderDevice::CreateBuffers()
 {
     m_TDXBufferManager.CreateDynamicConstantBuffer(PROJECTION_MATRIX_CONSTANT_BUFFER, sizeof(MatrixCBS), m_pDevice.Get());
-    m_TDXBufferManager.BindConstantBuffer(PROJECTION_MATRIX_CONSTANT_BUFFER, 0, m_pDeviceContext.Get());
+    m_TDXBufferManager.VBindConstantBuffer(PROJECTION_MATRIX_CONSTANT_BUFFER, 0, m_pDeviceContext.Get());
 
     m_TDXBufferManager.CreateDynamicConstantBuffer(VIEW_MATRIX_CONSTANT_BUFFER, sizeof(MatrixCBS), m_pDevice.Get());
-    m_TDXBufferManager.BindConstantBuffer(VIEW_MATRIX_CONSTANT_BUFFER, 1, m_pDeviceContext.Get());
+    m_TDXBufferManager.VBindConstantBuffer(VIEW_MATRIX_CONSTANT_BUFFER, 1, m_pDeviceContext.Get());
 
     m_TDXBufferManager.CreateDynamicConstantBuffer(WORLD_MATRIX_CONSTANT_BUFFER, sizeof(MatrixCBS), m_pDevice.Get());
-    m_TDXBufferManager.BindConstantBuffer(WORLD_MATRIX_CONSTANT_BUFFER, 2, m_pDeviceContext.Get());
+    m_TDXBufferManager.VBindConstantBuffer(WORLD_MATRIX_CONSTANT_BUFFER, 2, m_pDeviceContext.Get());
     SetWorldMatrix(Eigen::Matrix4f::Identity());
+
+    m_TDXBufferManager.CreateDynamicConstantBuffer(LIGHT_COUNT_CONSTANT_BUFFER, sizeof(LightCountCBS), m_pDevice.Get());
+    m_TDXBufferManager.PBindConstantBuffer(LIGHT_COUNT_CONSTANT_BUFFER, 0, m_pDeviceContext.Get());
 
     TVertexScreenQuad fullscreenQuadVertices[] =
     {
@@ -404,6 +425,23 @@ void TDXRenderDevice::CreateBuffers()
 
     m_TDXBufferManager.CreateStaticVertexBuffer(SREEN_QUAD_STATIC_BUFFER, fullscreenQuadVertices, sizeof(fullscreenQuadVertices) / sizeof(TVertexScreenQuad),
         sizeof(TVertexScreenQuad), m_pDevice.Get());
+
+    D3D11_BUFFER_DESC bufferDesc = {};
+    bufferDesc.Usage = D3D11_USAGE_DYNAMIC;
+    bufferDesc.ByteWidth = sizeof(Light) * 120;
+    bufferDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
+    bufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+    bufferDesc.MiscFlags = D3D11_RESOURCE_MISC_BUFFER_STRUCTURED;
+    bufferDesc.StructureByteStride = sizeof(Light);
+
+    m_pDevice->CreateBuffer(&bufferDesc, nullptr, m_pLightsBuffer.GetAddressOf());
+
+    D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
+    srvDesc.Format = DXGI_FORMAT_UNKNOWN;
+    srvDesc.ViewDimension = D3D11_SRV_DIMENSION_BUFFER;
+    srvDesc.Buffer.FirstElement = 0;
+    srvDesc.Buffer.NumElements = 120;
+    m_pDevice->CreateShaderResourceView(m_pLightsBuffer.Get(), &srvDesc, m_pLightsShaderResource.GetAddressOf());
 }
 
 void TDXRenderDevice::AddShaders()
@@ -427,6 +465,21 @@ void TDXRenderDevice::AddShaders()
     m_TDXShaderManager.AddVertexShader(LIGHT_SHADER, L"..\\TD3D\\CSO\\LightVertexShader.cso",
         SCREEN_QUAD_INPUT_LAYOUT, sizeof(SCREEN_QUAD_INPUT_LAYOUT) / sizeof(D3D11_INPUT_ELEMENT_DESC), m_pDevice.Get());
     m_TDXShaderManager.AddPixelShader(LIGHT_SHADER, L"..\\TD3D\\CSO\\LightPixelShader.cso", m_pDevice.Get());
+}
+
+void TDXRenderDevice::UpdateLights()
+{
+    D3D11_MAPPED_SUBRESOURCE mappedResource = {};
+    HRESULT hr = m_pDeviceContext->Map(m_pLightsBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
+    if (SUCCEEDED(hr)) {
+        memcpy(mappedResource.pData, m_Lights.data(), sizeof(Light) * m_Lights.size());
+        m_pDeviceContext->Unmap(m_pLightsBuffer.Get(), 0);
+    }
+
+    LightCountCBS lightCBS = {};
+    lightCBS.LightCount = m_Lights.size();
+
+    m_TDXBufferManager.UpdateDynamicConstantBuffer(LIGHT_COUNT_CONSTANT_BUFFER, &lightCBS, sizeof(LightCountCBS), m_pDeviceContext.Get());
 }
 
 HRESULT CreateRenderDevice(TDXRenderDevice** pDevice) {
