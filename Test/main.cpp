@@ -255,7 +255,27 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int nCmdShow) {
     dirLight.Direction = { -0.5f, -1.0f, -0.3f };
     dirLight.Color = { 1.0f, 1.0f, 1.0f };
     dirLight.Intensity = 1.0f;
-    renderDevice->AddLight(dirLight);
+
+    Light pointLight = {};
+    pointLight.Type = 1;
+    pointLight.Position = { 0.0f, 5.0f, 0.0f };
+    pointLight.Color = { 1.0f, 0.5f, 0.5f };
+    pointLight.Intensity = 20.0f;
+    pointLight.Range = 100.0f;
+
+    Light spotLight = {};
+    spotLight.Type = 2;
+    spotLight.Position = { 0.0f, 5.0f, 0.0f };
+    spotLight.Direction = { 0.0f, -1.0f, 0.0f };
+    spotLight.Color = { 0.5f, 0.5f, 1.0f };
+    spotLight.Intensity = 30.0f;
+    spotLight.Range = 150.0f;
+    spotLight.SpotAngle = 30.0f;
+
+    //renderDevice->AddLight(dirLight);
+    //renderDevice->AddLight(pointLight);
+    renderDevice->AddLight(spotLight);
+    renderDevice->SetAmbientLight(0.3f, 0.3f, 0.3f);
 
     renderDevice->AddTexture("crate", "Textures/crate.jpg");
     renderDevice->AddCubeMapTexture("skybox", "Textures/Skybox/Weltraum", ".png");

@@ -290,6 +290,13 @@ unsigned short TDXRenderDevice::AddLight(Light light)
     return m_Lights.size() - 1;
 }
 
+void TDXRenderDevice::SetAmbientLight(float r, float g, float b)
+{
+    AmbientLightCBS ambient = { r, g, b };
+
+    m_TDXBufferManager.UpdateDynamicConstantBuffer(AMBIENT_LIGHT_COUNT_CONSTANT_BUFFER, &ambient, sizeof(AmbientLightCBS), m_pDeviceContext.Get());
+}
+
 void TDXRenderDevice::RemoveLight(int index)
 {
     m_Lights.erase(m_Lights.begin() + index);
@@ -411,6 +418,10 @@ void TDXRenderDevice::CreateBuffers()
 
     m_TDXBufferManager.CreateDynamicConstantBuffer(LIGHT_COUNT_CONSTANT_BUFFER, sizeof(LightCountCBS), m_pDevice.Get());
     m_TDXBufferManager.PBindConstantBuffer(LIGHT_COUNT_CONSTANT_BUFFER, 0, m_pDeviceContext.Get());
+
+    m_TDXBufferManager.CreateDynamicConstantBuffer(AMBIENT_LIGHT_COUNT_CONSTANT_BUFFER, sizeof(AmbientLightCBS), m_pDevice.Get());
+    m_TDXBufferManager.PBindConstantBuffer(AMBIENT_LIGHT_COUNT_CONSTANT_BUFFER, 1, m_pDeviceContext.Get());
+    SetAmbientLight(1.0f, 1.0f, 1.0f);
 
     TVertexScreenQuad fullscreenQuadVertices[] =
     {

@@ -56,6 +56,7 @@ public:
 	virtual void SetBlendState(bool flag) = 0;
 
 	virtual unsigned short AddLight(Light light) = 0;
+	virtual void SetAmbientLight(float r, float g, float b) = 0;
 	virtual void RemoveLight(int index) = 0;
 	virtual void FlushLights() = 0;
 

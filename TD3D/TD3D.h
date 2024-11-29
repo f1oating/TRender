@@ -10,6 +10,7 @@ constexpr const char* VIEW_MATRIX_CONSTANT_BUFFER = "VIEW_MATRIX_CONSTANT_BUFFER
 constexpr const char* WORLD_MATRIX_CONSTANT_BUFFER = "WORLD_MATRIX_CONSTANT_BUFFER";
 constexpr const char* LIGHT_COUNT_CONSTANT_BUFFER = "LIGHT_COUNT_CONSTANT_BUFFER";
 constexpr const char* SREEN_QUAD_STATIC_BUFFER = "SREEN_QUAD_STATIC_BUFFER";
+constexpr const char* AMBIENT_LIGHT_COUNT_CONSTANT_BUFFER = "AMBIENT_LIGHT_COUNT_CONSTANT_BUFFER";
 
 struct MatrixCBS
 {
@@ -20,6 +21,14 @@ struct LightCountCBS
 {
     int LightCount;
     int padding[3];
+};
+
+struct AmbientLightCBS
+{
+    float r;
+    float g;
+    float b;
+    float padding;
 };
 
 D3D11_INPUT_ELEMENT_DESC SPRITE_TEXTURE_INPUT_LAYOUT[] =

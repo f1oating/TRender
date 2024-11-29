@@ -64,6 +64,7 @@ public:
 	virtual void SetBlendState(bool flag) override;
 
 	virtual unsigned short AddLight(Light light) override;
+	virtual void SetAmbientLight(float r, float g, float b) override;
 	virtual void RemoveLight(int index) override;
 	virtual void FlushLights() override;
 
