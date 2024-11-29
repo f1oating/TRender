@@ -19,7 +19,7 @@ TestTimer fpsTimer;
 int frameCount = 0;
 std::wstring fpsText;
 
-bool ImportModel(const std::string& filePath, TVertexMesh*& vertices, unsigned int*& indices, unsigned int& numVertices, unsigned int& numIndices)
+bool ImportModel(const std::string& filePath, TVertexGeometry*& vertices, unsigned int*& indices, unsigned int& numVertices, unsigned int& numIndices)
 {
     Assimp::Importer importer;
 
@@ -33,7 +33,7 @@ bool ImportModel(const std::string& filePath, TVertexMesh*& vertices, unsigned i
     numVertices = mesh->mNumVertices;
     numIndices = mesh->mNumFaces * 3;
 
-    vertices = new TVertexMesh[numVertices];
+    vertices = new TVertexGeometry[numVertices];
     indices = new unsigned int[numIndices];
 
     for (unsigned int i = 0; i < numVertices; ++i) {
@@ -179,7 +179,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int nCmdShow) {
 
     renderDevice->Initizialize(hwnd, 800, 600);
 
-    TVertexMesh* vertices = nullptr;
+    TVertexGeometry* vertices = nullptr;
     unsigned int* indices = nullptr;
     unsigned int numVertices = 0;
     unsigned int numIndices = 0;
@@ -280,8 +280,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int nCmdShow) {
     renderDevice->AddTexture("crate", "Textures/crate.jpg");
     renderDevice->AddCubeMapTexture("skybox", "Textures/Skybox/Weltraum", ".png");
 
-    renderDevice->CreateStaticVertexBuffer("VertexBufferMesh", vertices, numVertices, sizeof(TVertexMesh));
-    renderDevice->CreateStaticIndexBuffer("IndexBufferMesh", indices, numIndices);
+    renderDevice->CreateStaticVertexBuffer("VertexBufferGeometry", vertices, numVertices, sizeof(TVertexGeometry));
+    renderDevice->CreateStaticIndexBuffer("IndexBufferGeometry", indices, numIndices);
 
     renderDevice->CreateStaticVertexBuffer("VertexBufferSkybox", verticesSkybox, sizeof(verticesSkybox) / sizeof(TVertexSkybox), sizeof(TVertexSkybox));
     renderDevice->CreateStaticIndexBuffer("IndexBufferSkybox", indicesSkybox, sizeof(indicesSkybox) / sizeof(unsigned int));
@@ -329,8 +329,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int nCmdShow) {
 
             renderDevice->BindTexture("crate");
 
-            renderDevice->BindVertexBuffer("VertexBufferMesh", sizeof(TVertexMesh), 0);
-            renderDevice->BindIndexBuffer("IndexBufferMesh");
+            renderDevice->BindVertexBuffer("VertexBufferGeometry", sizeof(TVertexGeometry), 0);
+            renderDevice->BindIndexBuffer("IndexBufferGeometry");
 
             renderDevice->Draw(numIndices, 0, 0);
 

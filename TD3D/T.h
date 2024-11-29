@@ -48,7 +48,7 @@ struct TVertexSpriteColor
 	TVector4 color;
 };
 
-struct TVertexMesh
+struct TVertexGeometry
 {
 	TVector3 pos;
 	TVector2 tex;
