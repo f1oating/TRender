@@ -184,7 +184,13 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int nCmdShow) {
     unsigned int numVertices = 0;
     unsigned int numIndices = 0;
 
+    TVertexGeometry* terrainVert = nullptr;
+    unsigned int* terrainInd = nullptr;
+    unsigned int numTerrainVert = 0;
+    unsigned int numTerrainInd = 0;
+
     ImportModel("Models/model.fbx", vertices, indices, numVertices, numIndices);
+    ImportModel("Models/terrain.fbx", terrainVert, terrainInd, numTerrainVert, numTerrainInd);
 
     TVertexSkybox verticesSkybox[] = {
     {{-1.0f, -1.0f,  1.0f}, {-1.0f, -1.0f,  1.0f}},
@@ -272,9 +278,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int nCmdShow) {
     spotLight.Range = 150.0f;
     spotLight.SpotAngle = 30.0f;
 
-    //renderDevice->AddLight(dirLight);
+    renderDevice->AddLight(dirLight);
     //renderDevice->AddLight(pointLight);
-    renderDevice->AddLight(spotLight);
+    //renderDevice->AddLight(spotLight);
     renderDevice->SetAmbientLight(0.3f, 0.3f, 0.3f);
 
     renderDevice->AddTexture("crate", "Textures/crate.jpg");
@@ -282,6 +288,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int nCmdShow) {
 
     renderDevice->CreateStaticVertexBuffer("VertexBufferGeometry", vertices, numVertices, sizeof(TVertexGeometry));
     renderDevice->CreateStaticIndexBuffer("IndexBufferGeometry", indices, numIndices);
+
+    renderDevice->CreateStaticVertexBuffer("VertexBufferGeometryTerrain", terrainVert, numTerrainVert, sizeof(TVertexGeometry));
+    renderDevice->CreateStaticIndexBuffer("IndexBufferGeometryTerrain", terrainInd, numTerrainInd);
 
     renderDevice->CreateStaticVertexBuffer("VertexBufferSkybox", verticesSkybox, sizeof(verticesSkybox) / sizeof(TVertexSkybox), sizeof(TVertexSkybox));
     renderDevice->CreateStaticIndexBuffer("IndexBufferSkybox", indicesSkybox, sizeof(indicesSkybox) / sizeof(unsigned int));
@@ -292,6 +301,26 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int nCmdShow) {
     auto start = std::chrono::high_resolution_clock::now();
     int frameCount = 0;
     std::wstring fpsText;
+
+    Eigen::Matrix4f rotationFix = Eigen::Matrix4f::Identity();
+    Eigen::Matrix4f scaling = Eigen::Matrix4f::Identity();
+    Eigen::Matrix4f translation = Eigen::Matrix4f::Identity();
+    Eigen::Matrix4f transformation;
+
+    float angle = -PI / 2.0f;
+
+    rotationFix(1, 1) = cos(angle);
+    rotationFix(1, 2) = -sin(angle);
+    rotationFix(2, 1) = sin(angle);
+    rotationFix(2, 2) = cos(angle);
+
+    scaling(0, 0) = 10.0f;
+    scaling(1, 1) = 10.0f;
+    scaling(2, 2) = 10.0f;
+
+    translation(2, 3) = -1.5f;
+
+    transformation = scaling * rotationFix * translation;
 
     // Main message loop
     MSG msg = {};
@@ -332,7 +361,18 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int nCmdShow) {
             renderDevice->BindVertexBuffer("VertexBufferGeometry", sizeof(TVertexGeometry), 0);
             renderDevice->BindIndexBuffer("IndexBufferGeometry");
 
+            renderDevice->SetWorldMatrix(rotationFix);
+
             renderDevice->Draw(numIndices, 0, 0);
+
+            renderDevice->BindVertexBuffer("VertexBufferGeometryTerrain", sizeof(TVertexGeometry), 0);
+            renderDevice->BindIndexBuffer("IndexBufferGeometryTerrain");
+
+            renderDevice->SetWorldMatrix(transformation);
+
+            renderDevice->Draw(numTerrainInd, 0, 0);
+
+            renderDevice->SetWorldMatrix(Eigen::Matrix4f::Identity());
 
             renderDevice->EndDefferedRendering();
 
@@ -380,6 +420,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int nCmdShow) {
 
     delete[] vertices;
     delete[] indices;
+
+    delete[] terrainVert;
+    delete[] terrainInd;
 
     return 0;
 }
