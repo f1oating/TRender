@@ -1,3 +1,9 @@
+cbuffer AmbientLight : register(b1)
+{
+    float3 ambientLight;
+    float padding;
+};
+
 Texture2D myTexture : register(t0);
 SamplerState samplerState : register(s0);
 
@@ -21,7 +27,7 @@ PSOutput main(PSInput input)
 {
     PSOutput output;
 
-    output.Diffuse = myTexture.Sample(samplerState, input.TexCoord);
+    output.Diffuse = myTexture.Sample(samplerState, input.TexCoord) * float4(ambientLight, 1.0f);
 
     output.Normal = float4(normalize(input.Normal), 1.0);
 

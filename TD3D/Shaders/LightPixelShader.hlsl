@@ -16,12 +16,6 @@ cbuffer LightInfo : register(b0)
     int align[3];
 };
 
-cbuffer AmbientLight : register(b1)
-{
-    float3 ambientLight;
-    float padding;
-};
-
 float3 CalculateDirectionalLight(Light light, float3 normal)
 {
     float3 lightDir = normalize(-light.Direction);
@@ -82,7 +76,7 @@ float4 main(PSInput input) : SV_Target
     float3 normal = normalize(NormalTexture.Sample(samplerState, input.TexCoord).xyz * 2.0 - 1.0);
     float3 worldPos = PositionTexture.Sample(samplerState, input.TexCoord).xyz;
 
-    float3 finalColor = float3(1.0f, 1.0f, 1.0f) * ambientLight;
+    float3 finalColor = float3(1.0f, 1.0f, 1.0f);
 
     for (int i = 0; i < LightCount; ++i)
     {
