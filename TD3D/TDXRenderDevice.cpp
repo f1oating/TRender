@@ -82,19 +82,10 @@ void TDXRenderDevice::BeginFrame(float r, float g, float b, float a) {
         m_pDeviceContext->ClearRenderTargetView(m_pGBufferRTV[i].Get(), clearColor);
     }
     m_pDeviceContext->ClearDepthStencilView(m_pDepthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
-}
-
-void TDXRenderDevice::EndFrame() {
-    m_pSwapChain->Present(1, 0);
-}
-
-void TDXRenderDevice::BeginDefferedRendering()
-{
     m_pDeviceContext->OMSetRenderTargets(3, m_pGBufferRTV[0].GetAddressOf(), m_pDepthStencilView.Get());
 }
 
-void TDXRenderDevice::EndDefferedRendering()
-{
+void TDXRenderDevice::EndFrame() {
     m_pDeviceContext->OMSetRenderTargets(1, m_pRenderTargetView.GetAddressOf(), nullptr);
     m_pDeviceContext->PSSetShaderResources(0, 3, m_pGBufferSRV[0].GetAddressOf());
     m_pDeviceContext->PSSetShaderResources(3, 1, m_pLightsShaderResource.GetAddressOf());
@@ -107,16 +98,8 @@ void TDXRenderDevice::EndDefferedRendering()
 
     ID3D11ShaderResourceView* nullSRV[4] = { nullptr, nullptr, nullptr, nullptr };
     m_pDeviceContext->PSSetShaderResources(0, 4, nullSRV);
-}
 
-void TDXRenderDevice::BeginForwardRendering()
-{
-    m_pDeviceContext->OMSetRenderTargets(1, m_pRenderTargetView.GetAddressOf(), m_pDepthStencilView.Get());
-}
-
-void TDXRenderDevice::EndForwardRendering()
-{
-
+    m_pSwapChain->Present(1, 0);
 }
 
 void TDXRenderDevice::Draw(unsigned int numIndices, unsigned int startIndexLocation, unsigned int baseVertexLocation)
@@ -383,8 +366,6 @@ bool TDXRenderDevice::OnResize(int width, int height)
     if (FAILED(hr)) {
         throw std::runtime_error("Failed to create depth stencil view.");
     }
-
-    m_pDeviceContext->OMSetRenderTargets(1, m_pRenderTargetView.GetAddressOf(), m_pDepthStencilView.Get());
 
     D3D11_VIEWPORT viewport = {};
     viewport.Width = static_cast<float>(width);

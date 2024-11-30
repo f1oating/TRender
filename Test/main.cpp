@@ -335,8 +335,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int nCmdShow) {
 
             renderDevice->BeginFrame(0.1f, 0.1f, 0.1f, 1.0f);
 
-            renderDevice->BeginDefferedRendering();
-
             renderDevice->SetRasterizerCulling(false);
             renderDevice->SetDepthStencilComparison(false);
 
@@ -374,10 +372,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int nCmdShow) {
 
             renderDevice->SetWorldMatrix(Eigen::Matrix4f::Identity());
 
-            renderDevice->EndDefferedRendering();
-
-            renderDevice->BeginForwardRendering();
-
             frameCount++;
 
             if (fpsTimer.GetMilisecondsElapsed() >= 1000.0f) {
@@ -409,8 +403,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int nCmdShow) {
             renderDevice->DrawSprite(3, 0);
 
             renderDevice->SetBlendState(false);
-
-            renderDevice->EndForwardRendering();
 
             renderDevice->EndFrame();
         }
