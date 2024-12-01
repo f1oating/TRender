@@ -40,14 +40,14 @@ public:
 	virtual void BindVertexShader(std::string name) override;
 	virtual void BindPixelShader(std::string name) override;
 
-	virtual void CreateStaticVertexBuffer(std::string name, void* vertices, unsigned int numVertices, unsigned short vertexSize) override;
+	virtual void CreateStaticVertexBuffer(std::string name, void* vertices, unsigned int numVertices, unsigned int vertexSize) override;
 	virtual void CreateStaticIndexBuffer(std::string name, unsigned int* indices, unsigned int numIndices) override;
-	virtual void CreateDynamicVertexBuffer(std::string name, void* vertices, unsigned int numVertices, unsigned short vertexSize) override;
+	virtual void CreateDynamicVertexBuffer(std::string name, void* vertices, unsigned int numVertices, unsigned int vertexSize) override;
 	virtual void CreateDynamicIndexBuffer(std::string name, unsigned int* indices, unsigned int numIndices) override;
 
 	virtual void UpdateStaticVertexBuffer(std::string name, void* vertices) override;
 	virtual void UpdateStaticIndexBuffer(std::string name, unsigned int* indices) override;
-	virtual void UpdateDynamicVertexBuffer(std::string name, void* vertices, unsigned int numVertices, unsigned short vertexSize) override;
+	virtual void UpdateDynamicVertexBuffer(std::string name, void* vertices, unsigned int numVertices, unsigned int vertexSize) override;
 	virtual void UpdateDynamicIndexBuffer(std::string name, unsigned int* indices, unsigned int numIndices) override;
 
 	virtual void BindVertexBuffer(std::string vertexName, UINT stride, UINT offset) override;

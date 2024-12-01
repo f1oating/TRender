@@ -32,14 +32,14 @@ public:
 	virtual void BindVertexShader(std::string name) = 0;
 	virtual void BindPixelShader(std::string name) = 0;
 
-	virtual void CreateStaticVertexBuffer(std::string name, void* vertices, unsigned int numVertices, unsigned short vertexSize) = 0;
+	virtual void CreateStaticVertexBuffer(std::string name, void* vertices, unsigned int numVertices, unsigned int vertexSize) = 0;
 	virtual void CreateStaticIndexBuffer(std::string name, unsigned int* indices, unsigned int numIndices) = 0;
-	virtual void CreateDynamicVertexBuffer(std::string name, void* vertices, unsigned int numVertices, unsigned short vertexSize) = 0;
+	virtual void CreateDynamicVertexBuffer(std::string name, void* vertices, unsigned int numVertices, unsigned int vertexSize) = 0;
 	virtual void CreateDynamicIndexBuffer(std::string name, unsigned int* indices, unsigned int numIndices) = 0;
 
 	virtual void UpdateStaticVertexBuffer(std::string name, void* vertices) = 0;
 	virtual void UpdateStaticIndexBuffer(std::string name, unsigned int* indices) = 0;
-	virtual void UpdateDynamicVertexBuffer(std::string name, void* vertices, unsigned int numVertices, unsigned short vertexSize) = 0;
+	virtual void UpdateDynamicVertexBuffer(std::string name, void* vertices, unsigned int numVertices, unsigned int vertexSize) = 0;
 	virtual void UpdateDynamicIndexBuffer(std::string name, unsigned int* indices, unsigned int numIndices) = 0;
 
 	virtual void BindVertexBuffer(std::string vertexName, UINT stride, UINT offset) = 0;

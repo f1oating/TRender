@@ -249,6 +249,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int nCmdShow) {
     };
 
     camera.SetPosition(2.0f, 2.0f, -2.0f);
+    renderDevice->SetViewMatrix(camera.GetViewMatrix());
 
     Light dirLight = {};
     dirLight.Type = 0;

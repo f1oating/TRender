@@ -202,7 +202,7 @@ void TDXRenderDevice::BindPixelShader(std::string name)
     m_TDXShaderManager.BindPixelShader(name, m_pDeviceContext.Get());
 }
 
-void TDXRenderDevice::CreateStaticVertexBuffer(std::string name, void* vertices, unsigned int numVertices, unsigned short vertexSize)
+void TDXRenderDevice::CreateStaticVertexBuffer(std::string name, void* vertices, unsigned int numVertices, unsigned int vertexSize)
 {
     m_TDXBufferManager.CreateStaticVertexBuffer(name, vertices, numVertices, vertexSize, m_pDevice.Get());
 }
@@ -212,7 +212,7 @@ void TDXRenderDevice::CreateStaticIndexBuffer(std::string name, unsigned int* in
     m_TDXBufferManager.CreateStaticIndexBuffer(name, indices, numIndices, m_pDevice.Get());
 }
 
-void TDXRenderDevice::CreateDynamicVertexBuffer(std::string name, void* vertices, unsigned int numVertices, unsigned short vertexSize)
+void TDXRenderDevice::CreateDynamicVertexBuffer(std::string name, void* vertices, unsigned int numVertices, unsigned int vertexSize)
 {
     m_TDXBufferManager.CreateDynamicVertexBuffer(name, vertices, numVertices, vertexSize, m_pDevice.Get());
 }
@@ -232,7 +232,7 @@ void TDXRenderDevice::UpdateStaticIndexBuffer(std::string name, unsigned int* in
     m_TDXBufferManager.UpdateStaticIndexBuffer(name, indices, m_pDeviceContext.Get());
 }
 
-void TDXRenderDevice::UpdateDynamicVertexBuffer(std::string name, void* vertices, unsigned int numVertices, unsigned short vertexSize)
+void TDXRenderDevice::UpdateDynamicVertexBuffer(std::string name, void* vertices, unsigned int numVertices, unsigned int vertexSize)
 {
     m_TDXBufferManager.UpdateDynamicVertexBuffer(name, vertices, numVertices, vertexSize, m_pDeviceContext.Get());
 }
@@ -399,6 +399,7 @@ void TDXRenderDevice::CreateBuffers()
 
     m_TDXBufferManager.CreateDynamicConstantBuffer(VIEW_MATRIX_CONSTANT_BUFFER, sizeof(MatrixCBS), m_pDevice.Get());
     m_TDXBufferManager.VBindConstantBuffer(VIEW_MATRIX_CONSTANT_BUFFER, 1, m_pDeviceContext.Get());
+    SetViewMatrix(Eigen::Matrix4f::Identity());
 
     m_TDXBufferManager.CreateDynamicConstantBuffer(WORLD_MATRIX_CONSTANT_BUFFER, sizeof(MatrixCBS), m_pDevice.Get());
     m_TDXBufferManager.VBindConstantBuffer(WORLD_MATRIX_CONSTANT_BUFFER, 2, m_pDeviceContext.Get());

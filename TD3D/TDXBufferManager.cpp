@@ -11,7 +11,7 @@ TDXBufferManager::~TDXBufferManager()
     m_BuffersMap.clear();
 }
 
-void TDXBufferManager::CreateStaticVertexBuffer(std::string name, void* vertices, unsigned int numVertices, unsigned short vertexSize, ID3D11Device* device)
+void TDXBufferManager::CreateStaticVertexBuffer(std::string name, void* vertices, unsigned int numVertices, unsigned int vertexSize, ID3D11Device* device)
 {
     ID3D11Buffer* buffer;
 
@@ -68,7 +68,7 @@ void TDXBufferManager::CreateDynamicConstantBuffer(std::string name, unsigned in
     m_BuffersMap[name] = buffer;
 }
 
-void TDXBufferManager::CreateDynamicVertexBuffer(std::string name, void* vertices, unsigned int numVertices, unsigned short vertexSize, ID3D11Device* device)
+void TDXBufferManager::CreateDynamicVertexBuffer(std::string name, void* vertices, unsigned int numVertices, unsigned int vertexSize, ID3D11Device* device)
 {
     ID3D11Buffer* buffer;
 
@@ -138,7 +138,7 @@ void TDXBufferManager::UpdateStaticIndexBuffer(std::string name, unsigned int* i
     context->UpdateSubresource(m_BuffersMap[name], 0, nullptr, indices, 0, 0);
 }
 
-void TDXBufferManager::UpdateDynamicConstantBuffer(std::string name, void* constantBufferStruct, unsigned short structSize, ID3D11DeviceContext* context)
+void TDXBufferManager::UpdateDynamicConstantBuffer(std::string name, void* constantBufferStruct, unsigned int structSize, ID3D11DeviceContext* context)
 {
     D3D11_MAPPED_SUBRESOURCE mappedResource;
     context->Map(m_BuffersMap[name], 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
@@ -146,7 +146,7 @@ void TDXBufferManager::UpdateDynamicConstantBuffer(std::string name, void* const
     context->Unmap(m_BuffersMap[name], 0);
 }
 
-void TDXBufferManager::UpdateDynamicVertexBuffer(std::string name, void* vertices, unsigned int numVertices, unsigned short vertexSize, ID3D11DeviceContext* context)
+void TDXBufferManager::UpdateDynamicVertexBuffer(std::string name, void* vertices, unsigned int numVertices, unsigned int vertexSize, ID3D11DeviceContext* context)
 {
     D3D11_MAPPED_SUBRESOURCE mappedResource = {};
     HRESULT hr = context->Map(m_BuffersMap[name], 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
@@ -186,12 +186,12 @@ void TDXBufferManager::BindIndexBuffer(std::string indexName, ID3D11DeviceContex
     context->IASetIndexBuffer(m_BuffersMap[indexName], DXGI_FORMAT_R32_UINT, 0u);
 }
 
-void TDXBufferManager::VBindConstantBuffer(std::string constantName, unsigned short slot, ID3D11DeviceContext* context)
+void TDXBufferManager::VBindConstantBuffer(std::string constantName, unsigned int slot, ID3D11DeviceContext* context)
 {
     context->VSSetConstantBuffers(slot, 1, &m_BuffersMap[constantName]);
 }
 
-void TDXBufferManager::PBindConstantBuffer(std::string constantName, unsigned short slot, ID3D11DeviceContext* context)
+void TDXBufferManager::PBindConstantBuffer(std::string constantName, unsigned int slot, ID3D11DeviceContext* context)
 {
     context->PSSetConstantBuffers(slot, 1, &m_BuffersMap[constantName]);
 }
