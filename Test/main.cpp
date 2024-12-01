@@ -253,7 +253,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int nCmdShow) {
 
     Light dirLight = {};
     dirLight.Type = 0;
-    dirLight.Direction = { -0.5f, -1.0f, -0.3f };
+    dirLight.Direction = { 0.4f, 0.8f, 0.5f };
     dirLight.Color = { 1.0f, 1.0f, 1.0f };
     dirLight.Intensity = 1.0f;
 
