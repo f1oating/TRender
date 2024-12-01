@@ -70,6 +70,8 @@ bool TDXRenderDevice::Initizialize(HWND hwnd, int width, int height)
     m_TDXTextureManager.CreateSampler("default", m_pDevice.Get(), m_pDeviceContext.Get());
     m_TDXTextureManager.BindSampler("default", m_pDeviceContext.Get());
 
+    m_TDXFeatureController.Initizialize(m_pDevice.Get());
+
     m_IsRunning = true;
 
     return true;
@@ -257,18 +259,18 @@ void TDXRenderDevice::DeleteBuffer(std::string name)
 
 void TDXRenderDevice::SetDepthStencilComparison(bool flag)
 {
-    m_TDXFeatureController.ChangeDepthStencilComparison(flag, m_pDevice.Get(), m_pDeviceContext.Get());
+    m_TDXFeatureController.ChangeDepthStencilComparison(flag, m_pDeviceContext.Get());
 
 }
 
 void TDXRenderDevice::SetRasterizerCulling(bool flag)
 {
-    m_TDXFeatureController.ChangeRasterizerCulling(flag, m_pDevice.Get(), m_pDeviceContext.Get());
+    m_TDXFeatureController.ChangeRasterizerCulling(flag, m_pDeviceContext.Get());
 }
 
 void TDXRenderDevice::SetBlendState(bool flag)
 {
-    m_TDXFeatureController.ChangeBlendState(flag, m_pDevice.Get(), m_pDeviceContext.Get());
+    m_TDXFeatureController.ChangeBlendState(flag, m_pDeviceContext.Get());
 }
 
 unsigned short TDXRenderDevice::AddLight(Light light)
