@@ -33,6 +33,7 @@ public:
 	virtual void SetWorldMatrix(const Eigen::Matrix4f& matrix) override;
 
 	virtual void AddTexture(std::string name, std::string path) override;
+	virtual void AddTexture(std::string name, unsigned int r, unsigned int g, unsigned int b, unsigned int a) override;
 	virtual void AddCubeMapTexture(std::string name, std::string path, std::string ext) override;
 	virtual void BindTexture(std::string name) override;
 

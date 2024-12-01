@@ -175,6 +175,11 @@ void TDXRenderDevice::AddTexture(std::string name, std::string path)
     m_TDXTextureManager.AddTexture(name, path, m_pDevice.Get());
 }
 
+void TDXRenderDevice::AddTexture(std::string name, unsigned int r, unsigned int g, unsigned int b, unsigned int a)
+{
+    m_TDXTextureManager.AddTexture(name, r, g, b, a, m_pDevice.Get());
+}
+
 void TDXRenderDevice::AddCubeMapTexture(std::string name, std::string path, std::string ext)
 {
     m_TDXTextureManager.AddCubeMapTexture(name, path, ext, m_pDevice.Get());
@@ -446,13 +451,9 @@ void TDXRenderDevice::AddShaders()
         SKYBOX_INPUT_LAYOUT, sizeof(SKYBOX_INPUT_LAYOUT) / sizeof(D3D11_INPUT_ELEMENT_DESC), m_pDevice.Get());
     m_TDXShaderManager.AddPixelShader(SKYBOX_SHADER, L"..\\TD3D\\CSO\\SkyboxPixelShader.cso", m_pDevice.Get());
 
-    m_TDXShaderManager.AddVertexShader(SPRITE_SHADER_TEXTURE, L"..\\TD3D\\CSO\\SpriteTextureVertexShader.cso",
-        SPRITE_TEXTURE_INPUT_LAYOUT, sizeof(SPRITE_TEXTURE_INPUT_LAYOUT) / sizeof(D3D11_INPUT_ELEMENT_DESC), m_pDevice.Get());
-    m_TDXShaderManager.AddPixelShader(SPRITE_SHADER_TEXTURE, L"..\\TD3D\\CSO\\SpriteTexturePixelShader.cso", m_pDevice.Get());
-
-    m_TDXShaderManager.AddVertexShader(SPRITE_SHADER_COLOR, L"..\\TD3D\\CSO\\SpriteColorVertexShader.cso",
-        SPRITE_COLOR_INPUT_LAYOUT, sizeof(SPRITE_COLOR_INPUT_LAYOUT) / sizeof(D3D11_INPUT_ELEMENT_DESC), m_pDevice.Get());
-    m_TDXShaderManager.AddPixelShader(SPRITE_SHADER_COLOR, L"..\\TD3D\\CSO\\SpriteColorPixelShader.cso", m_pDevice.Get());
+    m_TDXShaderManager.AddVertexShader(SPRITE_SHADER, L"..\\TD3D\\CSO\\SpriteVertexShader.cso",
+        SPRITE_INPUT_LAYOUT, sizeof(SPRITE_INPUT_LAYOUT) / sizeof(D3D11_INPUT_ELEMENT_DESC), m_pDevice.Get());
+    m_TDXShaderManager.AddPixelShader(SPRITE_SHADER, L"..\\TD3D\\CSO\\SpritePixelShader.cso", m_pDevice.Get());
 
     m_TDXShaderManager.AddVertexShader(LIGHT_SHADER, L"..\\TD3D\\CSO\\LightVertexShader.cso",
         SCREEN_QUAD_INPUT_LAYOUT, sizeof(SCREEN_QUAD_INPUT_LAYOUT) / sizeof(D3D11_INPUT_ELEMENT_DESC), m_pDevice.Get());

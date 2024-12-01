@@ -14,6 +14,7 @@ public:
 	void CreateSampler(std::string, ID3D11Device* device, ID3D11DeviceContext* context);
 
 	void AddTexture(std::string name, std::string path, ID3D11Device* device);
+	void AddTexture(std::string name, unsigned int r, unsigned int g, unsigned int b, unsigned int a, ID3D11Device* device);
 	void AddCubeMapTexture(std::string name, std::string path, std::string ext, ID3D11Device* device);
 
 	void BindTexture(std::string name, ID3D11DeviceContext* context);

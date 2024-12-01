@@ -91,6 +91,45 @@ void TDXTextureManager::AddTexture(std::string name, std::string path, ID3D11Dev
     m_TexturesMap[name] = pTextureView;
 }
 
+void TDXTextureManager::AddTexture(std::string name, unsigned int r, unsigned int g, unsigned int b, unsigned int a, ID3D11Device* device)
+{
+    unsigned int colorPixel = (a << 24) |
+        (b << 16) |
+        (g << 8) |
+        r;
+
+    D3D11_SUBRESOURCE_DATA initData = { &colorPixel, sizeof(unsigned int), 0 };
+
+    D3D11_TEXTURE2D_DESC texDesc = {};
+    texDesc.Width = texDesc.Height = 1;
+    texDesc.MipLevels = 1;
+    texDesc.ArraySize = 1;
+    texDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+    texDesc.Usage = D3D11_USAGE_IMMUTABLE;
+    texDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
+    texDesc.SampleDesc.Count = 1;
+    texDesc.SampleDesc.Quality = 0;
+
+    ID3D11Texture2D* colorTexture = nullptr;
+    HRESULT hr = device->CreateTexture2D(&texDesc, &initData, &colorTexture);
+    if (FAILED(hr))
+    {
+        throw std::runtime_error("Failed to create texture for color!");
+    }
+
+    ID3D11ShaderResourceView* colorSRV = nullptr;
+    hr = device->CreateShaderResourceView(colorTexture, nullptr, &colorSRV);
+    if (FAILED(hr))
+    {
+        colorTexture->Release();
+        throw std::runtime_error("Failed to create Shader Resource View for color!");
+    }
+
+    m_TexturesMap[name] = colorSRV;
+
+    colorTexture->Release();
+}
+
 void TDXTextureManager::AddCubeMapTexture(std::string name, std::string path, std::string ext, ID3D11Device* device)
 {
     int width, height, channels;

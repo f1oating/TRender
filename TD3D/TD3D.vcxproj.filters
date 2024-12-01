@@ -24,17 +24,12 @@
     <FxCompile Include="Shaders\GeometryVertexShader.hlsl" />
     <FxCompile Include="Shaders\SkyboxVertexShader.hlsl" />
     <FxCompile Include="Shaders\SkyboxPixelShader.hlsl" />
-    <FxCompile Include="Shaders\SpriteTextureVertexShader.hlsl" />
-    <FxCompile Include="Shaders\SpriteTexturePixelShader.hlsl" />
-    <FxCompile Include="Shaders\SpriteColorVertexShader.hlsl" />
-    <FxCompile Include="Shaders\SpriteColorPixelShader.hlsl" />
+    <FxCompile Include="Shaders\SpriteVertexShader.hlsl" />
+    <FxCompile Include="Shaders\SpritePixelShader.hlsl" />
     <FxCompile Include="Shaders\LightVertexShader.hlsl" />
     <FxCompile Include="Shaders\LightPixelShader.hlsl" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="T.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="TDXRenderDevice.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -51,6 +46,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="TDXBufferManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="T.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

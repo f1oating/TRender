@@ -4,9 +4,8 @@
 #include <string>
 
 constexpr const char* SKYBOX_SHADER = "SKYBOX";
-constexpr const char* SPRITE_SHADER_TEXTURE = "SPRITE_TEXTURE";
-constexpr const char* SPRITE_SHADER_COLOR = "SPRITE_COLOR";
-constexpr const char* GEOMETRY_SHADER = "GEOMETRY_SHADER";
+constexpr const char* SPRITE_SHADER = "SPRITE";
+constexpr const char* GEOMETRY_SHADER = "GEOMETRY";
 constexpr const char* LIGHT_SHADER = "LIGHT";
 
 struct TVector4
@@ -36,16 +35,10 @@ struct TVertexScreenQuad
 	TVector2 tex;
 };
 
-struct TVertexSpriteTexture
+struct TVertexSprite
 {
 	TVector2 pos;
 	TVector2 tex;
-};
-
-struct TVertexSpriteColor
-{
-	TVector2 pos;
-	TVector4 color;
 };
 
 struct TVertexGeometry
