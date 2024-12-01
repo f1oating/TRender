@@ -84,7 +84,6 @@ private:
 	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_pGBufferSRV[3];
 
 	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_pLightsShaderResource;
-	Microsoft::WRL::ComPtr<ID3D11Buffer> m_pLightsBuffer;
 
 	DirectX::XMMATRIX m_ViewMatrix;
 	DirectX::XMMATRIX m_ProjectionMatrix;

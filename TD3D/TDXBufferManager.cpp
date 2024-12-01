@@ -108,6 +108,26 @@ void TDXBufferManager::CreateDynamicIndexBuffer(std::string name, unsigned int* 
     m_BuffersMap[name] = buffer;
 }
 
+void TDXBufferManager::CreateDynamicStructuredBuffer(std::string name, unsigned int structSize, unsigned int structCount, ID3D11Device* device)
+{
+    ID3D11Buffer* buffer;
+
+    D3D11_BUFFER_DESC bd = {};
+    bd.Usage = D3D11_USAGE_DYNAMIC;
+    bd.ByteWidth = structSize * structCount;
+    bd.BindFlags = D3D11_BIND_SHADER_RESOURCE;
+    bd.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+    bd.MiscFlags = D3D11_RESOURCE_MISC_BUFFER_STRUCTURED;
+    bd.StructureByteStride = structSize;
+
+    HRESULT hr = device->CreateBuffer(&bd, nullptr, &buffer);
+    if (FAILED(hr)) {
+        throw std::runtime_error("Failed to create Structured Buffer " + name);
+    }
+
+    m_BuffersMap[name] = buffer;
+}
+
 void TDXBufferManager::UpdateStaticVertexBuffer(std::string name, void* vertices, ID3D11DeviceContext* context)
 {
     context->UpdateSubresource(m_BuffersMap[name], 0, nullptr, vertices, 0, 0);
@@ -146,6 +166,16 @@ void TDXBufferManager::UpdateDynamicIndexBuffer(std::string name, unsigned int* 
     }
 }
 
+void TDXBufferManager::UpdateDynamicStructuredBuffer(std::string name, void* structuredBufferStruct, unsigned int structSize, unsigned int structCount, ID3D11DeviceContext* context)
+{
+    D3D11_MAPPED_SUBRESOURCE mappedResource = {};
+    HRESULT hr = context->Map(m_BuffersMap[name], 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
+    if (SUCCEEDED(hr)) {
+        memcpy(mappedResource.pData, structuredBufferStruct, structSize * structCount);
+        context->Unmap(m_BuffersMap[name], 0);
+    }
+}
+
 void TDXBufferManager::BindVertexBuffer(std::string vertexName, UINT stride, UINT offset, ID3D11DeviceContext* context)
 {
     context->IASetVertexBuffers(0, 1u, &m_BuffersMap[vertexName], &stride, &offset);
@@ -164,6 +194,11 @@ void TDXBufferManager::VBindConstantBuffer(std::string constantName, unsigned sh
 void TDXBufferManager::PBindConstantBuffer(std::string constantName, unsigned short slot, ID3D11DeviceContext* context)
 {
     context->PSSetConstantBuffers(slot, 1, &m_BuffersMap[constantName]);
+}
+
+ID3D11Buffer* TDXBufferManager::GetBuffer(std::string name)
+{
+    return m_BuffersMap[name];
 }
 
 void TDXBufferManager::DeleteBuffer(std::string name)

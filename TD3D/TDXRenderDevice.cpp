@@ -423,22 +423,14 @@ void TDXRenderDevice::CreateBuffers()
     m_TDXBufferManager.CreateStaticVertexBuffer(SREEN_QUAD_STATIC_BUFFER, fullscreenQuadVertices, sizeof(fullscreenQuadVertices) / sizeof(TVertexScreenQuad),
         sizeof(TVertexScreenQuad), m_pDevice.Get());
 
-    D3D11_BUFFER_DESC bufferDesc = {};
-    bufferDesc.Usage = D3D11_USAGE_DYNAMIC;
-    bufferDesc.ByteWidth = sizeof(Light) * 120;
-    bufferDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
-    bufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-    bufferDesc.MiscFlags = D3D11_RESOURCE_MISC_BUFFER_STRUCTURED;
-    bufferDesc.StructureByteStride = sizeof(Light);
-
-    m_pDevice->CreateBuffer(&bufferDesc, nullptr, m_pLightsBuffer.GetAddressOf());
+    m_TDXBufferManager.CreateDynamicStructuredBuffer(LIGHTS_STRUCTURED_BUFFER, sizeof(Light), 120, m_pDevice.Get());
 
     D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
     srvDesc.Format = DXGI_FORMAT_UNKNOWN;
     srvDesc.ViewDimension = D3D11_SRV_DIMENSION_BUFFER;
     srvDesc.Buffer.FirstElement = 0;
     srvDesc.Buffer.NumElements = 120;
-    m_pDevice->CreateShaderResourceView(m_pLightsBuffer.Get(), &srvDesc, m_pLightsShaderResource.GetAddressOf());
+    m_pDevice->CreateShaderResourceView(m_TDXBufferManager.GetBuffer(LIGHTS_STRUCTURED_BUFFER), &srvDesc, m_pLightsShaderResource.GetAddressOf());
 }
 
 void TDXRenderDevice::AddShaders()
@@ -462,12 +454,7 @@ void TDXRenderDevice::AddShaders()
 
 void TDXRenderDevice::UpdateLights()
 {
-    D3D11_MAPPED_SUBRESOURCE mappedResource = {};
-    HRESULT hr = m_pDeviceContext->Map(m_pLightsBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
-    if (SUCCEEDED(hr)) {
-        memcpy(mappedResource.pData, m_Lights.data(), sizeof(Light) * m_Lights.size());
-        m_pDeviceContext->Unmap(m_pLightsBuffer.Get(), 0);
-    }
+    m_TDXBufferManager.UpdateDynamicStructuredBuffer(LIGHTS_STRUCTURED_BUFFER, m_Lights.data(), sizeof(Light), m_Lights.size(), m_pDeviceContext.Get());
 
     LightCountCBS lightCBS = {};
     lightCBS.LightCount = m_Lights.size();
