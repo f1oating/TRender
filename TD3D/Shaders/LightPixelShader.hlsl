@@ -9,7 +9,7 @@ struct Light
     float SpotAngle;
 };
 
-StructuredBuffer<Light> Lights : register(t3);
+StructuredBuffer<Light> Lights : register(t4);
 cbuffer LightInfo : register(b0)
 {
     int LightCount;

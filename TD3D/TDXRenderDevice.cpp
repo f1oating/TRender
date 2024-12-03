@@ -63,6 +63,7 @@ bool TDXRenderDevice::Initizialize(HWND hwnd, int width, int height)
     CreateBuffers();
     OnResize(width, height);
     AddShaders();
+    SetBlendState(true);
 
     m_pSpriteBatch = std::make_unique<DirectX::SpriteBatch>(m_pDeviceContext.Get());
     m_pSpriteFont = std::make_unique<DirectX::SpriteFont>(m_pDevice.Get(), L"Fonts\\comic_sans_ms_16.spritefont");
@@ -83,14 +84,17 @@ void TDXRenderDevice::BeginFrame(float r, float g, float b, float a) {
     for (int i = 0; i < 3; ++i) {
         m_pDeviceContext->ClearRenderTargetView(m_pGBufferRTV[i].Get(), clearColor);
     }
+    float transperentColor[] = { 0.0f, 0.0f, 0.0f, 0.0f };
+    m_pDeviceContext->ClearRenderTargetView(m_pGBufferRTV[3].Get(), transperentColor);
+
     m_pDeviceContext->ClearDepthStencilView(m_pDepthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
-    m_pDeviceContext->OMSetRenderTargets(3, m_pGBufferRTV[0].GetAddressOf(), m_pDepthStencilView.Get());
+    m_pDeviceContext->OMSetRenderTargets(4, m_pGBufferRTV[0].GetAddressOf(), m_pDepthStencilView.Get());
 }
 
 void TDXRenderDevice::EndFrame() {
     m_pDeviceContext->OMSetRenderTargets(1, m_pRenderTargetView.GetAddressOf(), nullptr);
-    m_pDeviceContext->PSSetShaderResources(0, 3, m_pGBufferSRV[0].GetAddressOf());
-    m_pDeviceContext->PSSetShaderResources(3, 1, m_pLightsShaderResource.GetAddressOf());
+    m_pDeviceContext->PSSetShaderResources(0, 4, m_pGBufferSRV[0].GetAddressOf());
+    m_pDeviceContext->PSSetShaderResources(4, 1, m_pLightsShaderResource.GetAddressOf());
 
     BindVertexShader(LIGHT_SHADER);
     BindPixelShader(LIGHT_SHADER);
@@ -98,8 +102,12 @@ void TDXRenderDevice::EndFrame() {
     BindVertexBuffer(SREEN_QUAD_STATIC_BUFFER, sizeof(TVertexScreenQuad), 0);
     m_pDeviceContext->Draw(6, 0);
 
-    ID3D11ShaderResourceView* nullSRV[4] = { nullptr, nullptr, nullptr, nullptr };
-    m_pDeviceContext->PSSetShaderResources(0, 4, nullSRV);
+    BindVertexShader(PLANE_SHADER);
+    BindPixelShader(PLANE_SHADER);
+    m_pDeviceContext->Draw(6, 0);
+
+    ID3D11ShaderResourceView* nullSRV[5] = { nullptr, nullptr, nullptr, nullptr, nullptr };
+    m_pDeviceContext->PSSetShaderResources(0, 5, nullSRV);
 
     m_pSwapChain->Present(1, 0);
 }
@@ -303,7 +311,7 @@ bool TDXRenderDevice::OnResize(int width, int height)
     m_pDepthStencilBuffer.Reset();
     m_pDepthStencilView.Reset();
 
-    for (int i = 0; i < 3; ++i) {
+    for (int i = 0; i < 4; ++i) {
         m_pGBuffer[i].Reset();
         m_pGBufferRTV[i].Reset();
         m_pGBufferSRV[i].Reset();
@@ -319,7 +327,7 @@ bool TDXRenderDevice::OnResize(int width, int height)
     gBufferDesc.Usage = D3D11_USAGE_DEFAULT;
     gBufferDesc.BindFlags = D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE;
 
-    for (int i = 0; i < 3; ++i) {
+    for (int i = 0; i < 4; ++i) {
         HRESULT hr = m_pDevice->CreateTexture2D(&gBufferDesc, nullptr, &m_pGBuffer[i]);
         if (FAILED(hr)) {
             throw std::runtime_error("Failed to create G-Buffer texture.");
@@ -453,6 +461,10 @@ void TDXRenderDevice::AddShaders()
     m_TDXShaderManager.AddVertexShader(LIGHT_SHADER, L"..\\TD3D\\CSO\\LightVertexShader.cso",
         SCREEN_QUAD_INPUT_LAYOUT, sizeof(SCREEN_QUAD_INPUT_LAYOUT) / sizeof(D3D11_INPUT_ELEMENT_DESC), m_pDevice.Get());
     m_TDXShaderManager.AddPixelShader(LIGHT_SHADER, L"..\\TD3D\\CSO\\LightPixelShader.cso", m_pDevice.Get());
+
+    m_TDXShaderManager.AddVertexShader(PLANE_SHADER, L"..\\TD3D\\CSO\\PlaneVertexShader.cso",
+        SCREEN_QUAD_INPUT_LAYOUT, sizeof(SCREEN_QUAD_INPUT_LAYOUT) / sizeof(D3D11_INPUT_ELEMENT_DESC), m_pDevice.Get());
+    m_TDXShaderManager.AddPixelShader(PLANE_SHADER, L"..\\TD3D\\CSO\\PlanePixelShader.cso", m_pDevice.Get());
 }
 
 void TDXRenderDevice::UpdateLights()

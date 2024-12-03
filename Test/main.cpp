@@ -273,13 +273,13 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int nCmdShow) {
     spotLight.Range = 150.0f;
     spotLight.SpotAngle = 30.0f;
 
-    renderDevice->AddLight(dirLight);
+    //renderDevice->AddLight(dirLight);
     //renderDevice->AddLight(pointLight);
     //renderDevice->AddLight(spotLight);
     renderDevice->SetAmbientLight(0.3f, 0.3f, 0.3f);
 
     renderDevice->AddTexture("crate", "Textures/crate.jpg");
-    renderDevice->AddTexture("white", 255, 255, 255, 120);
+    renderDevice->AddTexture("white", 120, 120, 120, 255);
     renderDevice->AddCubeMapTexture("skybox", "Textures/Skybox/Weltraum", ".png");
 
     renderDevice->CreateStaticVertexBuffer("VertexBufferGeometry", vertices, numVertices, sizeof(TVertexGeometry));
@@ -380,8 +380,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int nCmdShow) {
 
             renderDevice->RenderText(fpsText.c_str(), 0, 0);
 
-            renderDevice->SetBlendState(true);
-
             renderDevice->BindVertexShader(SPRITE_SHADER);
             renderDevice->BindPixelShader(SPRITE_SHADER);
 
@@ -389,8 +387,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int nCmdShow) {
             renderDevice->BindVertexBuffer("VertexBufferSprite", sizeof(TVertexSprite), 0);
 
             renderDevice->DrawSprite(6, 0);
-
-            renderDevice->SetBlendState(false);
 
             renderDevice->EndFrame();
         }
