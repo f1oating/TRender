@@ -25,6 +25,8 @@ public:
 	virtual void SetWorldMatrix(const Eigen::Matrix4f& matrix) = 0;
 
 	virtual void AddTexture(std::string name, std::string path) = 0;
+	virtual void AddTexture(std::string name, unsigned char* data, int width, int height) = 0;
+	virtual void AddTexture(std::string name, unsigned char* data, size_t dataSize) = 0;
 	virtual void AddTexture(std::string name, unsigned int r, unsigned int g, unsigned int b, unsigned int a) = 0;
 	virtual void AddCubeMapTexture(std::string name, std::string path, std::string ext) = 0;
 	virtual void BindTexture(std::string name) = 0;

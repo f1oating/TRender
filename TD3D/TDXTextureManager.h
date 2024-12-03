@@ -14,6 +14,8 @@ public:
 	void CreateSampler(std::string, ID3D11Device* device, ID3D11DeviceContext* context);
 
 	void AddTexture(std::string name, std::string path, ID3D11Device* device);
+	void AddTexture(std::string name, unsigned char* data, int width, int height, ID3D11Device* device);
+	void AddTexture(std::string name, unsigned char* data, size_t dataSize, ID3D11Device* device);
 	void AddTexture(std::string name, unsigned int r, unsigned int g, unsigned int b, unsigned int a, ID3D11Device* device);
 	void AddCubeMapTexture(std::string name, std::string path, std::string ext, ID3D11Device* device);
 
@@ -23,6 +25,7 @@ public:
 	void DeleteTexture(std::string name);
 
 private:
+	ID3D11Texture2D* CreateTextureFromData(ID3D11Device* device, unsigned char* data, int width, int height);
 	unsigned char* LoadCubeMapTextureData(const std::string& filename, int& width, int& height, int& channels);
 
 	std::unordered_map<std::string, ID3D11SamplerState*> m_SamplersMap;

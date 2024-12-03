@@ -60,29 +60,46 @@ void TDXTextureManager::AddTexture(std::string name, std::string path, ID3D11Dev
         throw std::runtime_error("Failed to load texture!");
     }
 
-    D3D11_TEXTURE2D_DESC textureDesc = {};
-    textureDesc.Width = width;
-    textureDesc.Height = height;
-    textureDesc.MipLevels = 1;
-    textureDesc.ArraySize = 1;
-    textureDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
-    textureDesc.SampleDesc.Count = 1;
-    textureDesc.Usage = D3D11_USAGE_DEFAULT;
-    textureDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
-
-    D3D11_SUBRESOURCE_DATA initData = {};
-    initData.pSysMem = imageData;
-    initData.SysMemPitch = width * 4;
-
-    ID3D11Texture2D* pTexture = nullptr;
-    HRESULT hr = device->CreateTexture2D(&textureDesc, &initData, &pTexture);
-    if (FAILED(hr)) {
-        stbi_image_free(imageData);
-        throw std::runtime_error("Failed to create texture!");
-    }
+    ID3D11Texture2D* pTexture = CreateTextureFromData(device, imageData, width, height);
+    stbi_image_free(imageData);
 
     ID3D11ShaderResourceView* pTextureView = nullptr;
-    hr = device->CreateShaderResourceView(pTexture, nullptr, &pTextureView);
+    HRESULT hr = device->CreateShaderResourceView(pTexture, nullptr, &pTextureView);
+    if (FAILED(hr)) {
+        pTexture->Release();
+        throw std::runtime_error("Failed to create shader resource view!");
+    }
+
+    m_TexturesMap[name] = pTextureView;
+}
+
+void TDXTextureManager::AddTexture(std::string name, unsigned char* data, int width, int height, ID3D11Device* device)
+{
+    ID3D11Texture2D* pTexture = CreateTextureFromData(device, data, width, height);
+    ID3D11ShaderResourceView* pTextureView = nullptr;
+    HRESULT hr = device->CreateShaderResourceView(pTexture, nullptr, &pTextureView);
+    if (FAILED(hr)) {
+        pTexture->Release();
+        throw std::runtime_error("Failed to create shader resource view!");
+    }
+
+    m_TexturesMap[name] = pTextureView;
+}
+
+void TDXTextureManager::AddTexture(std::string name, unsigned char* data, size_t dataSize, ID3D11Device* device)
+{
+    int width, height, channels;
+    unsigned char* imageData = stbi_load_from_memory(data, dataSize, &width, &height, &channels, 4);
+
+    if (!imageData) {
+        return;
+    }
+
+    ID3D11Texture2D* pTexture = CreateTextureFromData(device, imageData, width, height);
+    stbi_image_free(imageData);
+
+    ID3D11ShaderResourceView* pTextureView = nullptr;
+    HRESULT hr = device->CreateShaderResourceView(pTexture, nullptr, &pTextureView);
     if (FAILED(hr)) {
         pTexture->Release();
         throw std::runtime_error("Failed to create shader resource view!");
@@ -195,6 +212,31 @@ void TDXTextureManager::DeleteTexture(std::string name)
         delete m_TexturesMap[name];
         m_TexturesMap.erase(name);
     }
+}
+
+ID3D11Texture2D* TDXTextureManager::CreateTextureFromData(ID3D11Device* device, unsigned char* data, int width, int height)
+{
+    D3D11_TEXTURE2D_DESC textureDesc = {};
+    textureDesc.Width = width;
+    textureDesc.Height = height;
+    textureDesc.MipLevels = 1;
+    textureDesc.ArraySize = 1;
+    textureDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+    textureDesc.SampleDesc.Count = 1;
+    textureDesc.Usage = D3D11_USAGE_DEFAULT;
+    textureDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
+
+    D3D11_SUBRESOURCE_DATA initData = {};
+    initData.pSysMem = data;
+    initData.SysMemPitch = width * 4;
+
+    ID3D11Texture2D* texture = nullptr;
+    HRESULT hr = device->CreateTexture2D(&textureDesc, &initData, &texture);
+    if (FAILED(hr)) {
+        return nullptr;
+    }
+
+    return texture;
 }
 
 unsigned char* TDXTextureManager::LoadCubeMapTextureData(const std::string& filename, int& width, int& height, int& channels)

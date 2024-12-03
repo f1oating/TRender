@@ -185,6 +185,16 @@ void TDXRenderDevice::AddTexture(std::string name, std::string path)
     m_TDXTextureManager.AddTexture(name, path, m_pDevice.Get());
 }
 
+void TDXRenderDevice::AddTexture(std::string name, unsigned char* data, int width, int height)
+{
+    m_TDXTextureManager.AddTexture(name, data, width, height, m_pDevice.Get());
+}
+
+void TDXRenderDevice::AddTexture(std::string name, unsigned char* data, size_t dataSize)
+{
+    m_TDXTextureManager.AddTexture(name, data, dataSize, m_pDevice.Get());
+}
+
 void TDXRenderDevice::AddTexture(std::string name, unsigned int r, unsigned int g, unsigned int b, unsigned int a)
 {
     m_TDXTextureManager.AddTexture(name, r, g, b, a, m_pDevice.Get());

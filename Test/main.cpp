@@ -19,7 +19,7 @@ TestTimer fpsTimer;
 int frameCount = 0;
 std::wstring fpsText;
 
-bool ImportModel(const std::string& filePath, TVertexGeometry*& vertices, unsigned int*& indices, unsigned int& numVertices, unsigned int& numIndices)
+bool ImportModel(const std::string& name, const std::string& filePath, TVertexGeometry*& vertices, unsigned int*& indices, unsigned int& numVertices, unsigned int& numIndices)
 {
     Assimp::Importer importer;
 
@@ -60,6 +60,24 @@ bool ImportModel(const std::string& filePath, TVertexGeometry*& vertices, unsign
         aiFace& face = mesh->mFaces[i];
         for (unsigned int j = 0; j < face.mNumIndices; ++j) {
             indices[index++] = face.mIndices[j];
+        }
+    }
+
+    if (!(scene->mTextures == nullptr || scene->mNumTextures == 0)) {
+        aiTexture* texture = scene->mTextures[0];
+
+        if (texture->mHeight == 0) {
+            unsigned char* compressedData = reinterpret_cast<unsigned char*>(texture->pcData);
+            size_t dataSize = texture->mWidth;
+
+            renderDevice->AddTexture(name, compressedData, dataSize);
+        }
+        else {
+            unsigned char* rawData = reinterpret_cast<unsigned char*>(texture->pcData);
+            int width = texture->mWidth;
+            int height = texture->mHeight;
+
+            renderDevice->AddTexture(name, rawData, width, height);
         }
     }
 
@@ -189,8 +207,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int nCmdShow) {
     unsigned int numTerrainVert = 0;
     unsigned int numTerrainInd = 0;
 
-    ImportModel("Models/model.fbx", vertices, indices, numVertices, numIndices);
-    ImportModel("Models/terrain.fbx", terrainVert, terrainInd, numTerrainVert, numTerrainInd);
+    ImportModel("model", "Models/model.fbx", vertices, indices, numVertices, numIndices);
+    ImportModel("terrain", "Models/terrain.fbx", terrainVert, terrainInd, numTerrainVert, numTerrainInd);
 
     TVertexSkybox verticesSkybox[] = {
     {{-1.0f, -1.0f,  1.0f}, {-1.0f, -1.0f,  1.0f}},
@@ -357,6 +375,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int nCmdShow) {
             renderDevice->SetWorldMatrix(rotationFix);
 
             renderDevice->Draw(numIndices, 0, 0);
+
+            renderDevice->BindTexture("crate");
 
             renderDevice->BindVertexBuffer("VertexBufferGeometryTerrain", sizeof(TVertexGeometry), 0);
             renderDevice->BindIndexBuffer("IndexBufferGeometryTerrain");
