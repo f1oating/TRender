@@ -34,6 +34,11 @@ public:
 
 	virtual void BindVertexShader(std::string name) = 0;
 	virtual void BindPixelShader(std::string name) = 0;
+	virtual void BindGeometryShader(std::string name) = 0;
+
+	virtual void UnbindVertexShader(std::string name) = 0;
+	virtual void UnbindPixelShader(std::string name) = 0;
+	virtual void UnbindGeometryShader(std::string name) = 0;
 
 	virtual void CreateStaticVertexBuffer(std::string name, void* vertices, unsigned int numVertices, unsigned int vertexSize) = 0;
 	virtual void CreateStaticIndexBuffer(std::string name, unsigned int* indices, unsigned int numIndices) = 0;

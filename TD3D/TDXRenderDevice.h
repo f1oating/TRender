@@ -41,6 +41,11 @@ public:
 
 	virtual void BindVertexShader(std::string name) override;
 	virtual void BindPixelShader(std::string name) override;
+	virtual void BindGeometryShader(std::string name) override;
+
+	virtual void UnbindVertexShader(std::string name) override;
+	virtual void UnbindPixelShader(std::string name) override;
+	virtual void UnbindGeometryShader(std::string name) override;
 
 	virtual void CreateStaticVertexBuffer(std::string name, void* vertices, unsigned int numVertices, unsigned int vertexSize) override;
 	virtual void CreateStaticIndexBuffer(std::string name, unsigned int* indices, unsigned int numIndices) override;

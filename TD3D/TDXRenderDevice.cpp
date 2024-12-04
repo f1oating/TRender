@@ -222,6 +222,26 @@ void TDXRenderDevice::BindPixelShader(std::string name)
     m_TDXShaderManager.BindPixelShader(name, m_pDeviceContext.Get());
 }
 
+void TDXRenderDevice::BindGeometryShader(std::string name)
+{
+    m_TDXShaderManager.BindGeometryShader(name, m_pDeviceContext.Get());
+}
+
+void TDXRenderDevice::UnbindVertexShader(std::string name)
+{
+    m_TDXShaderManager.UnbindVertexShader(name, m_pDeviceContext.Get());
+}
+
+void TDXRenderDevice::UnbindPixelShader(std::string name)
+{
+    m_TDXShaderManager.UnbindPixelShader(name, m_pDeviceContext.Get());
+}
+
+void TDXRenderDevice::UnbindGeometryShader(std::string name)
+{
+    m_TDXShaderManager.UnbindGeometryShader(name, m_pDeviceContext.Get());
+}
+
 void TDXRenderDevice::CreateStaticVertexBuffer(std::string name, void* vertices, unsigned int numVertices, unsigned int vertexSize)
 {
     m_TDXBufferManager.CreateStaticVertexBuffer(name, vertices, numVertices, vertexSize, m_pDevice.Get());
