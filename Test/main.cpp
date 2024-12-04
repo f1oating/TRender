@@ -383,6 +383,12 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int nCmdShow) {
 
             renderDevice->SetWorldMatrix(transformation);
 
+            renderDevice->BindGeometryShader(NORMAL_SHADER);
+
+            renderDevice->Draw(numTerrainInd, 0, 0);
+
+            renderDevice->UnbindGeometryShader(NORMAL_SHADER);
+
             renderDevice->Draw(numTerrainInd, 0, 0);
 
             renderDevice->SetWorldMatrix(Eigen::Matrix4f::Identity());
