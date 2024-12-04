@@ -3,6 +3,7 @@
 
 #include <windows.h>
 #include <string>
+#include <vector>
 #include "T.h" 
 #include "Eigen/Dense"
 
@@ -52,10 +53,8 @@ public:
 	virtual void SetRasterizerCulling(bool flag) = 0;
 	virtual void SetBlendState(bool flag) = 0;
 
-	virtual unsigned short AddLight(Light light) = 0;
+	virtual void SetLights(std::vector<Light>& lights) = 0;
 	virtual void SetAmbientLight(float r, float g, float b) = 0;
-	virtual void RemoveLight(int index) = 0;
-	virtual void FlushLights() = 0;
 
 	virtual bool OnResize(int width, int height) = 0;
 	virtual bool IsRunning() = 0;

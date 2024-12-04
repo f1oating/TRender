@@ -288,10 +288,13 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int nCmdShow) {
     spotLight.Range = 150.0f;
     spotLight.SpotAngle = 30.0f;
 
-    //renderDevice->AddLight(dirLight);
-    //renderDevice->AddLight(pointLight);
-    //renderDevice->AddLight(spotLight);
+    std::vector<Light> lights;
+    lights.push_back(dirLight);
+    //lights.push_back(pointLight);
+    //lights.push_back(spotLight);
+
     renderDevice->SetAmbientLight(0.3f, 0.3f, 0.3f);
+    renderDevice->SetLights(lights);
 
     renderDevice->AddTexture("crate", "Textures/crate.jpg");
     renderDevice->AddTexture("white", 120, 120, 120, 255);

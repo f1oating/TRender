@@ -293,11 +293,14 @@ void TDXRenderDevice::SetBlendState(bool flag)
     m_TDXFeatureController.ChangeBlendState(flag, m_pDeviceContext.Get());
 }
 
-unsigned short TDXRenderDevice::AddLight(Light light)
+void TDXRenderDevice::SetLights(std::vector<Light>& lights)
 {
-    m_Lights.push_back(light);
-    UpdateLights();
-    return m_Lights.size() - 1;
+    m_TDXBufferManager.UpdateDynamicStructuredBuffer(LIGHTS_STRUCTURED_BUFFER, lights.data(), sizeof(Light), lights.size(), m_pDeviceContext.Get());
+
+    LightCountCBS lightCBS = {};
+    lightCBS.LightCount = lights.size();
+
+    m_TDXBufferManager.UpdateDynamicConstantBuffer(LIGHT_COUNT_CONSTANT_BUFFER, &lightCBS, sizeof(LightCountCBS), m_pDeviceContext.Get());
 }
 
 void TDXRenderDevice::SetAmbientLight(float r, float g, float b)
@@ -305,16 +308,6 @@ void TDXRenderDevice::SetAmbientLight(float r, float g, float b)
     AmbientLightCBS ambient = { r, g, b };
 
     m_TDXBufferManager.UpdateDynamicConstantBuffer(AMBIENT_LIGHT_COUNT_CONSTANT_BUFFER, &ambient, sizeof(AmbientLightCBS), m_pDeviceContext.Get());
-}
-
-void TDXRenderDevice::RemoveLight(int index)
-{
-    m_Lights.erase(m_Lights.begin() + index);
-}
-
-void TDXRenderDevice::FlushLights()
-{
-    m_Lights.clear();
 }
 
 bool TDXRenderDevice::OnResize(int width, int height)
@@ -474,16 +467,6 @@ void TDXRenderDevice::AddShaders()
     m_TDXShaderManager.AddVertexShader(PLANE_SHADER, L"..\\TD3D\\CSO\\PlaneVertexShader.cso",
         SCREEN_QUAD_INPUT_LAYOUT, sizeof(SCREEN_QUAD_INPUT_LAYOUT) / sizeof(D3D11_INPUT_ELEMENT_DESC), m_pDevice.Get());
     m_TDXShaderManager.AddPixelShader(PLANE_SHADER, L"..\\TD3D\\CSO\\PlanePixelShader.cso", m_pDevice.Get());
-}
-
-void TDXRenderDevice::UpdateLights()
-{
-    m_TDXBufferManager.UpdateDynamicStructuredBuffer(LIGHTS_STRUCTURED_BUFFER, m_Lights.data(), sizeof(Light), m_Lights.size(), m_pDeviceContext.Get());
-
-    LightCountCBS lightCBS = {};
-    lightCBS.LightCount = m_Lights.size();
-
-    m_TDXBufferManager.UpdateDynamicConstantBuffer(LIGHT_COUNT_CONSTANT_BUFFER, &lightCBS, sizeof(LightCountCBS), m_pDeviceContext.Get());
 }
 
 HRESULT CreateRenderDevice(TDXRenderDevice** pDevice) {

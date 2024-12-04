@@ -60,18 +60,14 @@ public:
 	virtual void SetRasterizerCulling(bool flag) override;
 	virtual void SetBlendState(bool flag) override;
 
-	virtual unsigned short AddLight(Light light) override;
+	virtual void SetLights(std::vector<Light>& lights) override;
 	virtual void SetAmbientLight(float r, float g, float b) override;
-	virtual void RemoveLight(int index) override;
-	virtual void FlushLights() override;
 
 	virtual bool OnResize(int width, int height) override;
 	virtual bool IsRunning() override;
 
 	void CreateBuffers();
 	void AddShaders();
-
-	void UpdateLights();
 
 private:
 	Microsoft::WRL::ComPtr<ID3D11Device> m_pDevice;
@@ -102,8 +98,6 @@ private:
 
 	std::unique_ptr<DirectX::SpriteBatch> m_pSpriteBatch;
 	std::unique_ptr<DirectX::SpriteFont> m_pSpriteFont;
-
-	std::vector<Light> m_Lights;
 
 };
 
