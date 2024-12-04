@@ -16,6 +16,10 @@ TDXShaderManager::~TDXShaderManager()
     {
         pair.second->Release();
     }
+    for (const std::pair<std::string, ID3D11GeometryShader*> pair : m_GeometryShadersMap)
+    {
+        pair.second->Release();
+    }
     for (const std::pair<std::string, ID3D11InputLayout*> pair : m_InputLayoutsMap)
     {
         pair.second->Release();
@@ -67,6 +71,20 @@ void TDXShaderManager::AddPixelShader(std::string name, LPCWSTR path, ID3D11Devi
     m_PixelShadersMap[name] = pixelShader;
 }
 
+void TDXShaderManager::AddGeometryShader(std::string name, LPCWSTR path, ID3D11Device* device)
+{
+    ID3D11GeometryShader* geometryShader;
+
+    D3DReadFileToBlob(path, &m_pBlob);
+    HRESULT hr = device->CreateGeometryShader(m_pBlob->GetBufferPointer(), m_pBlob->GetBufferSize(), nullptr, &geometryShader);
+
+    if (FAILED(hr)) {
+        throw std::runtime_error("Failed to create GeometryShader.");
+    }
+
+    m_GeometryShadersMap[name] = geometryShader;
+}
+
 void TDXShaderManager::BindVertexShader(std::string name, ID3D11DeviceContext* deviceContext)
 {
     deviceContext->VSSetShader(m_VertexShadersMap[name], nullptr, 0u);
@@ -78,6 +96,27 @@ void TDXShaderManager::BindPixelShader(std::string name, ID3D11DeviceContext* de
     deviceContext->PSSetShader(m_PixelShadersMap[name], nullptr, 0u);
 }
 
+void TDXShaderManager::BindGeometryShader(std::string name, ID3D11DeviceContext* deviceContext)
+{
+    deviceContext->GSSetShader(m_GeometryShadersMap[name], nullptr, 0u);
+}
+
+void TDXShaderManager::UnbindVertexShader(std::string name, ID3D11DeviceContext* deviceContext)
+{
+    deviceContext->VSSetShader(nullptr, nullptr, 0u);
+    deviceContext->IASetInputLayout(nullptr);
+}
+
+void TDXShaderManager::UnbindPixelShader(std::string name, ID3D11DeviceContext* deviceContext)
+{
+    deviceContext->PSSetShader(nullptr, nullptr, 0u);
+}
+
+void TDXShaderManager::UnbindGeometryShader(std::string name, ID3D11DeviceContext* deviceContext)
+{
+    deviceContext->GSSetShader(nullptr, nullptr, 0u);
+}
+
 ID3D11VertexShader* TDXShaderManager::GetVertexShader(std::string name)
 {
     return m_VertexShadersMap[name];
@@ -86,4 +125,9 @@ ID3D11VertexShader* TDXShaderManager::GetVertexShader(std::string name)
 ID3D11PixelShader* TDXShaderManager::GetPixelShader(std::string name)
 {
     return m_PixelShadersMap[name];
+}
+
+ID3D11GeometryShader* TDXShaderManager::GetGeometryShader(std::string name)
+{
+    return m_GeometryShadersMap[name];
 }
