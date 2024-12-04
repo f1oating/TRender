@@ -8,7 +8,6 @@ constexpr const char* SPRITE_SHADER = "SPRITE";
 constexpr const char* GEOMETRY_SHADER = "GEOMETRY";
 constexpr const char* LIGHT_SHADER = "LIGHT";
 constexpr const char* PLANE_SHADER = "PLANE";
-constexpr const char* NORMALS_SHADER = "NORMALS";
 
 struct TVector4
 {
