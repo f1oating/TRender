@@ -487,6 +487,8 @@ void TDXRenderDevice::AddShaders()
     m_TDXShaderManager.AddVertexShader(PLANE_SHADER, L"..\\TD3D\\CSO\\PlaneVertexShader.cso",
         SCREEN_QUAD_INPUT_LAYOUT, sizeof(SCREEN_QUAD_INPUT_LAYOUT) / sizeof(D3D11_INPUT_ELEMENT_DESC), m_pDevice.Get());
     m_TDXShaderManager.AddPixelShader(PLANE_SHADER, L"..\\TD3D\\CSO\\PlanePixelShader.cso", m_pDevice.Get());
+
+    m_TDXShaderManager.AddGeometryShader(NORMALS_SHADER, L"..\\TD3D\\CSO\\NormalsGeometryShader.cso", m_pDevice.Get());
 }
 
 HRESULT CreateRenderDevice(TDXRenderDevice** pDevice) {
