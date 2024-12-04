@@ -259,10 +259,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int nCmdShow) {
     TVertexSprite verticesSpriteTexture[] = {
         { { 1.0f, 0.90f }, { 1.0f, 1.0f } },
         { { 1.0f, 1.0f }, { 1.0f, 0.0f } },
-        { { 0.3f, 1.0f }, { 0.0f, 0.0f } },
-
-        { { 0.3f, 0.9f }, { 0.0f, 1.0f } },
-        { { 1.0f, 0.9f }, { 1.0f, 1.0f } },
+        { { 0.3f, 0.90f }, { 0.0f, 1.0f } },
         { { 0.3f, 1.0f }, { 0.0f, 0.0f } }
     };
 
@@ -406,7 +403,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int nCmdShow) {
             renderDevice->BindTexture("white");
             renderDevice->BindVertexBuffer("VertexBufferSprite", sizeof(TVertexSprite), 0);
 
-            renderDevice->DrawSprite(6, 0);
+            renderDevice->DrawSprite(4, 0);
 
             renderDevice->EndFrame();
         }

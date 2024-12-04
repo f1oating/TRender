@@ -96,15 +96,17 @@ void TDXRenderDevice::EndFrame() {
     m_pDeviceContext->PSSetShaderResources(0, 4, m_pGBufferSRV[0].GetAddressOf());
     m_pDeviceContext->PSSetShaderResources(4, 1, m_pLightsShaderResource.GetAddressOf());
 
+    m_pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
+
     BindVertexShader(LIGHT_SHADER);
     BindPixelShader(LIGHT_SHADER);
 
     BindVertexBuffer(SREEN_QUAD_STATIC_BUFFER, sizeof(TVertexScreenQuad), 0);
-    m_pDeviceContext->Draw(6, 0);
+    m_pDeviceContext->Draw(4, 0);
 
     BindVertexShader(PLANE_SHADER);
     BindPixelShader(PLANE_SHADER);
-    m_pDeviceContext->Draw(6, 0);
+    m_pDeviceContext->Draw(4, 0);
 
     ID3D11ShaderResourceView* nullSRV[5] = { nullptr, nullptr, nullptr, nullptr, nullptr };
     m_pDeviceContext->PSSetShaderResources(0, 5, nullSRV);
@@ -121,7 +123,7 @@ void TDXRenderDevice::Draw(unsigned int numIndices, unsigned int startIndexLocat
 
 void TDXRenderDevice::DrawSprite(unsigned int numVertices, unsigned int startVertexLocation)
 {
-    m_pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+    m_pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
 
     SetRasterizerCulling(false);
 
@@ -432,13 +434,10 @@ void TDXRenderDevice::CreateBuffers()
 
     TVertexScreenQuad fullscreenQuadVertices[] =
     {
+        { {-1.0f, -1.0f, 0.0f}, {0.0f, 1.0f} },
         { {-1.0f,  1.0f, 0.0f}, {0.0f, 0.0f} },
-        { {1.0f,  1.0f, 0.0f}, {1.0f, 0.0f} },
-        { {-1.0f, -1.0f, 0.0f}, {0.0f, 1.0f} },
-
-        { {-1.0f, -1.0f, 0.0f}, {0.0f, 1.0f} },
-        { {1.0f,  1.0f, 0.0f}, {1.0f, 0.0f} },
-        { {1.0f, -1.0f, 0.0f}, {1.0f, 1.0f} }
+        { { 1.0f, -1.0f, 0.0f}, {1.0f, 1.0f} },
+        { { 1.0f,  1.0f, 0.0f}, {1.0f, 0.0f} }
     };
 
     m_TDXBufferManager.CreateStaticVertexBuffer(SREEN_QUAD_STATIC_BUFFER, fullscreenQuadVertices, sizeof(fullscreenQuadVertices) / sizeof(TVertexScreenQuad),
