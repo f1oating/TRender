@@ -4,6 +4,7 @@
 #include <iostream>
 #include <chrono>
 #include "TRenderer.h"
+#include "T.h"
 #include "TInput.h"
 #include "TestCamera.h"
 #include "TestTimer.h"
@@ -381,12 +382,14 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int nCmdShow) {
 
             renderDevice->SetWorldMatrix(transformation);
 
+            /*
             renderDevice->BindGeometryShader(NORMAL_SHADER);
             renderDevice->BindTexture("white");
 
             renderDevice->Draw(numTerrainInd, 0, 0);
 
             renderDevice->UnbindGeometryShader(NORMAL_SHADER);
+            */
 
             renderDevice->BindTexture("crate");
             renderDevice->Draw(numTerrainInd, 0, 0);

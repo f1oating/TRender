@@ -14,6 +14,8 @@ PSOutput main(float4 pos : SV_POSITION, float3 direction : TEXCOORD) : SV_Target
     PSOutput output;
 
     output.Diffuse = myTexture.Sample(samplerState, normalize(direction));
+    output.Normal = 0;
+    output.Position = 0;
 
     return output;
 }

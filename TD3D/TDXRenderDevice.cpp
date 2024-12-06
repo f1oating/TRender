@@ -347,7 +347,7 @@ bool TDXRenderDevice::OnResize(int width, int height)
     gBufferDesc.Height = height;
     gBufferDesc.MipLevels = 1;
     gBufferDesc.ArraySize = 1;
-    gBufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+    gBufferDesc.Format = DXGI_FORMAT_R16G16B16A16_FLOAT;
     gBufferDesc.SampleDesc.Count = 1;
     gBufferDesc.Usage = D3D11_USAGE_DEFAULT;
     gBufferDesc.BindFlags = D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE;

@@ -73,7 +73,7 @@ struct PSInput
 float4 main(PSInput input) : SV_Target
 {
     float4 diffuse = DiffuseTexture.Sample(samplerState, input.TexCoord);
-    float3 normal = normalize(NormalTexture.Sample(samplerState, input.TexCoord).xyz * 2.0 - 1.0);
+    float3 normal = normalize(NormalTexture.Sample(samplerState, input.TexCoord).xyz);
     float3 worldPos = PositionTexture.Sample(samplerState, input.TexCoord).xyz;
 
     float3 finalColor = float3(1.0f, 1.0f, 1.0f);
