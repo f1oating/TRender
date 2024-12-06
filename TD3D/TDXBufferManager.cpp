@@ -196,6 +196,11 @@ void TDXBufferManager::PBindConstantBuffer(std::string constantName, unsigned in
     context->PSSetConstantBuffers(slot, 1, &m_BuffersMap[constantName]);
 }
 
+void TDXBufferManager::GBindConstantBuffer(std::string constantName, unsigned int slot, ID3D11DeviceContext* context)
+{
+    context->GSSetConstantBuffers(slot, 1, &m_BuffersMap[constantName]);
+}
+
 ID3D11Buffer* TDXBufferManager::GetBuffer(std::string name)
 {
     return m_BuffersMap[name];

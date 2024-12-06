@@ -376,19 +376,19 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int nCmdShow) {
 
             renderDevice->Draw(numIndices, 0, 0);
 
-            renderDevice->BindTexture("crate");
-
             renderDevice->BindVertexBuffer("VertexBufferGeometryTerrain", sizeof(TVertexGeometry), 0);
             renderDevice->BindIndexBuffer("IndexBufferGeometryTerrain");
 
             renderDevice->SetWorldMatrix(transformation);
 
             renderDevice->BindGeometryShader(NORMAL_SHADER);
+            renderDevice->BindTexture("white");
 
             renderDevice->Draw(numTerrainInd, 0, 0);
 
             renderDevice->UnbindGeometryShader(NORMAL_SHADER);
 
+            renderDevice->BindTexture("crate");
             renderDevice->Draw(numTerrainInd, 0, 0);
 
             renderDevice->SetWorldMatrix(Eigen::Matrix4f::Identity());

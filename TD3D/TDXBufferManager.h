@@ -28,6 +28,7 @@ public:
 	void BindIndexBuffer(std::string indexName, ID3D11DeviceContext* context);
 	void VBindConstantBuffer(std::string constantName, unsigned int slot, ID3D11DeviceContext* context);
 	void PBindConstantBuffer(std::string constantName, unsigned int slot, ID3D11DeviceContext* context);
+	void GBindConstantBuffer(std::string constantName, unsigned int slot, ID3D11DeviceContext* context);
 
 	ID3D11Buffer* GetBuffer(std::string name);
 
