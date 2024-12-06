@@ -327,7 +327,14 @@ void TDXRenderDevice::SetAmbientLight(float r, float g, float b)
 {
     AmbientLightCBS ambient = { r, g, b };
 
-    m_TDXBufferManager.UpdateDynamicConstantBuffer(AMBIENT_LIGHT_COUNT_CONSTANT_BUFFER, &ambient, sizeof(AmbientLightCBS), m_pDeviceContext.Get());
+    m_TDXBufferManager.UpdateDynamicConstantBuffer(AMBIENT_LIGHT_CONSTANT_BUFFER, &ambient, sizeof(AmbientLightCBS), m_pDeviceContext.Get());
+}
+
+void TDXRenderDevice::SetDirectionalLight(TVector3 direction, TVector3 color, float intensity)
+{
+    DirectionalLightCBS directionalLight = { direction, intensity, color  };
+
+    m_TDXBufferManager.UpdateDynamicConstantBuffer(DIRECTIONAL_LIGHT_CONSTANT_BUFFER, &directionalLight, sizeof(DirectionalLightCBS), m_pDeviceContext.Get());
 }
 
 bool TDXRenderDevice::OnResize(int width, int height)
@@ -441,9 +448,13 @@ void TDXRenderDevice::CreateBuffers()
     m_TDXBufferManager.CreateDynamicConstantBuffer(LIGHT_COUNT_CONSTANT_BUFFER, sizeof(LightCountCBS), m_pDevice.Get());
     m_TDXBufferManager.PBindConstantBuffer(LIGHT_COUNT_CONSTANT_BUFFER, 0, m_pDeviceContext.Get());
 
-    m_TDXBufferManager.CreateDynamicConstantBuffer(AMBIENT_LIGHT_COUNT_CONSTANT_BUFFER, sizeof(AmbientLightCBS), m_pDevice.Get());
-    m_TDXBufferManager.PBindConstantBuffer(AMBIENT_LIGHT_COUNT_CONSTANT_BUFFER, 1, m_pDeviceContext.Get());
+    m_TDXBufferManager.CreateDynamicConstantBuffer(AMBIENT_LIGHT_CONSTANT_BUFFER, sizeof(AmbientLightCBS), m_pDevice.Get());
+    m_TDXBufferManager.PBindConstantBuffer(AMBIENT_LIGHT_CONSTANT_BUFFER, 1, m_pDeviceContext.Get());
     SetAmbientLight(1.0f, 1.0f, 1.0f);
+
+    m_TDXBufferManager.CreateDynamicConstantBuffer(DIRECTIONAL_LIGHT_CONSTANT_BUFFER, sizeof(DirectionalLightCBS), m_pDevice.Get());
+    m_TDXBufferManager.PBindConstantBuffer(DIRECTIONAL_LIGHT_CONSTANT_BUFFER, 2, m_pDeviceContext.Get());
+    SetDirectionalLight({}, {}, 1.0f);
 
     TVertexScreenQuad fullscreenQuadVertices[] =
     {

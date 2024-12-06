@@ -60,6 +60,7 @@ public:
 
 	virtual void SetLights(std::vector<Light>& lights) = 0;
 	virtual void SetAmbientLight(float r, float g, float b) = 0;
+	virtual void SetDirectionalLight(TVector3 direction, TVector3 color, float intensity) = 0;
 
 	virtual bool OnResize(int width, int height) = 0;
 	virtual bool IsRunning() = 0;

@@ -10,7 +10,8 @@ constexpr const char* VIEW_MATRIX_CONSTANT_BUFFER = "VIEW_MATRIX_CONSTANT_BUFFER
 constexpr const char* WORLD_MATRIX_CONSTANT_BUFFER = "WORLD_MATRIX_CONSTANT_BUFFER";
 constexpr const char* LIGHT_COUNT_CONSTANT_BUFFER = "LIGHT_COUNT_CONSTANT_BUFFER";
 constexpr const char* SREEN_QUAD_STATIC_BUFFER = "SREEN_QUAD_STATIC_BUFFER";
-constexpr const char* AMBIENT_LIGHT_COUNT_CONSTANT_BUFFER = "AMBIENT_LIGHT_COUNT_CONSTANT_BUFFER";
+constexpr const char* AMBIENT_LIGHT_CONSTANT_BUFFER = "AMBIENT_LIGHT_CONSTANT_BUFFER";
+constexpr const char* DIRECTIONAL_LIGHT_CONSTANT_BUFFER = "DIRECTIONAL_LIGHT_CONSTANT_BUFFER";
 constexpr const char* LIGHTS_STRUCTURED_BUFFER = "LIGHTS_STRUCTURED_BUFFER";
 
 struct MatrixCBS
@@ -31,6 +32,15 @@ struct AmbientLightCBS
     float b;
     float padding;
 };
+
+struct DirectionalLightCBS
+{
+    TVector3 direction;
+    float intensity;
+    TVector3 color;
+    float padding;
+};
+
 
 D3D11_INPUT_ELEMENT_DESC SPRITE_INPUT_LAYOUT[] =
 {

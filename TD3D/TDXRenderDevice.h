@@ -67,6 +67,7 @@ public:
 
 	virtual void SetLights(std::vector<Light>& lights) override;
 	virtual void SetAmbientLight(float r, float g, float b) override;
+	virtual void SetDirectionalLight(TVector3 direction, TVector3 color, float intensity) override;
 
 	virtual bool OnResize(int width, int height) override;
 	virtual bool IsRunning() override;

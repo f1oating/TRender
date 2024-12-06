@@ -9,6 +9,14 @@ struct Light
     float SpotAngle;
 };
 
+struct DirectionalLight
+{
+    float3 Direction;
+    float Intensity;
+    float3 Color;
+    float Padding;
+};
+
 StructuredBuffer<Light> Lights : register(t4);
 cbuffer LightInfo : register(b0)
 {
@@ -16,11 +24,16 @@ cbuffer LightInfo : register(b0)
     int align[3];
 };
 
-float3 CalculateDirectionalLight(Light light, float3 normal)
+cbuffer DirectionalLight : register(b2)
 {
-    float3 lightDir = normalize(-light.Direction);
+    DirectionalLight directionalLight;
+};
+
+float3 CalculateDirectionalLight(DirectionalLight directionalLight, float3 normal)
+{
+    float3 lightDir = normalize(-directionalLight.Direction);
     float diff = max(dot(normal, lightDir), 0.0);
-    return light.Color * diff * light.Intensity;
+    return directionalLight.Color * diff * directionalLight.Intensity;
 }
 
 float3 CalculatePointLight(Light light, float3 worldPos, float3 normal)
@@ -78,18 +91,16 @@ float4 main(PSInput input) : SV_Target
 
     float3 finalColor = float3(1.0f, 1.0f, 1.0f);
 
+    finalColor += CalculateDirectionalLight(directionalLight, normal);
+
     for (int i = 0; i < LightCount; ++i)
     {
         Light light = Lights[i];
         if (light.Type == 0)
         {
-            finalColor += CalculateDirectionalLight(light, normal);
-        }
-        else if (light.Type == 1)
-        {
             finalColor += CalculatePointLight(light, worldPos, normal);
         }
-        else if (light.Type == 2)
+        else if (light.Type == 1)
         {
             finalColor += CalculateSpotLight(light, worldPos, normal);
         }

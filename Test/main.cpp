@@ -267,21 +267,15 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int nCmdShow) {
     camera.SetPosition(2.0f, 2.0f, -2.0f);
     renderDevice->SetViewMatrix(camera.GetViewMatrix());
 
-    Light dirLight = {};
-    dirLight.Type = 0;
-    dirLight.Direction = { 0.4f, 0.8f, 0.5f };
-    dirLight.Color = { 1.0f, 1.0f, 1.0f };
-    dirLight.Intensity = 1.0f;
-
     Light pointLight = {};
-    pointLight.Type = 1;
+    pointLight.Type = 0;
     pointLight.Position = { 0.0f, 5.0f, 0.0f };
     pointLight.Color = { 1.0f, 0.5f, 0.5f };
     pointLight.Intensity = 20.0f;
     pointLight.Range = 100.0f;
 
     Light spotLight = {};
-    spotLight.Type = 2;
+    spotLight.Type = 1;
     spotLight.Position = { 0.0f, 5.0f, 0.0f };
     spotLight.Direction = { 0.0f, -1.0f, 0.0f };
     spotLight.Color = { 0.5f, 0.5f, 1.0f };
@@ -290,11 +284,12 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int nCmdShow) {
     spotLight.SpotAngle = 30.0f;
 
     std::vector<Light> lights;
-    lights.push_back(dirLight);
+    //lights.push_back(dirLight);
     //lights.push_back(pointLight);
     //lights.push_back(spotLight);
 
     renderDevice->SetAmbientLight(0.3f, 0.3f, 0.3f);
+    renderDevice->SetDirectionalLight({ 0.4f, 0.8f, 0.5f }, { 1.0f, 1.0f, 1.0f }, 1.0f);
     renderDevice->SetLights(lights);
 
     renderDevice->AddTexture("crate", "Textures/crate.jpg");
