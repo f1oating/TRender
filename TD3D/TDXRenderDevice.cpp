@@ -80,11 +80,12 @@ bool TDXRenderDevice::Initizialize(HWND hwnd, int width, int height)
 
 void TDXRenderDevice::BeginFrame(float r, float g, float b, float a) {
     float clearColor[] = { r, g, b, a };
+    float transperentColor[] = { 0.0f, 0.0f, 0.0f, 0.0f };
+
     m_pDeviceContext->ClearRenderTargetView(m_pRenderTargetView.Get(), clearColor);
     for (int i = 0; i < 3; ++i) {
-        m_pDeviceContext->ClearRenderTargetView(m_pGBufferRTV[i].Get(), clearColor);
+        m_pDeviceContext->ClearRenderTargetView(m_pGBufferRTV[i].Get(), transperentColor);
     }
-    float transperentColor[] = { 0.0f, 0.0f, 0.0f, 0.0f };
     m_pDeviceContext->ClearRenderTargetView(m_pGBufferRTV[3].Get(), transperentColor);
 
     m_pDeviceContext->ClearDepthStencilView(m_pDepthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
