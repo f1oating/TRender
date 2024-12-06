@@ -269,14 +269,14 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int nCmdShow) {
 
     Light pointLight = {};
     pointLight.Type = 0;
-    pointLight.Position = { 0.0f, 5.0f, 0.0f };
+    pointLight.Position = { 2.0f, 5.0f, 0.0f };
     pointLight.Color = { 1.0f, 0.5f, 0.5f };
     pointLight.Intensity = 20.0f;
     pointLight.Range = 100.0f;
 
     Light spotLight = {};
     spotLight.Type = 1;
-    spotLight.Position = { 0.0f, 5.0f, 0.0f };
+    spotLight.Position = { 2.0f, 5.0f, 0.0f };
     spotLight.Direction = { 0.0f, -1.0f, 0.0f };
     spotLight.Color = { 0.5f, 0.5f, 1.0f };
     spotLight.Intensity = 30.0f;
@@ -284,8 +284,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int nCmdShow) {
     spotLight.SpotAngle = 30.0f;
 
     std::vector<Light> lights;
-    //lights.push_back(dirLight);
-    //lights.push_back(pointLight);
+    lights.push_back(pointLight);
     //lights.push_back(spotLight);
 
     renderDevice->SetAmbientLight(0.3f, 0.3f, 0.3f);
