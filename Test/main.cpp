@@ -341,6 +341,17 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int nCmdShow) {
         else {
             SimpleMoving(&input);
 
+            renderDevice->BeginShadowPass();
+
+            renderDevice->BindTexture("crate");
+
+            renderDevice->BindVertexBuffer("VertexBufferGeometry", sizeof(TVertexGeometry), 0);
+            renderDevice->BindIndexBuffer("IndexBufferGeometry");
+
+            renderDevice->SetWorldMatrix(rotationFix);
+
+            renderDevice->Draw(numIndices, 0, 0);
+
             renderDevice->BeginFrame(0.1f, 0.1f, 0.1f, 1.0f);
 
             renderDevice->SetRasterizerCulling(false);

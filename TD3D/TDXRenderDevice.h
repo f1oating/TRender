@@ -21,6 +21,8 @@ public:
 
 	virtual bool Initizialize(HWND hWnd, int width, int height) override;
 
+	virtual void BeginShadowPass() override;
+
 	virtual void BeginFrame(float r, float g, float b, float a) override;
 	virtual void EndFrame() override;
 
@@ -86,6 +88,10 @@ private:
 	Microsoft::WRL::ComPtr<ID3D11Texture2D> m_pGBuffer[4];
 	Microsoft::WRL::ComPtr<ID3D11RenderTargetView> m_pGBufferRTV[4];
 	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_pGBufferSRV[4];
+
+	Microsoft::WRL::ComPtr<ID3D11Texture2D> m_pShadowMap;
+	Microsoft::WRL::ComPtr<ID3D11DepthStencilView> m_pShadowDSV;
+	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_pShadowSRV;
 
 	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_pLightsShaderResource;
 

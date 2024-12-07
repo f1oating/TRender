@@ -14,6 +14,8 @@ public:
 
 	virtual bool Initizialize(HWND hWnd, int width, int height) = 0;
 
+	virtual void BeginShadowPass() = 0;
+
 	virtual void BeginFrame(float r, float g, float b, float a) = 0;
 	virtual void EndFrame() = 0;
 

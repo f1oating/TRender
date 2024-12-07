@@ -31,6 +31,7 @@
     <FxCompile Include="Shaders\PlanePixelShader.hlsl" />
     <FxCompile Include="Shaders\PlaneVertexShader.hlsl" />
     <FxCompile Include="Shaders\NormalGeometryShader.hlsl" />
+    <FxCompile Include="Shaders\ShadowVertexShader.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="TDXRenderDevice.h">

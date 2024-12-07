@@ -60,6 +60,32 @@ bool TDXRenderDevice::Initizialize(HWND hwnd, int width, int height)
         throw std::runtime_error("Failed to create Direct3D device and swap chain.");
     }
 
+    D3D11_TEXTURE2D_DESC shadowDesc = {};
+    shadowDesc.Width = 1024;
+    shadowDesc.Height = 1024;
+    shadowDesc.MipLevels = 1;
+    shadowDesc.ArraySize = 1;
+    shadowDesc.Format = DXGI_FORMAT_R32_TYPELESS;
+    shadowDesc.SampleDesc.Count = 1;
+    shadowDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL | D3D11_BIND_SHADER_RESOURCE;
+
+    m_pDevice->CreateTexture2D(&shadowDesc, nullptr, &m_pShadowMap);
+
+    D3D11_DEPTH_STENCIL_VIEW_DESC dsvDesc = {};
+    dsvDesc.Format = DXGI_FORMAT_D32_FLOAT;
+    dsvDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
+    dsvDesc.Texture2D.MipSlice = 0;
+
+    m_pDevice->CreateDepthStencilView(m_pShadowMap.Get(), &dsvDesc, &m_pShadowDSV);
+
+    D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
+    srvDesc.Format = DXGI_FORMAT_R32_FLOAT;
+    srvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D; 
+    srvDesc.Texture2D.MostDetailedMip = 0;
+    srvDesc.Texture2D.MipLevels = 1;
+
+    m_pDevice->CreateShaderResourceView(m_pShadowMap.Get(), &srvDesc, &m_pShadowSRV);
+
     CreateBuffers();
     OnResize(width, height);
     AddShaders();
@@ -76,6 +102,15 @@ bool TDXRenderDevice::Initizialize(HWND hwnd, int width, int height)
     m_IsRunning = true;
 
     return true;
+}
+
+void TDXRenderDevice::BeginShadowPass()
+{
+    m_pDeviceContext->OMSetRenderTargets(0, nullptr, m_pShadowDSV.Get());
+    m_pDeviceContext->ClearDepthStencilView(m_pShadowDSV.Get(), D3D11_CLEAR_DEPTH, 1.0f, 0);
+
+    BindVertexShader(SHADOW_SHADER);
+    UnbindPixelShader(SHADOW_SHADER);
 }
 
 void TDXRenderDevice::BeginFrame(float r, float g, float b, float a) {
@@ -336,6 +371,26 @@ void TDXRenderDevice::SetDirectionalLight(TVector3 direction, TVector3 color, fl
     DirectionalLightCBS directionalLight = { direction, intensity, color  };
 
     m_TDXBufferManager.UpdateDynamicConstantBuffer(DIRECTIONAL_LIGHT_CONSTANT_BUFFER, &directionalLight, sizeof(DirectionalLightCBS), m_pDeviceContext.Get());
+
+    DirectX::XMVECTOR lightDirection = DirectX::XMVector3Normalize(DirectX::XMVectorSet(direction.x, direction.y, direction.z, 0.0f));
+
+    DirectX::XMVECTOR lightTarget = DirectX::XMVectorSet(0.0f, 0.0f, 0.0f, 1.0f);
+
+    float distance = 500.0f;
+    DirectX::XMVECTOR lightPosition = DirectX::XMVectorSubtract(lightTarget, DirectX::XMVectorScale(lightDirection, distance));
+
+    DirectX::XMVECTOR lightUp = DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
+
+    DirectX::XMMATRIX lightView = DirectX::XMMatrixLookAtLH(lightPosition, lightTarget, lightUp);
+
+    float nearPlane = 0.1f;
+    float farPlane = 1000.0f;
+    float shadowMapSize = 1024.0f; 
+
+    DirectX::XMMATRIX lightProjection = DirectX::XMMatrixOrthographicLH(shadowMapSize, shadowMapSize, nearPlane, farPlane);
+
+    MatrixCBS lightViewProj = { lightView * lightProjection };
+    m_TDXBufferManager.UpdateDynamicConstantBuffer(LIGHT_VIEW_PROJ_CONSTANT_BUFFER, &lightViewProj, sizeof(MatrixCBS), m_pDeviceContext.Get());
 }
 
 bool TDXRenderDevice::OnResize(int width, int height)
@@ -446,6 +501,9 @@ void TDXRenderDevice::CreateBuffers()
     m_TDXBufferManager.VBindConstantBuffer(WORLD_MATRIX_CONSTANT_BUFFER, 2, m_pDeviceContext.Get());
     SetWorldMatrix(Eigen::Matrix4f::Identity());
 
+    m_TDXBufferManager.CreateDynamicConstantBuffer(LIGHT_VIEW_PROJ_CONSTANT_BUFFER, sizeof(MatrixCBS), m_pDevice.Get());
+    m_TDXBufferManager.VBindConstantBuffer(LIGHT_VIEW_PROJ_CONSTANT_BUFFER, 3, m_pDeviceContext.Get());
+
     m_TDXBufferManager.CreateDynamicConstantBuffer(LIGHT_COUNT_CONSTANT_BUFFER, sizeof(LightCountCBS), m_pDevice.Get());
     m_TDXBufferManager.PBindConstantBuffer(LIGHT_COUNT_CONSTANT_BUFFER, 0, m_pDeviceContext.Get());
 
@@ -455,7 +513,6 @@ void TDXRenderDevice::CreateBuffers()
 
     m_TDXBufferManager.CreateDynamicConstantBuffer(DIRECTIONAL_LIGHT_CONSTANT_BUFFER, sizeof(DirectionalLightCBS), m_pDevice.Get());
     m_TDXBufferManager.PBindConstantBuffer(DIRECTIONAL_LIGHT_CONSTANT_BUFFER, 2, m_pDeviceContext.Get());
-    SetDirectionalLight({}, {}, 1.0f);
 
     TVertexScreenQuad fullscreenQuadVertices[] =
     {
@@ -501,6 +558,9 @@ void TDXRenderDevice::AddShaders()
     m_TDXShaderManager.AddPixelShader(PLANE_SHADER, L"..\\TD3D\\CSO\\PlanePixelShader.cso", m_pDevice.Get());
 
     m_TDXShaderManager.AddGeometryShader(NORMAL_SHADER, L"..\\TD3D\\CSO\\NormalGeometryShader.cso", m_pDevice.Get());
+
+    m_TDXShaderManager.AddVertexShader(SHADOW_SHADER, L"..\\TD3D\\CSO\\ShadowVertexShader.cso",
+        GEOMETRY_INPUT_LAYOUT, sizeof(GEOMETRY_INPUT_LAYOUT) / sizeof(D3D11_INPUT_ELEMENT_DESC), m_pDevice.Get());
 }
 
 HRESULT CreateRenderDevice(TDXRenderDevice** pDevice) {
