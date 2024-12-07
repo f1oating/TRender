@@ -10,7 +10,7 @@ cbuffer LightMatrix : register(b3)
 
 struct VS_INPUT
 {
-    float4 position : POSITION;
+    float3 position : POSITION;
 };
 
 struct VS_OUTPUT
@@ -22,7 +22,7 @@ VS_OUTPUT main(VS_INPUT input)
 {
     VS_OUTPUT output;
 
-    float4 worldPos = mul(input.position, world);
+    float4 worldPos = mul(float4(input.position, 1.0f), world);
 
     output.position = mul(worldPos, lightViewProjection);
 
