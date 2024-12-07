@@ -131,6 +131,7 @@ void TDXRenderDevice::EndFrame() {
     m_pDeviceContext->OMSetRenderTargets(1, m_pRenderTargetView.GetAddressOf(), nullptr);
     m_pDeviceContext->PSSetShaderResources(0, 4, m_pGBufferSRV[0].GetAddressOf());
     m_pDeviceContext->PSSetShaderResources(4, 1, m_pLightsShaderResource.GetAddressOf());
+    m_pDeviceContext->PSSetShaderResources(5, 1, m_pShadowSRV.GetAddressOf());
 
     m_pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
 
@@ -144,8 +145,8 @@ void TDXRenderDevice::EndFrame() {
     BindPixelShader(PLANE_SHADER);
     m_pDeviceContext->Draw(4, 0);
 
-    ID3D11ShaderResourceView* nullSRV[5] = { nullptr, nullptr, nullptr, nullptr, nullptr };
-    m_pDeviceContext->PSSetShaderResources(0, 5, nullSRV);
+    ID3D11ShaderResourceView* nullSRV[6] = { nullptr, nullptr, nullptr, nullptr, nullptr, nullptr };
+    m_pDeviceContext->PSSetShaderResources(0, 6, nullSRV);
 
     m_pSwapChain->Present(1, 0);
 }
@@ -503,6 +504,7 @@ void TDXRenderDevice::CreateBuffers()
 
     m_TDXBufferManager.CreateDynamicConstantBuffer(LIGHT_VIEW_PROJ_CONSTANT_BUFFER, sizeof(MatrixCBS), m_pDevice.Get());
     m_TDXBufferManager.VBindConstantBuffer(LIGHT_VIEW_PROJ_CONSTANT_BUFFER, 3, m_pDeviceContext.Get());
+    m_TDXBufferManager.PBindConstantBuffer(LIGHT_VIEW_PROJ_CONSTANT_BUFFER, 3, m_pDeviceContext.Get());
 
     m_TDXBufferManager.CreateDynamicConstantBuffer(LIGHT_COUNT_CONSTANT_BUFFER, sizeof(LightCountCBS), m_pDevice.Get());
     m_TDXBufferManager.PBindConstantBuffer(LIGHT_COUNT_CONSTANT_BUFFER, 0, m_pDeviceContext.Get());

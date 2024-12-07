@@ -24,6 +24,11 @@ cbuffer LightInfo : register(b0)
     int align[3];
 };
 
+cbuffer LightMatrix : register(b3)
+{
+    matrix lightViewProj;
+};
+
 cbuffer DirectionalLight : register(b2)
 {
     DirectionalLight directionalLight;
@@ -75,6 +80,7 @@ float3 CalculateSpotLight(Light light, float3 worldPos, float3 normal)
 Texture2D DiffuseTexture : register(t0);
 Texture2D NormalTexture : register(t1);
 Texture2D PositionTexture : register(t2);
+Texture2D ShadowMap : register(t5);
 SamplerState samplerState : register(s0);
 
 struct PSInput
@@ -82,6 +88,20 @@ struct PSInput
     float4 Position : SV_Position;
     float2 TexCoord : TEXCOORD;
 };
+
+float ShadowFactor(float3 worldPos)
+{
+    float4 lightPos = mul(float4(worldPos, 1.0f), lightViewProj);
+    lightPos /= lightPos.w;
+
+    float2 shadowUV = lightPos.xy * 0.5f + 0.5f;
+
+    float shadowDepth = ShadowMap.Sample(samplerState, shadowUV).r;
+
+    float bias = 0.005f;
+
+    return (lightPos.z - bias > shadowDepth) ? 0.0f : 1.0f;
+}
 
 float4 main(PSInput input) : SV_Target
 {
@@ -91,7 +111,7 @@ float4 main(PSInput input) : SV_Target
 
     float3 finalColor = float3(1.0f, 1.0f, 1.0f);
 
-    finalColor += CalculateDirectionalLight(directionalLight, normal);
+    finalColor += CalculateDirectionalLight(directionalLight, normal) * ShadowFactor(worldPos);
 
     for (int i = 0; i < LightCount; ++i)
     {
