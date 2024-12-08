@@ -84,6 +84,7 @@ private:
 	Microsoft::WRL::ComPtr<ID3D11RenderTargetView> m_pRenderTargetView;
 	Microsoft::WRL::ComPtr<ID3D11DepthStencilView> m_pDepthStencilView;
 	Microsoft::WRL::ComPtr<ID3D11Texture2D> m_pDepthStencilBuffer;
+	D3D11_VIEWPORT m_Viewport;
 
 	Microsoft::WRL::ComPtr<ID3D11Texture2D> m_pGBuffer[4];
 	Microsoft::WRL::ComPtr<ID3D11RenderTargetView> m_pGBufferRTV[4];
@@ -92,6 +93,7 @@ private:
 	Microsoft::WRL::ComPtr<ID3D11Texture2D> m_pShadowMap;
 	Microsoft::WRL::ComPtr<ID3D11DepthStencilView> m_pShadowDSV;
 	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_pShadowSRV;
+	D3D11_VIEWPORT m_ShadowViewport;
 
 	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_pLightsShaderResource;
 

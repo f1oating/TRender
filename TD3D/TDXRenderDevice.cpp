@@ -12,6 +12,8 @@ TDXRenderDevice::TDXRenderDevice() :
 	m_pDepthStencilBuffer(nullptr),
     m_pSpriteBatch(nullptr),
     m_pSpriteFont(nullptr),
+    m_Viewport(),
+    m_ShadowViewport(),
     m_ViewMatrixCBS(),
     m_WorldMatrixCBS(),
     m_ProjectionMatrixCBS(),
@@ -61,8 +63,8 @@ bool TDXRenderDevice::Initizialize(HWND hwnd, int width, int height)
     }
 
     D3D11_TEXTURE2D_DESC shadowDesc = {};
-    shadowDesc.Width = 1024;
-    shadowDesc.Height = 1024;
+    shadowDesc.Width = static_cast<float>(1024);
+    shadowDesc.Height = static_cast<float>(1024);
     shadowDesc.MipLevels = 1;
     shadowDesc.ArraySize = 1;
     shadowDesc.Format = DXGI_FORMAT_R32_TYPELESS;
@@ -86,6 +88,14 @@ bool TDXRenderDevice::Initizialize(HWND hwnd, int width, int height)
 
     m_pDevice->CreateShaderResourceView(m_pShadowMap.Get(), &srvDesc, &m_pShadowSRV);
 
+    m_ShadowViewport = {};
+    m_ShadowViewport.Width = 1024;
+    m_ShadowViewport.Height = 1024;
+    m_ShadowViewport.MinDepth = 0.0f;
+    m_ShadowViewport.MaxDepth = 1.0f;
+    m_ShadowViewport.TopLeftX = 0;
+    m_ShadowViewport.TopLeftY = 0;
+
     CreateBuffers();
     OnResize(width, height);
     AddShaders();
@@ -106,6 +116,8 @@ bool TDXRenderDevice::Initizialize(HWND hwnd, int width, int height)
 
 void TDXRenderDevice::BeginShadowPass()
 {
+    m_pDeviceContext->RSSetViewports(1, &m_ShadowViewport);
+
     m_pDeviceContext->OMSetRenderTargets(0, nullptr, m_pShadowDSV.Get());
     m_pDeviceContext->ClearDepthStencilView(m_pShadowDSV.Get(), D3D11_CLEAR_DEPTH, 1.0f, 0);
 
@@ -116,6 +128,8 @@ void TDXRenderDevice::BeginShadowPass()
 void TDXRenderDevice::BeginFrame(float r, float g, float b, float a) {
     float clearColor[] = { r, g, b, a };
     float transperentColor[] = { 0.0f, 0.0f, 0.0f, 0.0f };
+
+    m_pDeviceContext->RSSetViewports(1, &m_Viewport);
 
     m_pDeviceContext->ClearRenderTargetView(m_pRenderTargetView.Get(), clearColor);
     for (int i = 0; i < 3; ++i) {
@@ -471,15 +485,13 @@ bool TDXRenderDevice::OnResize(int width, int height)
         throw std::runtime_error("Failed to create depth stencil view.");
     }
 
-    D3D11_VIEWPORT viewport = {};
-    viewport.Width = static_cast<float>(width);
-    viewport.Height = static_cast<float>(height);
-    viewport.TopLeftX = 0;
-    viewport.TopLeftY = 0;
-    viewport.MinDepth = 0.0f;
-    viewport.MaxDepth = 1.0f;
-
-    m_pDeviceContext->RSSetViewports(1, &viewport);
+    m_Viewport = {};
+    m_Viewport.Width = static_cast<float>(width);
+    m_Viewport.Height = static_cast<float>(height);
+    m_Viewport.TopLeftX = 0;
+    m_Viewport.TopLeftY = 0;
+    m_Viewport.MinDepth = 0.0f;
+    m_Viewport.MaxDepth = 1.0f;
 
     return true;
 }
