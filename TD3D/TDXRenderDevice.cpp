@@ -378,7 +378,7 @@ void TDXRenderDevice::SetDirectionalLight(TVector3 direction, TVector3 color, fl
     DirectX::XMVECTOR lightTarget = DirectX::XMVectorSet(0.0f, 0.0f, 0.0f, 1.0f);
 
     float distance = 500.0f;
-    DirectX::XMVECTOR lightPosition = DirectX::XMVectorSubtract(lightTarget, DirectX::XMVectorScale(lightDirection, distance));
+    DirectX::XMVECTOR lightPosition = DirectX::XMVectorSet(40.0f, 40.0f, 40.0f, 1.0f);
 
     DirectX::XMVECTOR lightUp = DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
 
@@ -386,7 +386,7 @@ void TDXRenderDevice::SetDirectionalLight(TVector3 direction, TVector3 color, fl
 
     float nearPlane = 0.1f;
     float farPlane = 1000.0f;
-    float shadowMapSize = 1024.0f; 
+    float shadowMapSize = 40.0f; 
 
     DirectX::XMMATRIX lightProjection = DirectX::XMMatrixOrthographicLH(shadowMapSize, shadowMapSize, nearPlane, farPlane);
 
