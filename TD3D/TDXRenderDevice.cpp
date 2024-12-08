@@ -390,7 +390,7 @@ void TDXRenderDevice::SetDirectionalLight(TVector3 direction, TVector3 color, fl
 
     DirectX::XMMATRIX lightProjection = DirectX::XMMatrixOrthographicLH(shadowMapSize, shadowMapSize, nearPlane, farPlane);
 
-    MatrixCBS lightViewProj = { lightView * lightProjection };
+    MatrixCBS lightViewProj = { DirectX::XMMatrixTranspose(lightView * lightProjection) };
     m_TDXBufferManager.UpdateDynamicConstantBuffer(LIGHT_VIEW_PROJ_CONSTANT_BUFFER, &lightViewProj, sizeof(MatrixCBS), m_pDeviceContext.Get());
 }
 
