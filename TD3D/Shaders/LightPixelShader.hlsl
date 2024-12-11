@@ -95,10 +95,11 @@ float ShadowFactor(float3 worldPos)
     lightPos /= lightPos.w;
 
     float2 shadowUV = lightPos.xy * 0.5f + 0.5f;
+    shadowUV.y = 1 - shadowUV.y;
 
     float shadowDepth = ShadowMap.Sample(samplerState, shadowUV).r;
 
-    float bias = 0.005f;
+    float bias = 0.003f;
 
     return (lightPos.z - bias > shadowDepth) ? 0.0f : 1.0f;
 }

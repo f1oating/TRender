@@ -326,7 +326,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int nCmdShow) {
     scaling(1, 1) = 10.0f;
     scaling(2, 2) = 10.0f;
 
-    translation(2, 3) = -1.5f;
+    translation(2, 3) = -1.9f;
 
     transformation = scaling * rotationFix * translation;
 
