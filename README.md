@@ -23,3 +23,5 @@ TRenderer is a powerful rendering engine designed for creating 3D and 2D graphic
 - **Texturing**: Texture mapping for object detailing.
 - **Normal Drawing**: Support for normal maps to enhance lighting and create surface relief.
 - **Skybox**: Realistic sky for environmental backgrounds.
+
+TRenderer is a versatile rendering engine designed to work independently of specific APIs. This repository includes its DirectX11 implementation.
