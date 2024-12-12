@@ -99,9 +99,9 @@ float ShadowFactor(float3 worldPos)
 
     float shadowDepth = ShadowMap.Sample(samplerState, shadowUV).r;
 
-    float bias = 0.003f;
+    float bias = 0.005f;
 
-    return (lightPos.z - bias > shadowDepth) ? 0.0f : 1.0f;
+    return (lightPos.z - bias > shadowDepth) ? 0.2f : 1.0f;
 }
 
 float4 main(PSInput input) : SV_Target
@@ -112,7 +112,7 @@ float4 main(PSInput input) : SV_Target
 
     float3 finalColor = float3(1.0f, 1.0f, 1.0f);
 
-    finalColor += CalculateDirectionalLight(directionalLight, normal) * ShadowFactor(worldPos);
+    finalColor += CalculateDirectionalLight(directionalLight, normal);
 
     for (int i = 0; i < LightCount; ++i)
     {
@@ -127,5 +127,5 @@ float4 main(PSInput input) : SV_Target
         }
     }
 
-    return float4(finalColor * diffuse.rgb, diffuse.a);
+    return float4(finalColor * diffuse.rgb * ShadowFactor(worldPos), diffuse.a);
 }

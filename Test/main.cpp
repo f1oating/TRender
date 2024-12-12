@@ -276,22 +276,23 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int nCmdShow) {
 
     Light spotLight = {};
     spotLight.Type = 1;
-    spotLight.Position = { 2.0f, 5.0f, 0.0f };
+    spotLight.Position = { 3.0f, 3.0f, 1.0f };
     spotLight.Direction = { 0.0f, -1.0f, 0.0f };
     spotLight.Color = { 0.5f, 0.5f, 1.0f };
-    spotLight.Intensity = 30.0f;
-    spotLight.Range = 150.0f;
-    spotLight.SpotAngle = 30.0f;
+    spotLight.Intensity = 70.0f;
+    spotLight.Range = 350.0f;
+    spotLight.SpotAngle = 90.0f;
 
     std::vector<Light> lights;
     lights.push_back(pointLight);
-    //lights.push_back(spotLight);
+    lights.push_back(spotLight);
 
     renderDevice->SetAmbientLight(0.3f, 0.3f, 0.3f);
     renderDevice->SetDirectionalLight({ 0.4f, 0.8f, 0.5f }, { 1.0f, 1.0f, 1.0f }, 1.0f);
     renderDevice->SetLights(lights);
 
     renderDevice->AddTexture("crate", "Textures/crate.jpg");
+    renderDevice->AddTexture("grass", "Textures/grass.jpg");
     renderDevice->AddTexture("white", 120, 120, 120, 255);
     renderDevice->AddCubeMapTexture("skybox", "Textures/Skybox/Weltraum", ".png");
 
@@ -326,7 +327,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int nCmdShow) {
     scaling(1, 1) = 10.0f;
     scaling(2, 2) = 10.0f;
 
-    translation(2, 3) = -1.9f;
+    translation(2, 3) = -2.0f;
 
     transformation = scaling * rotationFix * translation;
 
@@ -374,12 +375,21 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int nCmdShow) {
             renderDevice->BindVertexShader(GEOMETRY_SHADER);
             renderDevice->BindPixelShader(GEOMETRY_SHADER);
 
-            renderDevice->BindTexture("crate");
-
             renderDevice->BindVertexBuffer("VertexBufferGeometry", sizeof(TVertexGeometry), 0);
             renderDevice->BindIndexBuffer("IndexBufferGeometry");
 
             renderDevice->SetWorldMatrix(rotationFix);
+
+            /*
+            renderDevice->BindGeometryShader(NORMAL_SHADER);
+            renderDevice->BindTexture("white");
+
+            renderDevice->Draw(numIndices, 0, 0);
+
+            renderDevice->UnbindGeometryShader(NORMAL_SHADER);
+            */
+
+            renderDevice->BindTexture("crate");
 
             renderDevice->Draw(numIndices, 0, 0);
 
@@ -397,7 +407,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int nCmdShow) {
             renderDevice->UnbindGeometryShader(NORMAL_SHADER);
             */
 
-            renderDevice->BindTexture("crate");
+            renderDevice->BindTexture("grass");
             renderDevice->Draw(numTerrainInd, 0, 0);
 
             renderDevice->SetWorldMatrix(Eigen::Matrix4f::Identity());

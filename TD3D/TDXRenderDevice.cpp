@@ -400,7 +400,7 @@ void TDXRenderDevice::SetDirectionalLight(TVector3 direction, TVector3 color, fl
 
     float nearPlane = 0.1f;
     float farPlane = 1000.0f;
-    float shadowMapSize = 40.0f; 
+    float shadowMapSize = 60.0f; 
 
     DirectX::XMMATRIX lightProjection = DirectX::XMMatrixOrthographicLH(shadowMapSize, shadowMapSize, nearPlane, farPlane);
 
